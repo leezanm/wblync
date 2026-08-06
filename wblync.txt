@@ -1,0 +1,222 @@
+Sistem Wblync adalah sistem yang digunakan untuk mengelola dan mengatur komunikasi prestasi pelajar intern dalam jaringan.
+Sistem ini menyimpan log aktiviti intern setiap hari mereka melaksana tugas di lokasi kerja masing-masing.
+Dengan adanya Sistem Wblync, pihak politeknik khususnya penyelia yang dilantik dapat memantau perkembangan prestasi pelajar
+intern secara real-time. 
+
+Rekod log juga boleh dilihat dan disahkan oleh penyelia industri untuk memastikan pelajar intern melaksanakan tugas mereka dengan baik,
+yang kemudian akan dinilai dan diberikan maklum balas dan markah oleh penyelia/pensyarah dari politeknik.
+Sistem ini juga memudahkan pihak pengurusan politeknik untuk menilai keberkesanan program latihan industri dan membuat penambahbaikan jika perlu.
+
+Skop
+Admin sistem
+    Pengurusan data pelajar intern
+    Pengurusan data penyelia politeknik
+    Pengurusan data penyelia industri
+    Pengurusan subjek latihan industri
+    Pengurusan Pengguna sistem
+Penyelia politeknik
+    Memantau prestasi pelajar intern dibawah seliaanya sahaja
+    Memberikan maklum balas dan markah kepada pelajar intern
+Penyelia industri/ Industri Mentor
+    Memantau prestasi pelajar intern di lokasi kerja masing-masing
+    Memberikan maklum balas dan pengesahan terhadap log aktiviti pelajar intern
+Pelajar intern
+    Melaksanakan tugas harian di lokasi kerja masing-masing
+    Mengisi log aktiviti harian dan mendapatkan pengesahan daripada penyelia industri
+
+Site Map Sistem
+
+WBLync
+│
+├── Public
+│   ├── Home
+│   ├── About WBL
+│   ├── User Guide
+│   ├── Contact
+│   └── Login
+│
+└── Dashboard
+    │
+    ├── Student
+    ├── Industry Mentor
+    ├── Lecturer / Observer
+    └── Coordinator
+
+Student
+
+Dashboard
+
+├── My Placement
+│     ├── Company Information
+│     ├── Supervisor
+│     ├── Duration
+│     └── Placement Status
+│
+├── My Courses
+│     ├── Semester 4
+│     └── Semester 5
+│
+├── Logbook
+│     ├── Weekly Journal
+│     ├── Reflection
+│     ├── Upload Evidence
+│     └── Submission Status
+│
+├── Assessments
+│     ├── Demonstration Rubric
+│     ├── Project Rubric
+│     ├── Company Appraisal
+│     └── Marks
+│
+├── Feedback
+│
+├── Progress
+│
+├── Calendar
+│
+└── Profile
+
+Industry Mentor
+
+Dashboard
+
+├── My Students
+│
+├── Review Logbook
+│
+├── Student Assessment
+│     ├── Demonstration
+│     ├── Project
+│     └── Company Appraisal
+│
+├── Feedback
+│
+├── Student Progress
+│
+├── Reports
+│
+└── Profile
+
+Lecturer / Observer
+
+Dashboard
+
+├── Assigned Students
+│
+├── Review Logbook
+│
+├── Institution Assessment
+│
+├── WBL Evaluation Form
+│
+├── Feedback
+│
+├── Progress Monitoring
+│
+├── Reports
+│
+└── Profile
+
+Coordinator/Administrator
+
+Dashboard
+
+├── User Management
+│     ├── Student
+│     ├── Lecturer
+│     ├── Industry
+│     └── Admin
+│
+├── Academic Session
+│
+├── Semester
+│
+├── Courses
+│
+├── Companies
+│
+├── Student Placement
+│
+├── Assessment Templates
+│     ├── Demonstration Rubric
+│     ├── Project Rubric
+│     ├── Company Appraisal
+│     └── Institution Assessment
+│
+├── Evaluation Forms
+│
+├── Reports
+│
+├── Analytics
+│
+├── Announcements
+│
+└── System Settings
+
+
+Functional Requirements
+Fungsi yang saya cadangkan ditambah
+
+Daripada site map asal, saya rasa beberapa modul penting masih belum ada:
+
+Master Data
+
+    Academic Session
+    Semester
+    Course
+    Programme
+    Department
+    Company
+    Industry Supervisor
+    Student Placement
+
+Notification
+
+    Email Notification
+    In-System Notification
+    Reminder Logbook
+    Reminder Assessment
+
+Document Management
+
+    Template
+    Upload Evidence
+    Supporting Documents
+    Generated PDF
+
+Calendar
+
+    WBL Schedule
+    Assessment Schedule
+    Visit Schedule
+    Important Dates
+
+Dashboard
+
+Setiap role patut mempunyai dashboard sendiri, contohnya:
+
+Student
+
+    Logbook minggu ini
+    Progress (%)
+    Assessment yang belum siap
+    Feedback terkini
+
+Industry Mentor
+
+    Bilangan pelajar
+    Assessment belum dinilai
+    Logbook belum disemak
+
+Lecturer / Observer
+
+    Student Progress
+    Visit Schedule
+    Pending Review
+
+Coordinator / Administrator
+
+    Jumlah pelajar
+    Jumlah syarikat
+    Assessment Completion
+    Overall Analytics

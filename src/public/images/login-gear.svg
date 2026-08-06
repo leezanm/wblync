@@ -1,0 +1,133 @@
+<svg viewBox="0 0 360 310" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">WBLync login illustration</title>
+  <desc id="desc">An isometric platform illustration with stacked disks and decorative gears.</desc>
+  <defs>
+    <style>
+      .wb-core-shadow { opacity: 0.18; fill: #071d5a; }
+      .wb-chip-line { stroke: rgba(147, 197, 253, 0.5); stroke-width: 4; stroke-linecap: round; fill: none; }
+      .wb-chip-node { fill: #60a5fa; opacity: 0.7; }
+      .wb-platform-top { fill: url(#wbPlatformTop); }
+      .wb-platform-side { fill: url(#wbPlatformSide); }
+      .wb-platform-front { fill: url(#wbPlatformFront); }
+      .wb-base-top { fill: url(#wbBaseTop); }
+      .wb-base-side { fill: url(#wbBaseSide); }
+      .wb-base-front { fill: url(#wbBaseFront); }
+      .wb-disk-top { fill: url(#wbDiskTop); }
+      .wb-disk-front { fill: url(#wbDiskFront); }
+      .wb-disk-highlight { fill: none; stroke: rgba(255, 255, 255, 0.32); stroke-width: 5; }
+      .wb-pillar { fill: url(#wbPillar); }
+      .wb-orbit { fill: none; stroke: rgba(125, 211, 252, 0.85); stroke-width: 8; }
+      .wb-orbit-core { fill: url(#wbOrbitCore); }
+      .wb-gear-large { fill: url(#wbGearLarge); }
+      .wb-gear-small { fill: url(#wbGearSmall); }
+    </style>
+    <linearGradient id="wbPlatformTop" x1="90" y1="140" x2="180" y2="210" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#9BD1FF" />
+      <stop offset="1" stop-color="#3A87FF" />
+    </linearGradient>
+    <linearGradient id="wbPlatformSide" x1="60" y1="183" x2="135" y2="248" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2B74F2" />
+      <stop offset="1" stop-color="#0E3FB0" />
+    </linearGradient>
+    <linearGradient id="wbPlatformFront" x1="137" y1="182" x2="198" y2="258" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2672F4" />
+      <stop offset="1" stop-color="#082D84" />
+    </linearGradient>
+    <linearGradient id="wbBaseTop" x1="108" y1="112" x2="210" y2="176" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7CE2FF" />
+      <stop offset="1" stop-color="#1A66F3" />
+    </linearGradient>
+    <linearGradient id="wbBaseSide" x1="90" y1="158" x2="148" y2="223" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1554D6" />
+      <stop offset="1" stop-color="#0C2D86" />
+    </linearGradient>
+    <linearGradient id="wbBaseFront" x1="150" y1="158" x2="206" y2="228" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2271F9" />
+      <stop offset="1" stop-color="#0B3A9E" />
+    </linearGradient>
+    <linearGradient id="wbDiskTop" x1="100" y1="88" x2="194" y2="132" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFA63B" />
+      <stop offset="1" stop-color="#F2700E" />
+    </linearGradient>
+    <linearGradient id="wbDiskFront" x1="104" y1="96" x2="196" y2="170" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FBA23A" />
+      <stop offset="1" stop-color="#D95A08" />
+    </linearGradient>
+    <linearGradient id="wbPillar" x1="143" y1="90" x2="143" y2="192" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1BC6FF" />
+      <stop offset="1" stop-color="#0A51D7" />
+    </linearGradient>
+    <radialGradient id="wbOrbitCore" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(143 112) rotate(90) scale(26)">
+      <stop stop-color="#6FE8FF" />
+      <stop offset="1" stop-color="#0A4CD5" />
+    </radialGradient>
+    <linearGradient id="wbGearLarge" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#FFBB56" />
+      <stop offset="1" stop-color="#F17700" />
+    </linearGradient>
+    <linearGradient id="wbGearSmall" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#69C6FF" />
+      <stop offset="1" stop-color="#0C63F4" />
+    </linearGradient>
+  </defs>
+
+  <g>
+    <path class="wb-chip-line" d="M24 255H88" />
+    <path class="wb-chip-line" d="M36 234H80" />
+    <path class="wb-chip-line" d="M48 276H108" />
+    <path class="wb-chip-line" d="M190 265H305" />
+    <path class="wb-chip-line" d="M202 236H286" />
+    <path class="wb-chip-line" d="M212 210H255" />
+    <circle class="wb-chip-node" cx="84" cy="255" r="5" />
+    <circle class="wb-chip-node" cx="80" cy="234" r="4" />
+    <circle class="wb-chip-node" cx="108" cy="276" r="5" />
+    <circle class="wb-chip-node" cx="260" cy="210" r="4" />
+    <circle class="wb-chip-node" cx="286" cy="236" r="5" />
+    <circle class="wb-chip-node" cx="305" cy="265" r="5" />
+  </g>
+
+  <ellipse class="wb-core-shadow" cx="145" cy="242" rx="95" ry="24" />
+
+  <g>
+    <path class="wb-platform-top" d="M62 184 144 146 226 184 144 222 62 184Z" />
+    <path class="wb-platform-side" d="M62 184 144 222 144 266 62 228V184Z" />
+    <path class="wb-platform-front" d="M226 184 144 222V266L226 228V184Z" />
+
+    <path class="wb-base-top" d="M84 156 144 126 204 156 144 186 84 156Z" />
+    <path class="wb-base-side" d="M84 156 144 186V226L84 196V156Z" />
+    <path class="wb-base-front" d="M204 156 144 186V226L204 196V156Z" />
+  </g>
+
+  <g>
+    <rect class="wb-pillar" x="126" y="92" width="34" height="96" rx="14" />
+    <ellipse class="wb-orbit" cx="143" cy="112" rx="34" ry="26" />
+    <circle class="wb-orbit-core" cx="143" cy="112" r="24" />
+    <circle cx="143" cy="112" r="11" fill="#08338C" opacity="0.55" />
+  </g>
+
+  <g>
+    <path class="wb-disk-top" d="M92 92C92 79 115 69 144 69C173 69 196 79 196 92C196 105 173 115 144 115C115 115 92 105 92 92Z" />
+    <path class="wb-disk-front" d="M92 92V112C92 125 115 135 144 135C173 135 196 125 196 112V92C196 105 173 115 144 115C115 115 92 105 92 92Z" />
+    <path class="wb-disk-highlight" d="M103 96C110 102 125 106 144 106C163 106 178 102 185 96" />
+
+    <path class="wb-disk-top" d="M88 128C88 115 113 105 144 105C175 105 200 115 200 128C200 141 175 151 144 151C113 151 88 141 88 128Z" />
+    <path class="wb-disk-front" d="M88 128V148C88 161 113 171 144 171C175 171 200 161 200 148V128C200 141 175 151 144 151C113 151 88 141 88 128Z" />
+    <path class="wb-disk-highlight" d="M100 132C108 138 124 142 144 142C164 142 180 138 188 132" />
+
+    <path class="wb-disk-top" d="M84 164C84 151 111 141 144 141C177 141 204 151 204 164C204 177 177 187 144 187C111 187 84 177 84 164Z" />
+    <path class="wb-disk-front" d="M84 164V184C84 197 111 207 144 207C177 207 204 197 204 184V164C204 177 177 187 144 187C111 187 84 177 84 164Z" />
+    <path class="wb-disk-highlight" d="M97 168C106 174 123 178 144 178C165 178 182 174 191 168" />
+  </g>
+
+  <g transform="translate(232 76)">
+    <path class="wb-gear-large" d="M34 0 42 9l12-2 2 12 11 5-5 11 7 10-10 7 1 12-12 2-5 11-11-5-10 7-7-10-12 1-2-12-11-5 5-11-7-10 10-7-1-12 12-2 5-11 11 5L34 0Z" />
+    <circle cx="34" cy="34" r="17" fill="#FFFFFF" opacity="0.92" />
+    <circle cx="34" cy="34" r="8" fill="#F17700" opacity="0.55" />
+  </g>
+
+  <g transform="translate(28 192)">
+    <path class="wb-gear-small" d="M28 0 34 7l10-2 2 10 9 4-4 9 6 8-8 6 1 10-10 2-4 9-9-4-8 6-6-8-10 1-2-10-9-4 4-9-6-8 8-6-1-10 10-2 4-9 9 4L28 0Z" />
+    <circle cx="28" cy="28" r="13" fill="#FFFFFF" opacity="0.92" />
+    <circle cx="28" cy="28" r="6" fill="#0C63F4" opacity="0.5" />
+  </g>
+</svg>
