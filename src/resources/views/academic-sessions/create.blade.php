@@ -2,13 +2,24 @@
 
     <x-slot name="header">
 
-        <h2 class="font-semibold text-2xl">
-
-            Create Academic Session
-
-        </h2>
+        <div>
+            <h2 class="text-2xl font-bold text-slate-800">
+                Academic Sessions
+            </h2>
+        </div>
 
     </x-slot>
+
+    <div class="flex flex-col gap-4 mb-6 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+            <h2 class="text-2xl font-bold text-slate-800">
+                Add Academic Session
+            </h2>
+            <p class="mt-1 text-sm text-slate-500">
+                Create a new academic session.
+            </p>
+        </div>
+    </div>
 
     <div class="py-8">
 

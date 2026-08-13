@@ -9,7 +9,6 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-
     public function up(): void
     {
         Schema::create('academic_sessions', function (Blueprint $table) {
@@ -18,7 +17,7 @@ return new class extends Migration
 
             $table->uuid('uuid')->unique();
 
-            $table->string('code',20)->unique();
+            $table->string('code', 20)->unique();
 
             $table->string('name');
 
@@ -26,10 +25,10 @@ return new class extends Migration
 
             $table->date('end_date');
 
-            $table->enum('status',[
+            $table->enum('status', [
                 'Draft',
                 'Active',
-                'Closed'
+                'Closed',
             ])->default('Draft');
 
             $table->boolean('current')->default(false);

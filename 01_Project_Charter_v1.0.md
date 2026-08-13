@@ -13,3 +13,45 @@ Work-Based Learning (WBL).
 
 Digitise the complete WBL lifecycle for students, lecturers, industry
 mentors and coordinators.
+
+1. Academic Session       ✅
+        │
+        ├── 2. Semester   ✅
+        │
+        └── 3. Programme. ✅
+                 │
+                 ├── 4. Course ✅
+                 │
+                 └── 5. Class✅
+                         │
+                         └── 6. Student ✅
+
+Academic Session     ✅
+Semester             ✅
+Programme            ✅
+Course               ✅
+Class Room           ✅
+Student              ✅
+
+Relationship utama: 
+
+Academic Session
+      │
+      ▼
+   Semester
+      │
+      ├──────────► Programme
+      │                │
+      │                └── Course
+      │
+      ▼
+  Class Room
+      │
+      ▼
+   Student
+
+
+   enrollments
+├── student_id
+├── course_id
+└── class_room_id

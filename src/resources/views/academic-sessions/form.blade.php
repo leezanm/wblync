@@ -3,18 +3,19 @@
     {{-- Code --}}
     <div>
         <label class="block text-sm font-medium text-slate-700 mb-2">
-            Academic Session Code <span class="text-red-500">*</span>
+            Academic Session Code
         </label>
 
         <input
             type="text"
-            name="code"
-            value="{{ old('code', $academicSession->code ?? '') }}"
-            class="w-full rounded-xl border-slate-300 focus:border-blue-600 focus:ring-blue-600">
+            value="{{ old('code', $academicSession->code ?? ($nextCode ?? 'Auto generated')) }}"
+            readonly
+            disabled
+            class="w-full rounded-xl border-slate-300 bg-slate-100 text-slate-500 cursor-not-allowed">
 
-        @error('code')
-            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-        @enderror
+        <p class="mt-1 text-sm text-slate-500">
+            Generated automatically in sequence starting from 0001.
+        </p>
     </div>
 
     {{-- Status --}}
@@ -28,13 +29,17 @@
             name="status"
             class="w-full rounded-xl border-slate-300">
 
-            <option value="Draft">Draft</option>
+            <option @if(old('status', $academicSession->status ?? '') == 'Draft') selected @endif value="Draft">Draft</option>
 
-            <option value="Active">Active</option>
+            <option @if(old('status', $academicSession->status ?? '') == 'Active') selected @endif value="Active">Active</option>
 
-            <option value="Closed">Closed</option>
+            <option @if(old('status', $academicSession->status ?? '') == 'Closed') selected @endif value="Closed">Closed</option>
 
         </select>
+
+        @error('status')
+            <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+        @enderror
 
     </div>
 
@@ -53,6 +58,10 @@
             value="{{ old('name',$academicSession->name ?? '') }}"
             class="w-full rounded-xl border-slate-300">
 
+        @error('name')
+            <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+        @enderror
+
     </div>
 
     {{-- Start Date --}}
@@ -70,6 +79,10 @@
             value="{{ old('start_date',isset($academicSession)?$academicSession->start_date?->format('Y-m-d'):'') }}"
             class="w-full rounded-xl border-slate-300">
 
+        @error('start_date')
+            <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+        @enderror
+
     </div>
 
     {{-- End Date --}}
@@ -86,6 +99,10 @@
             name="end_date"
             value="{{ old('end_date',isset($academicSession)?$academicSession->end_date?->format('Y-m-d'):'') }}"
             class="w-full rounded-xl border-slate-300">
+
+        @error('end_date')
+            <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+        @enderror
 
     </div>
 
@@ -120,6 +137,10 @@
             rows="5"
             name="description"
             class="w-full rounded-xl border-slate-300">{{ old('description',$academicSession->description ?? '') }}</textarea>
+
+        @error('description')
+            <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+        @enderror
 
     </div>
 
