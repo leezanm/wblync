@@ -27,6 +27,20 @@ class PlacementRequest extends FormRequest
                 'exists:companies,id',
             ],
 
+            'company_contact_id' => [
+                'nullable',
+                Rule::exists('company_contacts', 'id')
+                    ->where(function ($query) {
+                        $query->where(
+                            'company_id',
+                            $this->input('company_id')
+                        )->where(
+                            'status',
+                            'Active'
+                        );
+                    }),
+            ],
+
             'academic_session_id' => [
                 'required',
                 'exists:academic_sessions,id',
@@ -42,19 +56,6 @@ class PlacementRequest extends FormRequest
                 'date',
                 'after_or_equal:start_date',
             ],
-
-            // 'status' => [
-            //     'required',
-            //     Rule::in([
-            //         'Draft',
-            //         'Applied',
-            //         'Approved',
-            //         'Rejected',
-            //         'Active',
-            //         'Completed',
-            //         'Cancelled',
-            //     ]),
-            // ],
 
             'remarks' => [
                 'nullable',

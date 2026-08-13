@@ -2,9 +2,12 @@
 
 namespace App\Models;
 
+use App\Models\Assessment;
+use App\Models\CompanyContact;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Placement extends Model
 {
@@ -19,6 +22,7 @@ class Placement extends Model
         'end_date',
         'status',
         'remarks',
+        'company_contact_id',
     ];
 
     protected function casts(): array
@@ -42,6 +46,11 @@ class Placement extends Model
     public function academicSession(): BelongsTo
     {
         return $this->belongsTo(AcademicSession::class);
+    }
+
+    public function companyContact(): BelongsTo
+    {
+        return $this->belongsTo(CompanyContact::class);
     }
 
     public function allowedStatusTransitions(): array
@@ -85,5 +94,9 @@ class Placement extends Model
             $this->allowedStatusTransitions()[$this->status] ?? [],
             true
         );
+    }
+     public function assessments(): HasMany
+    {
+        return $this->hasMany(Assessment::class);
     }
 }

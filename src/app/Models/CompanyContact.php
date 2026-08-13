@@ -2,46 +2,32 @@
 
 namespace App\Models;
 
-use App\Models\CompanyContact;
 use App\Models\Placement;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Company extends Model
+class CompanyContact extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'uuid',
-        'code',
+        'company_id',
         'name',
-        'registration_no',
-        'industry',
+        'position',
         'email',
         'phone',
-        'website',
-        'address',
-        'city',
-        'state',
-        'postcode',
         'status',
     ];
 
-    protected function casts(): array
+    public function company(): BelongsTo
     {
-        return [
-            'status' => 'boolean',
-        ];
+        return $this->belongsTo(Company::class);
     }
 
     public function placements(): HasMany
     {
         return $this->hasMany(Placement::class);
-    }
-
-    public function contacts(): HasMany
-    {
-        return $this->hasMany(CompanyContact::class);
     }
 }

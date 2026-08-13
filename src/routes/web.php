@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\AcademicSessionController;
+use App\Http\Controllers\AssessmentController;
 use App\Http\Controllers\ClassCourseController;
 use App\Http\Controllers\ClassRoomController;
+use App\Http\Controllers\CompanyContactController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DashboardController;
@@ -56,6 +58,9 @@ Route::middleware('auth')->group(function () {
     Route::resource('companies', CompanyController::class);
     Route::resource('placements',PlacementController::class);
     Route::patch('placements/{placement}/status',[PlacementController::class, 'updateStatus'])->name('placements.status');
+    Route::resource('company-contacts',CompanyContactController::class);
+    Route::resource('assessments',AssessmentController::class
+);
 });
 
 require __DIR__.'/auth.php';

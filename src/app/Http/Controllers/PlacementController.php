@@ -84,7 +84,6 @@ return view(
         // );
     }
 
-
     public function create(): View
     {
         $students = Student::query()
@@ -100,26 +99,54 @@ return view(
             ->orderByDesc('start_date')
             ->get();
 
-        $statuses = [
-            'Draft',
-            'Applied',
-            'Approved',
-            'Rejected',
-            'Active',
-            'Completed',
-            'Cancelled',
-        ];
+        $companyContacts = CompanyContact::query()
+            ->where('status', 'Active')
+            ->with('company')
+            ->orderBy('name')
+            ->get();
 
-        return view(
-            'placements.create',
-            compact(
-                'students',
-                'companies',
-                'academicSessions',
-                'statuses'
-            )
-        );
+        return view('placements.create', compact(
+            'students',
+            'companies',
+            'academicSessions',
+            'companyContacts',
+        ));
     }
+    // public function create(): View
+    // {
+    //     $students = Student::query()
+    //         ->orderBy('name')
+    //         ->get();
+
+    //     $companies = Company::query()
+    //         ->where('status', true)
+    //         ->orderBy('name')
+    //         ->get();
+
+    //     $academicSessions = AcademicSession::query()
+    //         ->orderByDesc('start_date')
+    //         ->get();
+
+    //     $statuses = [
+    //         'Draft',
+    //         'Applied',
+    //         'Approved',
+    //         'Rejected',
+    //         'Active',
+    //         'Completed',
+    //         'Cancelled',
+    //     ];
+
+    //     return view(
+    //         'placements.create',
+    //         compact(
+    //             'students',
+    //             'companies',
+    //             'academicSessions',
+    //             'statuses'
+    //         )
+    //     );
+    // }
 
 
     public function store(
@@ -128,7 +155,7 @@ return view(
         Placement::create([
             ...$request->validated(),
             'uuid' => (string) str()->uuid(),
-             'status' => 'Draft',
+
         ]);
 
         return redirect()
@@ -140,12 +167,12 @@ return view(
     }
 
 
-    public function show(
-        Placement $placement
-    ): View {
+    public function show(Placement $placement): View
+    {
         $placement->load([
             'student',
             'company',
+            'companyContact',
             'academicSession',
         ]);
 
@@ -156,9 +183,8 @@ return view(
     }
 
 
-    public function edit(
-        Placement $placement
-    ): View {
+    public function edit(Placement $placement): View
+    {
         $students = Student::query()
             ->orderBy('name')
             ->get();
@@ -172,27 +198,57 @@ return view(
             ->orderByDesc('start_date')
             ->get();
 
-        $statuses = [
-            'Draft',
-            'Applied',
-            'Approved',
-            'Rejected',
-            'Active',
-            'Completed',
-            'Cancelled',
-        ];
+        $companyContacts = CompanyContact::query()
+            ->where('status', 'Active')
+            ->with('company')
+            ->orderBy('name')
+            ->get();
 
-        return view(
-            'placements.edit',
-            compact(
-                'placement',
-                'students',
-                'companies',
-                'academicSessions',
-                'statuses'
-            )
-        );
+        return view('placements.edit', compact(
+            'placement',
+            'students',
+            'companies',
+            'academicSessions',
+            'companyContacts',
+        ));
     }
+    // public function edit(
+    //     Placement $placement
+    // ): View {
+    //     $students = Student::query()
+    //         ->orderBy('name')
+    //         ->get();
+
+    //     $companies = Company::query()
+    //         ->where('status', true)
+    //         ->orderBy('name')
+    //         ->get();
+
+    //     $academicSessions = AcademicSession::query()
+    //         ->orderByDesc('start_date')
+    //         ->get();
+
+    //     $statuses = [
+    //         'Draft',
+    //         'Applied',
+    //         'Approved',
+    //         'Rejected',
+    //         'Active',
+    //         'Completed',
+    //         'Cancelled',
+    //     ];
+
+    //     return view(
+    //         'placements.edit',
+    //         compact(
+    //             'placement',
+    //             'students',
+    //             'companies',
+    //             'academicSessions',
+    //             'statuses'
+    //         )
+    //     );
+    // }
 
 
     public function update(

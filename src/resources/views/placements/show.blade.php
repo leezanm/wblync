@@ -284,6 +284,102 @@
 
     </div>
 
+    @if ($placement->companyContact)
+
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 mt-6">
+
+            <div class="flex items-center gap-3 mb-6">
+
+                <div class="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center">
+
+                    <svg
+                        class="w-5 h-5 text-amber-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="1.8"
+                            d="M15.75 6.75a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"
+                        />
+
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="1.8"
+                            d="M4.5 20.25a7.5 7.5 0 0115 0"
+                        />
+                    </svg>
+
+                </div>
+
+                <div>
+
+                    <h3 class="text-lg font-bold text-slate-800">
+                        Company Contact
+                    </h3>
+
+                    <p class="text-sm text-slate-500">
+                        Contact person responsible for this placement.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                <div>
+                    <p class="text-xs font-medium uppercase tracking-wide text-slate-400">
+                        Name
+                    </p>
+
+                    <p class="mt-2 font-bold text-slate-800">
+                        {{ $placement->companyContact->name }}
+                    </p>
+                </div>
+
+
+                <div>
+                    <p class="text-xs font-medium uppercase tracking-wide text-slate-400">
+                        Position
+                    </p>
+
+                    <p class="mt-2 font-semibold text-slate-800">
+                        {{ $placement->companyContact->position ?: '-' }}
+                    </p>
+                </div>
+
+
+                <div>
+                    <p class="text-xs font-medium uppercase tracking-wide text-slate-400">
+                        Email
+                    </p>
+
+                    <p class="mt-2 font-semibold text-slate-800 break-all">
+                        {{ $placement->companyContact->email ?: '-' }}
+                    </p>
+                </div>
+
+
+                <div>
+                    <p class="text-xs font-medium uppercase tracking-wide text-slate-400">
+                        Phone
+                    </p>
+
+                    <p class="mt-2 font-semibold text-slate-800">
+                        {{ $placement->companyContact->phone ?: '-' }}
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+    @endif
 
     {{-- Academic Information --}}
     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 mt-6">
