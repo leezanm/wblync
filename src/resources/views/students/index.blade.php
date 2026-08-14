@@ -248,13 +248,13 @@
                             <td class="px-6 py-4">
 
                                 <div class="font-medium text-slate-700">
-                                    {{ $student->classRoom->code }}
+                                    {{ $student->classRoom?->code ?? '-' }}
                                 </div>
 
                                 <div class="text-xs text-slate-500 mt-1">
-                                    {{ $student->classRoom->academicSession->name }}
+                                    {{ $student->classRoom?->academicSession?->name ?? '-' }}
                                     ·
-                                    {{ $student->classRoom->semester->code }}
+                                    {{ $student->classRoom?->semester?->code ?? '-' }}
                                 </div>
 
                             </td>
@@ -263,11 +263,11 @@
                             <td class="px-6 py-4">
 
                                 <div class="font-medium text-slate-700">
-                                    {{ $student->classRoom->programme->code }}
+                                    {{ $student->classRoom?->programme?->code ?? '-' }}
                                 </div>
 
                                 <div class="text-xs text-slate-500 mt-1">
-                                    {{ $student->classRoom->programme->name }}
+                                    {{ $student->classRoom?->programme?->name ?? '-' }}
                                 </div>
 
                             </td>
@@ -491,21 +491,21 @@
                     <div class="flex justify-between gap-4">
                         <span class="text-slate-500">Class</span>
                         <span class="font-medium text-slate-700 text-right">
-                            {{ $student->classRoom->code }}
+                            {{ $student->classRoom?->code ?? '-' }}
                         </span>
                     </div>
 
                     <div class="flex justify-between gap-4">
                         <span class="text-slate-500">Semester</span>
                         <span class="font-medium text-slate-700 text-right">
-                            {{ $student->classRoom->semester->code }}
+                            {{ $student->classRoom?->semester?->code ?? '-' }}
                         </span>
                     </div>
 
                     <div class="flex justify-between gap-4">
                         <span class="text-slate-500">Programme</span>
                         <span class="font-medium text-slate-700 text-right">
-                            {{ $student->classRoom->programme->code }}
+                            {{ $student->classRoom?->programme?->code ?? '-' }}
                         </span>
                     </div>
 

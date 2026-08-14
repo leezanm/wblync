@@ -312,7 +312,7 @@
                             <td class="px-6 py-4">
 
                                 <span class="text-sm font-medium text-slate-700">
-                                    {{ $class->academicSession->name }}
+                                    {{ $class->academicSession?->name ?? '-' }}
                                 </span>
 
                             </td>
@@ -320,11 +320,11 @@
                             <td class="px-6 py-4">
 
                                 <span class="text-sm font-medium text-slate-700">
-                                    {{ $class->semester->code }}
+                                    {{ $class->semester?->code ?? '-' }}
                                 </span>
 
                                 <div class="text-xs text-slate-500 mt-1">
-                                    {{ $class->semester->name }}
+                                    {{ $class->semester?->name ?? '-' }}
                                 </div>
 
                             </td>
@@ -332,11 +332,11 @@
                             <td class="px-6 py-4">
 
                                 <span class="text-sm font-medium text-slate-700">
-                                    {{ $class->programme->code }}
+                                    {{ $class->programme?->code ?? '-' }}
                                 </span>
 
                                 <div class="text-xs text-slate-500 mt-1">
-                                    {{ $class->programme->name }}
+                                    {{ $class->programme?->name ?? '-' }}
                                 </div>
 
                             </td>
@@ -550,7 +550,7 @@
                         </span>
 
                         <span class="font-medium text-slate-700 text-right">
-                            {{ $class->academicSession->name }}
+                            {{ $class->academicSession?->name ?? '-' }}
                         </span>
 
                     </div>
@@ -563,7 +563,7 @@
                         </span>
 
                         <span class="font-medium text-slate-700 text-right">
-                            {{ $class->semester->code }}
+                            {{ $class->semester?->code ?? '-' }}
                         </span>
 
                     </div>
@@ -576,7 +576,7 @@
                         </span>
 
                         <span class="font-medium text-slate-700 text-right">
-                            {{ $class->programme->code }}
+                            {{ $class->programme?->code ?? '-' }}
                         </span>
 
                     </div>

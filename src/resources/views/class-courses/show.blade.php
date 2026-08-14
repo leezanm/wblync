@@ -45,11 +45,11 @@
                         </p>
 
                         <p class="text-3xl font-bold text-blue-600 mt-1">
-                            {{ $classCourse->course->code }}
+                            {{ $classCourse->course?->code ?? '-' }}
                         </p>
 
                         <p class="text-sm text-slate-600 mt-1">
-                            {{ $classCourse->course->name }}
+                            {{ $classCourse->course?->name ?? '-' }}
                         </p>
 
                     </div>
@@ -89,9 +89,9 @@
                         </dt>
 
                         <dd class="mt-1 font-semibold text-slate-800">
-                            {{ $classCourse->classRoom->code }}
+                            {{ $classCourse->classRoom?->code ?? '-' }}
                             -
-                            {{ $classCourse->classRoom->name }}
+                            {{ $classCourse->classRoom?->name ?? '-' }}
                         </dd>
 
                     </div>
@@ -104,9 +104,9 @@
                         </dt>
 
                         <dd class="mt-1 font-semibold text-slate-800">
-                            {{ $classCourse->classRoom->programme->code }}
+                            {{ $classCourse->classRoom?->programme?->code ?? '-' }}
                             -
-                            {{ $classCourse->classRoom->programme->name }}
+                            {{ $classCourse->classRoom?->programme?->name ?? '-' }}
                         </dd>
 
                     </div>
@@ -119,7 +119,7 @@
                         </dt>
 
                         <dd class="mt-1 font-semibold text-slate-800">
-                            {{ $classCourse->classRoom->academicSession->name }}
+                            {{ $classCourse->classRoom?->academicSession?->name ?? '-' }}
                         </dd>
 
                     </div>
@@ -132,9 +132,9 @@
                         </dt>
 
                         <dd class="mt-1 font-semibold text-slate-800">
-                            {{ $classCourse->classRoom->semester->code }}
+                            {{ $classCourse->classRoom?->semester?->code ?? '-' }}
                             -
-                            {{ $classCourse->classRoom->semester->name }}
+                            {{ $classCourse->classRoom?->semester?->name ?? '-' }}
                         </dd>
 
                     </div>
@@ -147,7 +147,7 @@
                         </dt>
 
                         <dd class="mt-1 font-semibold text-slate-800">
-                            {{ $classCourse->course->credit_hours }}
+                            {{ $classCourse->course?->credit_hours ?? '-' }}
                         </dd>
 
                     </div>
