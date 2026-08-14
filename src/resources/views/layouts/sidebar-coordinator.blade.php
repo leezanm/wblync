@@ -585,30 +585,55 @@
 
 
             {{-- Industry Supervisor --}}
-            <a
-                href="#"
-                class="
-                    flex
-                    items-center
-                    gap-3
-                    px-4
-                    py-3
-                    rounded-xl
-                    text-slate-300
-                    hover:bg-slate-800
-                    hover:text-white
-                "
-            >
+          <a
+    href="{{ route('industry-supervisors.index') }}"
+    @click="sidebarOpen = false"
+    class="
+        flex items-center gap-3 px-4 py-3 rounded-xl transition
+        {{ request()->routeIs('industry-supervisors.*')
+            ? 'bg-blue-600 text-white'
+            : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+        }}
+    "
+>
 
-                <span class="w-5">
-                    •
-                </span>
+    <svg
+        class="w-5 h-5"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+    >
 
-                <span>
-                    Industry Supervisor
-                </span>
+        <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="1.8"
+            d="M16 19v-1.5A3.5 3.5 0 0012.5 14h-5A3.5 3.5 0 004 17.5V19M10 10a3 3 0 100-6 3 3 0 000 6z"
+        />
 
-            </a>
+        <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="1.8"
+            d="M16 11a3 3 0 100-6"
+        />
+
+        <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="1.8"
+            d="M17 14.5a3.5 3.5 0 013 3.5V19"
+        />
+
+    </svg>
+
+    <span>
+        Industry Supervisors
+    </span>
+
+</a>
+
+
 
 
             {{-- Student Placement --}}

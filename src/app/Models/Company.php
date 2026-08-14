@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use App\Models\IndustrySupervisor;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Company extends Model
 {
@@ -41,5 +43,11 @@ class Company extends Model
     public function contacts(): HasMany
     {
         return $this->hasMany(CompanyContact::class);
+    }
+
+    public function industrySupervisors(): HasMany
+    {
+               return $this->hasMany(IndustrySupervisor::class);
+
     }
 }

@@ -41,6 +41,20 @@ class PlacementRequest extends FormRequest
                     }),
             ],
 
+            'industry_supervisor_id' => [
+                'nullable',
+                Rule::exists('industry_supervisors', 'id')
+                    ->where(function ($query) {
+                        $query->where(
+                            'status',
+                            'Active'
+                        )->where(
+                            'company_id',
+                            $this->input('company_id')
+                        );
+                    }),
+            ],
+
             'academic_session_id' => [
                 'required',
                 'exists:academic_sessions,id',

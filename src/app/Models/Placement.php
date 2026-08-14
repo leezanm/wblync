@@ -21,6 +21,7 @@ class Placement extends Model
         'status',
         'remarks',
         'company_contact_id',
+        'industry_supervisor_id',
     ];
 
     protected function casts(): array
@@ -49,6 +50,11 @@ class Placement extends Model
     public function companyContact(): BelongsTo
     {
         return $this->belongsTo(CompanyContact::class);
+    }
+
+    public function industrySupervisor(): BelongsTo
+    {
+        return $this->belongsTo(IndustrySupervisor::class);
     }
 
     public function allowedStatusTransitions(): array
@@ -103,4 +109,6 @@ class Placement extends Model
     {
         return $this->hasMany(DailyLogbook::class);
     }
+
+   
 }

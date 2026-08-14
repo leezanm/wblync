@@ -11,6 +11,7 @@ use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DailyLogbookController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EnrollmentController;
+use App\Http\Controllers\IndustrySupervisorController;
 use App\Http\Controllers\PlacementController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProgrammeController;
@@ -65,7 +66,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('placements/{placement}/status', [PlacementController::class, 'updateStatus'])->name('placements.status');
     Route::resource('company-contacts', CompanyContactController::class);
     Route::resource('assessments', AssessmentController::class);
-
+Route::resource('industry-supervisors', IndustrySupervisorController::class);
     // logbooks
     Route::resource('daily-logbooks', DailyLogbookController::class);
     Route::post(

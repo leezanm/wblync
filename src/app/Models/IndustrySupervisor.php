@@ -2,18 +2,17 @@
 
 namespace App\Models;
 
-use App\Models\IndustrySupervisor;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Str;
 
-class CompanyContact extends Model
+class IndustrySupervisor extends Model
 {
     use HasFactory;
 
     protected $fillable = [
+        'uuid',
         'company_id',
         'name',
         'position',
@@ -22,15 +21,18 @@ class CompanyContact extends Model
         'status',
     ];
 
+    protected static function booted(): void
+    {
+        static::creating(function (IndustrySupervisor $supervisor) {
+            $supervisor->uuid ??= (string) Str::uuid();
+        });
+    }
+
     public function company(): BelongsTo
     {
-        return $this->belongsTo(Company::class);
+        return $this->belongsTo(
+            Company::class
+        );
     }
 
-    public function placements(): HasMany
-    {
-        return $this->hasMany(Placement::class);
-    }
-
-    
 }

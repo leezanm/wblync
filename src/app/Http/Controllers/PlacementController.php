@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\PlacementRequest;
 use App\Models\AcademicSession;
 use App\Models\Company;
+use App\Models\CompanyContact;
+use App\Models\IndustrySupervisor;
 use App\Models\Placement;
 use App\Models\Student;
 use Illuminate\Http\RedirectResponse;
@@ -115,11 +117,18 @@ class PlacementController extends Controller
             ->orderBy('name')
             ->get();
 
+        $industrySupervisors = IndustrySupervisor::query()
+            ->with('company')
+            ->where('status', 'Active')
+            ->orderBy('name')
+            ->get();
+
         return view('placements.create', compact(
             'students',
             'companies',
             'academicSessions',
             'companyContacts',
+            'industrySupervisors',
         ));
     }
     // public function create(): View
@@ -181,6 +190,7 @@ class PlacementController extends Controller
             'student',
             'company',
             'companyContact',
+            'industrySupervisor.company',
             'academicSession',
         ]);
 
@@ -211,12 +221,19 @@ class PlacementController extends Controller
             ->orderBy('name')
             ->get();
 
+        $industrySupervisors = IndustrySupervisor::query()
+            ->with('company')
+            ->where('status', 'Active')
+            ->orderBy('name')
+            ->get();
+
         return view('placements.edit', compact(
             'placement',
             'students',
             'companies',
             'academicSessions',
             'companyContacts',
+            'industrySupervisors',
         ));
     }
     // public function edit(

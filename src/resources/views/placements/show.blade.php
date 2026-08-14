@@ -381,6 +381,86 @@
 
     @endif
 
+    @if ($placement->industrySupervisor)
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 mt-6">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 rounded-xl bg-cyan-50 flex items-center justify-center">
+                    <svg
+                        class="w-5 h-5 text-cyan-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="1.8"
+                            d="M15.75 6.75a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"
+                        />
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="1.8"
+                            d="M3.75 20.25a8.25 8.25 0 0116.5 0"
+                        />
+                    </svg>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-bold text-slate-800">
+                        Industry Supervisor
+                    </h3>
+
+                    <p class="text-sm text-slate-500">
+                        Supervisor assigned for this placement.
+                    </p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div>
+                    <p class="text-xs font-medium uppercase tracking-wide text-slate-400">
+                        Name
+                    </p>
+
+                    <p class="mt-2 font-bold text-slate-800">
+                        {{ $placement->industrySupervisor->name }}
+                    </p>
+                </div>
+
+                <div>
+                    <p class="text-xs font-medium uppercase tracking-wide text-slate-400">
+                        Position
+                    </p>
+
+                    <p class="mt-2 font-semibold text-slate-800">
+                        {{ $placement->industrySupervisor->position ?: '-' }}
+                    </p>
+                </div>
+
+                <div>
+                    <p class="text-xs font-medium uppercase tracking-wide text-slate-400">
+                        Email
+                    </p>
+
+                    <p class="mt-2 font-semibold text-slate-800 break-all">
+                        {{ $placement->industrySupervisor->email ?: '-' }}
+                    </p>
+                </div>
+
+                <div>
+                    <p class="text-xs font-medium uppercase tracking-wide text-slate-400">
+                        Phone
+                    </p>
+
+                    <p class="mt-2 font-semibold text-slate-800">
+                        {{ $placement->industrySupervisor->phone ?: '-' }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    @endif
+
     {{-- Academic Information --}}
     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 mt-6">
 

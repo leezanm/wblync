@@ -145,6 +145,53 @@
         </div>
 
 
+        
+
+        {{-- Industry Supervisor --}}
+        <div>
+            <label
+                for="industry_supervisor_id"
+                class="block text-sm font-medium text-slate-700 mb-2"
+            >
+                Industry Supervisor
+            </label>
+
+            <select
+                id="industry_supervisor_id"
+                name="industry_supervisor_id"
+                class="w-full rounded-xl border-slate-300 bg-white px-4 py-3 focus:border-blue-500 focus:ring-blue-500"
+            >
+                <option value="">
+                    Select Industry Supervisor
+                </option>
+
+                @foreach ($industrySupervisors as $supervisor)
+                    <option
+                        value="{{ $supervisor->id }}"
+                        data-company-id="{{ $supervisor->company_id }}"
+                        @selected(
+                            (string) old(
+                                'industry_supervisor_id',
+                                $placement->industry_supervisor_id ?? ''
+                            ) === (string) $supervisor->id
+                        )
+                    >
+                        {{ $supervisor->name }}
+                        -
+                        {{ $supervisor->company?->code ?? '-' }}
+                        {{ $supervisor->company?->name ?? '-' }}
+                    </option>
+                @endforeach
+            </select>
+
+            @error('industry_supervisor_id')
+                <p class="mt-2 text-sm text-red-600">
+                    {{ $message }}
+                </p>
+            @enderror
+        </div>
+
+
         {{-- Status --}}
         {{-- <div>
             <label
@@ -209,6 +256,46 @@
                 </p>
             @enderror
         </div>
+
+        <script>
+            (function () {
+                const companySelect = document.getElementById('company_id');
+                const supervisorSelect = document.getElementById('industry_supervisor_id');
+
+                if (!companySelect || !supervisorSelect) {
+                    return;
+                }
+
+                const supervisorOptions = Array.from(supervisorSelect.options).slice(1);
+
+                const filterByCompany = (selectEl, options, companyId) => {
+                    const currentValue = selectEl.value;
+                    let hasCurrentValue = false;
+
+                    options.forEach((option) => {
+                        const match = !companyId || option.dataset.companyId === companyId;
+                        option.hidden = !match;
+                        option.disabled = !match;
+
+                        if (option.value === currentValue && match) {
+                            hasCurrentValue = true;
+                        }
+                    });
+
+                    if (currentValue && !hasCurrentValue) {
+                        selectEl.value = '';
+                    }
+                };
+
+                const applyFilters = () => {
+                    const companyId = companySelect.value;
+                    filterByCompany(supervisorSelect, supervisorOptions, companyId);
+                };
+
+                companySelect.addEventListener('change', applyFilters);
+                applyFilters();
+            })();
+        </script>
 
 
         {{-- End Date --}}

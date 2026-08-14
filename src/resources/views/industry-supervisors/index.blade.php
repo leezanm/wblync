@@ -7,14 +7,34 @@
             <div>
 
                 <h2 class="text-2xl font-bold text-slate-800">
-                    Placements
+                    Industry Supervisors
                 </h2>
 
             </div>
 
 
-            <a
-                href="{{ route('placements.create') }}"
+
+
+        </div>
+
+    </x-slot>
+
+
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+
+        <div>
+
+            <h2 class="text-2xl font-bold text-slate-800">
+                List of Industry Supervisors
+            </h2>
+
+            <p class="mt-1 text-sm text-slate-500">
+                Manage industry supervisors and company assignments.
+            </p>
+
+        </div>
+          <a
+                href="{{ route('industry-supervisors.create') }}"
                 class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition shadow-sm"
             >
 
@@ -32,63 +52,39 @@
                     />
                 </svg>
 
-                Add Placement
+                Add Supervisor
 
             </a>
-
-        </div>
-
-    </x-slot>
-
-
-    {{-- Page Section --}}
-    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-
-        <div>
-
-            <h2 class="text-2xl font-bold text-slate-800">
-                List of Placements
-            </h2>
-
-            <p class="mt-1 text-sm text-slate-500">
-                Manage student WBL industry placements.
-            </p>
-
-        </div>
-
-
-        <a
-            href="{{ route('placements.create') }}"
-            class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition shadow-sm"
-        >
-
-            <svg
-                class="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-            >
-                <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M12 5v14M5 12h14"
-                />
-            </svg>
-
-            Add Placement
-
-        </a>
 
     </div>
 
 
-    {{-- Success Message --}}
+    {{-- Success --}}
     @if (session('success'))
 
         <div class="mb-6 mt-6 rounded-xl border border-green-200 bg-green-50 px-4 py-4 text-sm font-medium text-green-800">
-
             {{ session('success') }}
+        </div>
+
+    @endif
+
+
+    {{-- Error --}}
+    @if ($errors->any())
+
+        <div class="mb-6 mt-6 rounded-xl border border-red-200 bg-red-50 px-4 py-4 text-sm text-red-700">
+
+            <ul class="list-disc list-inside space-y-1">
+
+                @foreach ($errors->all() as $error)
+
+                    <li>
+                        {{ $error }}
+                    </li>
+
+                @endforeach
+
+            </ul>
 
         </div>
 
@@ -100,7 +96,7 @@
 
         <form
             method="GET"
-            action="{{ route('placements.index') }}"
+            action="{{ route('industry-supervisors.index') }}"
             class="grid grid-cols-1 md:grid-cols-12 gap-4"
         >
 
@@ -111,15 +107,46 @@
                     type="search"
                     name="search"
                     value="{{ request('search') }}"
-                    placeholder="Search student or company..."
+                    placeholder="Search supervisor, email, phone or company..."
                     class="w-full px-4 py-3 rounded-xl border-slate-200 bg-slate-50 focus:border-blue-500 focus:ring-blue-500"
                 >
 
             </div>
 
 
-            {{-- Status --}}
+            {{-- Company --}}
             <div class="md:col-span-3">
+
+                <select
+                    name="company_id"
+                    class="w-full py-3 rounded-xl border-slate-200 bg-slate-50 focus:border-blue-500 focus:ring-blue-500"
+                >
+
+                    <option value="">
+                        All Companies
+                    </option>
+
+                    @foreach ($companies as $company)
+
+                        <option
+                            value="{{ $company->id }}"
+                            @selected(
+                                (string) request('company_id') ===
+                                (string) $company->id
+                            )
+                        >
+                            {{ $company->code }} - {{ $company->name }}
+                        </option>
+
+                    @endforeach
+
+                </select>
+
+            </div>
+
+
+            {{-- Status --}}
+            <div class="md:col-span-2">
 
                 <select
                     name="status"
@@ -130,99 +157,54 @@
                         All Status
                     </option>
 
-                    @foreach ([
-                        'Draft',
-                        'Applied',
-                        'Approved',
-                        'Rejected',
-                        'Active',
-                        'Completed',
-                        'Cancelled',
-                    ] as $status)
-
-                        <option
-                            value="{{ $status }}"
-                            @selected(request('status') === $status)
-                        >
-                            {{ $status }}
-                        </option>
-
-                    @endforeach
-
-                </select>
-
-            </div>
-
-
-            {{-- Academic Session --}}
-            <div class="md:col-span-3">
-
-                <select
-                    name="academic_session_id"
-                    class="w-full py-3 rounded-xl border-slate-200 bg-slate-50 focus:border-blue-500 focus:ring-blue-500"
-                >
-
-                    <option value="">
-                        All Academic Sessions
+                    <option
+                        value="Active"
+                        @selected(request('status') === 'Active')
+                    >
+                        Active
                     </option>
 
-                    {{-- @foreach (
-                        \App\Models\AcademicSession::query()
-                            ->orderByDesc('start_date')
-                            ->get()
-                        as $session
-                    ) --}}
-                        @foreach ($academicSessions as $session)
-                        <option
-                            value="{{ $session->id }}"
-                            @selected(
-                                (string) request('academic_session_id')
-                                === (string) $session->id
-                            )
-                        >
-                            {{ $session->name }}
-                        </option>
-
-                    @endforeach
+                    <option
+                        value="Inactive"
+                        @selected(request('status') === 'Inactive')
+                    >
+                        Inactive
+                    </option>
 
                 </select>
 
             </div>
 
 
-            {{-- Filter Button --}}
-            <div class="md:col-span-1 flex gap-2">
+            {{-- Buttons --}}
+            <div class="md:col-span-2 flex gap-2">
 
                 <button
                     type="submit"
-                    class="w-full px-5 py-3 rounded-xl bg-slate-800 text-white font-medium hover:bg-slate-900"
+                    class="flex-1 px-5 py-3 rounded-xl bg-slate-800 text-white font-medium hover:bg-slate-900 transition"
                 >
                     Filter
                 </button>
 
+
+                @if (request()->hasAny([
+                    'search',
+                    'company_id',
+                    'status',
+                ]))
+
+                    <a
+                        href="{{ route('industry-supervisors.index') }}"
+                        class="px-4 py-3 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50"
+                    >
+                        Clear
+                    </a>
+
+                @endif
+
             </div>
 
         </form>
-
-
-        @if(request()->hasAny([
-            'search',
-            'status',
-            'academic_session_id'
-        ]))
-
-            <div class="mt-4">
-
-                <a
-                    href="{{ route('placements.index') }}"
-                    class="text-sm font-medium text-slate-500 hover:text-slate-800"
-                >
-                    Clear filters
-                </a>
-
-            </div>
-
-        @endif
 
     </div>
 
@@ -243,20 +225,14 @@
                         </th>
 
                         <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
-                            Student
+                            Supervisor
                         </th>
 
                         <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
                             Company
                         </th>
 
-                        <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
-                            Academic Session
-                        </th>
 
-                        <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
-                            Period
-                        </th>
 
                         <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
                             Status
@@ -273,32 +249,32 @@
 
                 <tbody class="divide-y divide-slate-100">
 
-                    @forelse ($placements as $placement)
+                    @forelse ($supervisors as $supervisor)
 
                         <tr class="hover:bg-slate-50 transition">
 
                             {{-- # --}}
                             <td class="px-6 py-4 text-sm text-slate-500">
 
-                                {{ $loop->iteration + ($placements->currentPage() - 1) * $placements->perPage() }}
+                                {{ $loop->iteration + ($supervisors->currentPage() - 1) * $supervisors->perPage() }}
 
                             </td>
 
 
-                            {{-- Student --}}
+                            {{-- Supervisor --}}
                             <td class="px-6 py-4">
 
                                 <div class="font-bold text-blue-600">
-
-                                    {{ $placement->student->student_no }}
-
+                                    {{ $supervisor->name ?? '-' }}
                                 </div>
 
-                                <div class="text-sm text-slate-700 mt-1">
+                                @if ($supervisor->position)
 
-                                    {{ $placement->student->name }}
+                                    <div class="text-sm text-slate-500 mt-1">
+                                        {{ $supervisor->position }}
+                                    </div>
 
-                                </div>
+                                @endif
 
                             </td>
 
@@ -306,43 +282,46 @@
                             {{-- Company --}}
                             <td class="px-6 py-4">
 
-                                <div class="font-semibold text-slate-800">
 
-                                    {{ $placement->company->name }}
+                                    <div class="font-semibold text-slate-700">
+                                        {{ $supervisor->company?->name }}
+                                    </div>
 
-                                </div>
-
-                                <div class="text-xs text-slate-400 mt-1">
-
-                                    {{ $placement->company->code }}
-
-                                </div>
-
-                            </td>
+                                    <div class="text-xs text-blue-600 mt-1">
+                                        {{ $supervisor->company?->code }}
+                                    </div>
 
 
-                            {{-- Academic Session --}}
-                            <td class="px-6 py-4 text-sm text-slate-600">
-
-                                {{ $placement->academicSession->name }}
 
                             </td>
 
 
-                            {{-- Period --}}
+                            {{-- Contact --}}
                             <td class="px-6 py-4">
 
-                                <div class="text-sm font-medium text-slate-700">
+                                @if ($supervisor->email)
 
-                                    {{ $placement->start_date->format('d/m/Y') }}
+                                    <div class="text-sm text-slate-700">
+                                        {{ $supervisor->email }}
+                                    </div>
 
-                                </div>
+                                @endif
 
-                                <div class="text-xs text-slate-400 mt-1">
+                                @if ($supervisor->phone)
 
-                                    to {{ $placement->end_date->format('d/m/Y') }}
+                                    <div class="text-xs text-slate-500 mt-1">
+                                        {{ $supervisor->phone }}
+                                    </div>
 
-                                </div>
+                                @endif
+
+                                @if (!$supervisor->email && !$supervisor->phone)
+
+                                    <span class="text-sm text-slate-400">
+                                        -
+                                    </span>
+
+                                @endif
 
                             </td>
 
@@ -350,43 +329,25 @@
                             {{-- Status --}}
                             <td class="px-6 py-4">
 
-                                @php
+                                @if ($supervisor->status === 'Active')
 
-                                    $statusClasses = [
-                                        'Draft' =>
-                                            'bg-slate-100 text-slate-600',
+                                    <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-100 text-green-700 text-xs font-semibold">
 
-                                        'Applied' =>
-                                            'bg-blue-100 text-blue-700',
+                                        <span class="w-2 h-2 rounded-full bg-green-500"></span>
 
-                                        'Approved' =>
-                                            'bg-indigo-100 text-indigo-700',
+                                        Active
 
-                                        'Rejected' =>
-                                            'bg-red-100 text-red-700',
+                                    </span>
 
-                                        'Active' =>
-                                            'bg-green-100 text-green-700',
+                                @else
 
-                                        'Completed' =>
-                                            'bg-purple-100 text-purple-700',
+                                    <span class="inline-flex items-center px-3 py-1.5 rounded-full bg-slate-100 text-slate-600 text-xs font-semibold">
 
-                                        'Cancelled' =>
-                                            'bg-orange-100 text-orange-700',
-                                    ];
+                                        Inactive
 
-                                @endphp
+                                    </span>
 
-
-                                <span
-                                    class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold {{ $statusClasses[$placement->status] ?? 'bg-slate-100 text-slate-600' }}"
-                                >
-
-                                    <span class="w-2 h-2 rounded-full bg-current opacity-70"></span>
-
-                                    {{ $placement->status }}
-
-                                </span>
+                                @endif
 
                             </td>
 
@@ -398,9 +359,9 @@
 
                                     {{-- View --}}
                                     <a
-                                        href="{{ route('placements.show', $placement) }}"
+                                        href="{{ route('industry-supervisors.show', $supervisor) }}"
                                         title="View"
-                                        aria-label="View placement"
+                                        aria-label="View supervisor"
                                         class="inline-flex items-center justify-center w-9 h-9 rounded-lg text-blue-600 hover:bg-blue-50"
                                     >
 
@@ -410,6 +371,7 @@
                                             stroke="currentColor"
                                             viewBox="0 0 24 24"
                                         >
+
                                             <path
                                                 stroke-linecap="round"
                                                 stroke-linejoin="round"
@@ -431,9 +393,9 @@
 
                                     {{-- Edit --}}
                                     <a
-                                        href="{{ route('placements.edit', $placement) }}"
+                                        href="{{ route('industry-supervisors.edit', $supervisor) }}"
                                         title="Edit"
-                                        aria-label="Edit placement"
+                                        aria-label="Edit supervisor"
                                         class="inline-flex items-center justify-center w-9 h-9 rounded-lg text-amber-600 hover:bg-amber-50"
                                     >
 
@@ -443,6 +405,7 @@
                                             stroke="currentColor"
                                             viewBox="0 0 24 24"
                                         >
+
                                             <path
                                                 stroke-linecap="round"
                                                 stroke-linejoin="round"
@@ -454,7 +417,7 @@
                                                 stroke-linecap="round"
                                                 stroke-linejoin="round"
                                                 stroke-width="1.8"
-                                                d="M16.5 3.5a2.12 2.12 0 013 3L8 18l-4 1 1-4L16.5 3.5z"
+                                                d="M16.5 3.5a2.12 2.12 0 013 3L8 18l-4 1-1-4L16.5 3.5z"
                                             />
 
                                         </svg>
@@ -465,8 +428,8 @@
                                     {{-- Delete --}}
                                     <form
                                         method="POST"
-                                        action="{{ route('placements.destroy', $placement) }}"
-                                        onsubmit="return confirm('Delete this placement?');"
+                                        action="{{ route('industry-supervisors.destroy', $supervisor) }}"
+                                        onsubmit="return confirm('Delete this industry supervisor?');"
                                     >
 
                                         @csrf
@@ -475,7 +438,7 @@
                                         <button
                                             type="submit"
                                             title="Delete"
-                                            aria-label="Delete placement"
+                                            aria-label="Delete supervisor"
                                             class="inline-flex items-center justify-center w-9 h-9 rounded-lg text-red-600 hover:bg-red-50"
                                         >
 
@@ -485,11 +448,12 @@
                                                 stroke="currentColor"
                                                 viewBox="0 0 24 24"
                                             >
+
                                                 <path
                                                     stroke-linecap="round"
                                                     stroke-linejoin="round"
                                                     stroke-width="1.8"
-                                                    d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"
+                                                    d="M4 7h16M10 11v6M14 11v6M6 7v13h12V7M9 7V4h6v3"
                                                 />
 
                                             </svg>
@@ -509,16 +473,16 @@
                         <tr>
 
                             <td
-                                colspan="7"
+                                colspan="6"
                                 class="px-6 py-16 text-center"
                             >
 
                                 <h3 class="font-semibold text-slate-700">
-                                    No placements found
+                                    No industry supervisors found
                                 </h3>
 
                                 <p class="text-sm text-slate-500 mt-1">
-                                    Add a placement to get started.
+                                    Add your first industry supervisor to get started.
                                 </p>
 
                             </td>
@@ -539,68 +503,48 @@
     {{-- Mobile --}}
     <div class="md:hidden space-y-4">
 
-        @forelse ($placements as $placement)
+        @forelse ($supervisors as $supervisor)
 
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
 
-                {{-- Header --}}
                 <div class="flex items-start justify-between gap-4">
 
                     <div class="min-w-0">
 
-                        <div class="text-sm font-bold text-blue-600">
 
-                            {{ $placement->student->student_no }}
-
-                        </div>
 
                         <h3 class="font-semibold text-slate-800 mt-1">
-
-                            {{ $placement->student->name }}
-
+                            {{ $supervisor->name ?? '-' }}
                         </h3>
+
+                        @if ($supervisor->position)
+
+                            <p class="text-sm text-slate-500 mt-1">
+                                {{ $supervisor->position }}
+                            </p>
+
+                        @endif
 
                     </div>
 
 
-                    @php
+                    @if ($supervisor->status === 'Active')
 
-                        $statusClasses = [
-                            'Draft' =>
-                                'bg-slate-100 text-slate-600',
+                        <span class="shrink-0 px-2.5 py-1 rounded-full bg-green-100 text-green-700 text-xs font-semibold">
+                            Active
+                        </span>
 
-                            'Applied' =>
-                                'bg-blue-100 text-blue-700',
+                    @else
 
-                            'Approved' =>
-                                'bg-indigo-100 text-indigo-700',
+                        <span class="shrink-0 px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-semibold">
+                            Inactive
+                        </span>
 
-                            'Rejected' =>
-                                'bg-red-100 text-red-700',
-
-                            'Active' =>
-                                'bg-green-100 text-green-700',
-
-                            'Completed' =>
-                                'bg-purple-100 text-purple-700',
-
-                            'Cancelled' =>
-                                'bg-orange-100 text-orange-700',
-                        ];
-
-                    @endphp
-
-
-                    <span
-                        class="shrink-0 px-2.5 py-1 rounded-full text-xs font-semibold {{ $statusClasses[$placement->status] ?? 'bg-slate-100 text-slate-600' }}"
-                    >
-                        {{ $placement->status }}
-                    </span>
+                    @endif
 
                 </div>
 
 
-                {{-- Details --}}
                 <div class="mt-5 space-y-3 text-sm">
 
                     <div class="flex justify-between gap-4">
@@ -610,7 +554,7 @@
                         </span>
 
                         <span class="font-medium text-slate-700 text-right">
-                            {{ $placement->company->name }}
+                            {{-- {{ $supervisor->company?->name ?? '-' }} --}}
                         </span>
 
                     </div>
@@ -619,11 +563,11 @@
                     <div class="flex justify-between gap-4">
 
                         <span class="text-slate-500">
-                            Session
+                            Email
                         </span>
 
-                        <span class="font-medium text-slate-700 text-right">
-                            {{ $placement->academicSession->name }}
+                        <span class="font-medium text-slate-700 text-right break-all">
+                            {{ $supervisor->email ?: '-' }}
                         </span>
 
                     </div>
@@ -632,17 +576,11 @@
                     <div class="flex justify-between gap-4">
 
                         <span class="text-slate-500">
-                            Period
+                            Phone
                         </span>
 
                         <span class="font-medium text-slate-700 text-right">
-
-                            {{ $placement->start_date->format('d/m/Y') }}
-
-                            -
-
-                            {{ $placement->end_date->format('d/m/Y') }}
-
+                            {{ $supervisor->phone ?: '-' }}
                         </span>
 
                     </div>
@@ -655,9 +593,9 @@
 
                     {{-- View --}}
                     <a
-                        href="{{ route('placements.show', $placement) }}"
+                        href="{{ route('industry-supervisors.show', $supervisor) }}"
                         title="View"
-                        aria-label="View placement"
+                        aria-label="View supervisor"
                         class="inline-flex items-center justify-center w-9 h-9 rounded-lg text-blue-600 bg-blue-50"
                     >
 
@@ -667,6 +605,7 @@
                             stroke="currentColor"
                             viewBox="0 0 24 24"
                         >
+
                             <path
                                 stroke-linecap="round"
                                 stroke-linejoin="round"
@@ -688,9 +627,9 @@
 
                     {{-- Edit --}}
                     <a
-                        href="{{ route('placements.edit', $placement) }}"
+                        href="{{ route('industry-supervisors.edit', $supervisor) }}"
                         title="Edit"
-                        aria-label="Edit placement"
+                        aria-label="Edit supervisor"
                         class="inline-flex items-center justify-center w-9 h-9 rounded-lg text-amber-600 bg-amber-50"
                     >
 
@@ -700,6 +639,7 @@
                             stroke="currentColor"
                             viewBox="0 0 24 24"
                         >
+
                             <path
                                 stroke-linecap="round"
                                 stroke-linejoin="round"
@@ -711,7 +651,7 @@
                                 stroke-linecap="round"
                                 stroke-linejoin="round"
                                 stroke-width="1.8"
-                                d="M16.5 3.5a2.12 2.12 0 013 3L8 18l1-4L16.5 3.5z"
+                                d="M16.5 3.5a2.12 2.12 0 013 3L8 18l-4 1-1-4L16.5 3.5z"
                             />
 
                         </svg>
@@ -722,8 +662,8 @@
                     {{-- Delete --}}
                     <form
                         method="POST"
-                        action="{{ route('placements.destroy', $placement) }}"
-                        onsubmit="return confirm('Delete this placement?');"
+                        action="{{ route('industry-supervisors.destroy', $supervisor) }}"
+                        onsubmit="return confirm('Delete this industry supervisor?');"
                     >
 
                         @csrf
@@ -732,7 +672,7 @@
                         <button
                             type="submit"
                             title="Delete"
-                            aria-label="Delete placement"
+                            aria-label="Delete supervisor"
                             class="inline-flex items-center justify-center w-9 h-9 rounded-lg text-red-600 bg-red-50"
                         >
 
@@ -742,11 +682,12 @@
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
                             >
+
                                 <path
                                     stroke-linecap="round"
                                     stroke-linejoin="round"
                                     stroke-width="1.8"
-                                    d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"
+                                    d="M4 7h16M10 11v6M14 11v6M6 7v13h12V7M9 7V4h6v3"
                                 />
 
                             </svg>
@@ -764,11 +705,11 @@
             <div class="bg-white rounded-2xl border border-slate-200 p-10 text-center">
 
                 <h3 class="font-semibold text-slate-700">
-                    No placements found
+                    No industry supervisors found
                 </h3>
 
                 <p class="text-sm text-slate-500 mt-1">
-                    Add a placement to get started.
+                    Add your first industry supervisor to get started.
                 </p>
 
             </div>
@@ -779,11 +720,11 @@
 
 
     {{-- Pagination --}}
-    @if ($placements->hasPages())
+    @if ($supervisors->hasPages())
 
         <div class="mt-6">
 
-            {{ $placements->withQueryString()->links() }}
+            {{ $supervisors->withQueryString()->links() }}
 
         </div>
 
