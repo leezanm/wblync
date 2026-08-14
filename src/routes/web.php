@@ -7,6 +7,7 @@ use App\Http\Controllers\ClassRoomController;
 use App\Http\Controllers\CompanyContactController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\DailyLogbookController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EnrollmentController;
 use App\Http\Controllers\PlacementController;
@@ -59,8 +60,24 @@ Route::middleware('auth')->group(function () {
     Route::resource('placements',PlacementController::class);
     Route::patch('placements/{placement}/status',[PlacementController::class, 'updateStatus'])->name('placements.status');
     Route::resource('company-contacts',CompanyContactController::class);
-    Route::resource('assessments',AssessmentController::class
-);
-});
+    Route::resource('assessments',AssessmentController::class);
+
+    //logbooks
+    Route::resource('daily-logbooks',DailyLogbookController::class);
+    Route::post(
+        'daily-logbooks/{dailyLogbook}/submit',
+        [DailyLogbookController::class, 'submit']
+    )->name('daily-logbooks.submit');
+
+    Route::post(
+        'daily-logbooks/{dailyLogbook}/approve',
+        [DailyLogbookController::class, 'approve']
+    )->name('daily-logbooks.approve');
+
+    Route::post(
+        'daily-logbooks/{dailyLogbook}/reject',
+        [DailyLogbookController::class, 'reject']
+    )->name('daily-logbooks.reject');
+    });
 
 require __DIR__.'/auth.php';

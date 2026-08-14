@@ -22,6 +22,7 @@ class Student extends Model
         'email',
         'phone',
         'status',
+        'user_id'
     ];
 
     protected function casts(): array
@@ -53,5 +54,10 @@ class Student extends Model
     public function placements(): HasMany
     {
         return $this->hasMany(Placement::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }

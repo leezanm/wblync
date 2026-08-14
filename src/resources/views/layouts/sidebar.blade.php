@@ -675,7 +675,8 @@
 
             {{-- Daily Logbook --}}
             <a
-                href="#"
+                href="{{ route('daily-logbooks.index') }}"
+                @click="sidebarOpen = false"
                 class="
                     flex
                     items-center
@@ -683,15 +684,41 @@
                     px-4
                     py-3
                     rounded-xl
-                    text-slate-300
-                    hover:bg-slate-800
-                    hover:text-white
+                    transition
+                    {{ request()->routeIs('daily-logbooks.*')
+                        ? 'bg-blue-600 text-white'
+                        : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                    }}
                 "
             >
 
-                <span class="w-5">
-                    •
-                </span>
+                <svg
+                    class="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="1.8"
+                        d="M6 3.75h9.5L19 7.25v13H6a2 2 0 01-2-2v-12.5a2 2 0 012-2z"
+                    />
+
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="1.8"
+                        d="M15 3.75v4h4"
+                    />
+
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="1.8"
+                        d="M8.5 11h7M8.5 14.5h7M8.5 18h4"
+                    />
+                </svg>
 
                 <span>
                     Daily Logbook
