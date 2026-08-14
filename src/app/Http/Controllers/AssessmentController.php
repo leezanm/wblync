@@ -19,6 +19,20 @@ class AssessmentController extends Controller
                 'placement.company',
             ]);
 
+        $studentUser = auth()->user()?->hasRole('Student')
+            ? auth()->user()?->student
+            : null;
+
+        if ($studentUser) {
+            $query->whereHas('placement', function ($query) use ($studentUser) {
+                $query->where('student_id', $studentUser->id);
+            });
+        } elseif ($request->filled('student_id')) {
+            $query->whereHas('placement', function ($query) use ($request) {
+                $query->where('student_id', $request->integer('student_id'));
+            });
+        }
+
         if ($request->filled('search')) {
             $search = $request->string('search')->trim();
 
@@ -52,7 +66,6 @@ class AssessmentController extends Controller
         );
     }
 
-
     public function create(): View
     {
         $placements = Placement::query()
@@ -73,7 +86,6 @@ class AssessmentController extends Controller
         );
     }
 
-
     public function store(
         AssessmentRequest $request
     ): RedirectResponse {
@@ -88,8 +100,7 @@ class AssessmentController extends Controller
             return back()
                 ->withInput()
                 ->withErrors([
-                    'placement_id' =>
-                        'Assessment can only be created for an active or completed placement.',
+                    'placement_id' => 'Assessment can only be created for an active or completed placement.',
                 ]);
         }
 
@@ -104,7 +115,6 @@ class AssessmentController extends Controller
                 'Assessment created successfully.'
             );
     }
-
 
     public function show(
         Assessment $assessment
@@ -121,7 +131,6 @@ class AssessmentController extends Controller
             compact('assessment')
         );
     }
-
 
     public function edit(
         Assessment $assessment
@@ -149,7 +158,6 @@ class AssessmentController extends Controller
         );
     }
 
-
     public function update(
         AssessmentRequest $request,
         Assessment $assessment
@@ -165,8 +173,7 @@ class AssessmentController extends Controller
             return back()
                 ->withInput()
                 ->withErrors([
-                    'placement_id' =>
-                        'Assessment can only belong to an active or completed placement.',
+                    'placement_id' => 'Assessment can only belong to an active or completed placement.',
                 ]);
         }
 
@@ -181,7 +188,6 @@ class AssessmentController extends Controller
                 'Assessment updated successfully.'
             );
     }
-
 
     public function destroy(
         Assessment $assessment

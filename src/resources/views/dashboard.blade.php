@@ -63,7 +63,7 @@
                     </p>
 
                     <p class="text-3xl font-bold text-slate-800 mt-2">
-                        0
+                        {{ $studentsCount }}
                     </p>
                 </div>
 
@@ -99,7 +99,7 @@
                     </p>
 
                     <p class="text-3xl font-bold text-slate-800 mt-2">
-                        0
+                        {{ $companiesCount }}
                     </p>
                 </div>
 
@@ -136,7 +136,7 @@
                     </p>
 
                     <p class="text-3xl font-bold text-slate-800 mt-2">
-                        0
+                        {{ $pendingLogbooksCount }}
                     </p>
                 </div>
 

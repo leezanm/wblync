@@ -45,9 +45,10 @@ class StudentRequest extends FormRequest
             ],
 
             'email' => [
-                'nullable',
+                'required',
                 'email',
-                'max:150',
+                'max:255',
+                'unique:users,email',
             ],
 
             'phone' => [

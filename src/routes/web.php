@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AcademicSessionController;
 use App\Http\Controllers\AssessmentController;
+use App\Http\Controllers\ChangePasswordController;
 use App\Http\Controllers\ClassCourseController;
 use App\Http\Controllers\ClassRoomController;
 use App\Http\Controllers\CompanyContactController;
@@ -16,6 +17,7 @@ use App\Http\Controllers\ProgrammeController;
 use App\Http\Controllers\SemesterController;
 use App\Http\Controllers\StudentAcademicProfileController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 // Route::get('/', function () {
@@ -28,12 +30,14 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
+
+
 Route::middleware('auth')->group(function () {
 
     // Profile routes
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+    Route::get('/change-password', [ChangePasswordController::class, 'edit'])->name('password.change.edit');
+    Route::put('/change-password', [ChangePasswordController::class, 'update'])->name('password.change.update');
 
     // Academic Sessions
     Route::resource('academic-sessions', AcademicSessionController::class);
@@ -57,13 +61,13 @@ Route::middleware('auth')->group(function () {
     Route::resource('enrollments', EnrollmentController::class);
     Route::get('students/{student}/academic-profile', [StudentAcademicProfileController::class, 'show'])->name('students.academic-profile');
     Route::resource('companies', CompanyController::class);
-    Route::resource('placements',PlacementController::class);
-    Route::patch('placements/{placement}/status',[PlacementController::class, 'updateStatus'])->name('placements.status');
-    Route::resource('company-contacts',CompanyContactController::class);
-    Route::resource('assessments',AssessmentController::class);
+    Route::resource('placements', PlacementController::class);
+    Route::patch('placements/{placement}/status', [PlacementController::class, 'updateStatus'])->name('placements.status');
+    Route::resource('company-contacts', CompanyContactController::class);
+    Route::resource('assessments', AssessmentController::class);
 
-    //logbooks
-    Route::resource('daily-logbooks',DailyLogbookController::class);
+    // logbooks
+    Route::resource('daily-logbooks', DailyLogbookController::class);
     Route::post(
         'daily-logbooks/{dailyLogbook}/submit',
         [DailyLogbookController::class, 'submit']
@@ -78,6 +82,9 @@ Route::middleware('auth')->group(function () {
         'daily-logbooks/{dailyLogbook}/reject',
         [DailyLogbookController::class, 'reject']
     )->name('daily-logbooks.reject');
-    });
+
+    Route::resource('users', UserController::class);
+
+});
 
 require __DIR__.'/auth.php';

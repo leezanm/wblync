@@ -67,33 +67,23 @@ class PlacementRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'student_id.required' =>
-                'Student is required.',
+            'student_id.required' => 'Student is required.',
 
-            'student_id.exists' =>
-                'Selected student does not exist.',
+            'student_id.exists' => 'Selected student does not exist.',
 
-            'company_id.required' =>
-                'Company is required.',
+            'company_id.required' => 'Company is required.',
 
-            'company_id.exists' =>
-                'Selected company does not exist.',
+            'company_id.exists' => 'Selected company does not exist.',
 
-            'academic_session_id.required' =>
-                'Academic session is required.',
+            'academic_session_id.required' => 'Academic session is required.',
 
-            'academic_session_id.exists' =>
-                'Selected academic session does not exist.',
+            'academic_session_id.exists' => 'Selected academic session does not exist.',
 
-            'start_date.required' =>
-                'Start date is required.',
+            'start_date.required' => 'Start date is required.',
 
-            'end_date.required' =>
-                'End date is required.',
+            'end_date.required' => 'End date is required.',
 
-            'end_date.after_or_equal' =>
-                'End date must be on or after the start date.',
-
+            'end_date.after_or_equal' => 'End date must be on or after the start date.',
 
         ];
     }

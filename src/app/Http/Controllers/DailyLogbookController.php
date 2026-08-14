@@ -19,6 +19,20 @@ class DailyLogbookController extends Controller
                 'placement.company',
             ]);
 
+        $studentUser = auth()->user()?->hasRole('Student')
+            ? auth()->user()?->student
+            : null;
+
+        if ($studentUser) {
+            $query->whereHas('placement', function ($query) use ($studentUser) {
+                $query->where('student_id', $studentUser->id);
+            });
+        } elseif ($request->filled('student_id')) {
+            $query->whereHas('placement', function ($query) use ($request) {
+                $query->where('student_id', $request->integer('student_id'));
+            });
+        }
+
         if ($request->filled('search')) {
 
             $search = $request->string('search')->trim();
@@ -63,7 +77,6 @@ class DailyLogbookController extends Controller
             });
         }
 
-
         if ($request->filled('status')) {
 
             $query->where(
@@ -73,18 +86,15 @@ class DailyLogbookController extends Controller
 
         }
 
-
         $logbooks = $query
             ->latest('log_date')
             ->paginate(10);
-
 
         return view(
             'daily-logbooks.index',
             compact('logbooks')
         );
     }
-
 
     public function create(): View
     {
@@ -100,13 +110,11 @@ class DailyLogbookController extends Controller
             ->orderByDesc('start_date')
             ->get();
 
-
         return view(
             'daily-logbooks.create',
             compact('placements')
         );
     }
-
 
     public function store(
         DailyLogbookRequest $request
@@ -115,7 +123,6 @@ class DailyLogbookController extends Controller
         $placement = Placement::findOrFail(
             $request->integer('placement_id')
         );
-
 
         if (! in_array(
             $placement->status,
@@ -126,17 +133,14 @@ class DailyLogbookController extends Controller
             return back()
                 ->withInput()
                 ->withErrors([
-                    'placement_id' =>
-                        'A logbook can only be created for an active or completed placement.',
+                    'placement_id' => 'A logbook can only be created for an active or completed placement.',
                 ]);
 
         }
 
-
         $logbook = DailyLogbook::create(
             $request->validated()
         );
-
 
         return redirect()
             ->route(
@@ -149,7 +153,6 @@ class DailyLogbookController extends Controller
             );
     }
 
-
     public function show(
         DailyLogbook $dailyLogbook
     ): View {
@@ -161,24 +164,21 @@ class DailyLogbookController extends Controller
             'placement.academicSession',
         ]);
 
-
         return view(
             'daily-logbooks.show',
             compact('dailyLogbook')
         );
     }
 
-
     public function edit(
         DailyLogbook $dailyLogbook
     ): View {
 
-    if ($dailyLogbook->status === 'Approved') {
-        abort(403, 'Approved logbooks cannot be edited.');
-    }
+        if ($dailyLogbook->status === 'Approved') {
+            abort(403, 'Approved logbooks cannot be edited.');
+        }
 
         $dailyLogbook->load('placement');
-
 
         $placements = Placement::query()
             ->with([
@@ -192,7 +192,6 @@ class DailyLogbookController extends Controller
             ->orderByDesc('start_date')
             ->get();
 
-
         return view(
             'daily-logbooks.edit',
             compact(
@@ -201,7 +200,6 @@ class DailyLogbookController extends Controller
             )
         );
     }
-
 
     public function update(
         DailyLogbookRequest $request,
@@ -216,7 +214,6 @@ class DailyLogbookController extends Controller
             $request->integer('placement_id')
         );
 
-
         if (! in_array(
             $placement->status,
             ['Active', 'Completed'],
@@ -226,17 +223,14 @@ class DailyLogbookController extends Controller
             return back()
                 ->withInput()
                 ->withErrors([
-                    'placement_id' =>
-                        'A logbook can only belong to an active or completed placement.',
+                    'placement_id' => 'A logbook can only belong to an active or completed placement.',
                 ]);
 
         }
 
-
         $dailyLogbook->update(
             $request->validated()
         );
-
 
         return redirect()
             ->route(
@@ -249,19 +243,17 @@ class DailyLogbookController extends Controller
             );
     }
 
-
     public function destroy(
         DailyLogbook $dailyLogbook
     ): RedirectResponse {
 
         if ($dailyLogbook->status === 'Approved') {
-                return back()->withErrors([
-                    'status' => 'Approved logbooks cannot be deleted.',
-                ]);
+            return back()->withErrors([
+                'status' => 'Approved logbooks cannot be deleted.',
+            ]);
         }
 
         $dailyLogbook->delete();
-
 
         return redirect()
             ->route('daily-logbooks.index')
@@ -271,7 +263,8 @@ class DailyLogbookController extends Controller
             );
     }
 
-    public function submit(DailyLogbook $dailyLogbook): RedirectResponse {
+    public function submit(DailyLogbook $dailyLogbook): RedirectResponse
+    {
 
         if ($dailyLogbook->status !== 'Draft') {
             return back()->withErrors([
@@ -289,7 +282,8 @@ class DailyLogbookController extends Controller
         );
     }
 
-    public function approve(DailyLogbook $dailyLogbook): RedirectResponse {
+    public function approve(DailyLogbook $dailyLogbook): RedirectResponse
+    {
 
         if ($dailyLogbook->status !== 'Submitted') {
             return back()->withErrors([
@@ -307,7 +301,8 @@ class DailyLogbookController extends Controller
         );
     }
 
-    public function reject(DailyLogbook $dailyLogbook): RedirectResponse {
+    public function reject(DailyLogbook $dailyLogbook): RedirectResponse
+    {
 
         if ($dailyLogbook->status !== 'Submitted') {
             return back()->withErrors([

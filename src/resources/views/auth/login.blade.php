@@ -523,7 +523,7 @@
 
                             <button type="submit" class="wb-login-button">Login</button>
 
-                            <div class="wb-login-divider">or</div>
+                            {{-- <div class="wb-login-divider">or</div>
 
                             <div class="wb-login-demo">
                                 <div class="wb-login-demo-head">
@@ -535,11 +535,7 @@
                                     </svg>
                                     <h3>Demo Credentials</h3>
                                 </div>
-                                <p>student@wblync.com / password123</p>
-                                <p>mentor@wblync.com / password123</p>
-                                <p>lecturer@wblync.com / password123</p>
-                                <p>admin@wblync.com / password123</p>
-                            </div>
+                                                         </div> --}}
                         </form>
                     </div>
                 </div>

@@ -2,9 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Assessment;
-use App\Models\CompanyContact;
-use App\Models\DailyLogbook;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -96,7 +93,8 @@ class Placement extends Model
             true
         );
     }
-     public function assessments(): HasMany
+
+    public function assessments(): HasMany
     {
         return $this->hasMany(Assessment::class);
     }

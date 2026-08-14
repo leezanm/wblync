@@ -89,25 +89,70 @@
             </button>
 
 
-          {{-- User --}}
-            <div class="flex items-center gap-3">
+            @php
+                $currentUser = auth()->user();
+                $userRole = $currentUser?->roles->pluck('name')->implode(', ') ?: 'No Role';
+            @endphp
 
-                <div class="w-9 h-9 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold">
-                    {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+            {{-- User --}}
+            <div
+                class="relative"
+                x-data="{ userMenuOpen: false }"
+            >
+                <button
+                    type="button"
+                    @click="userMenuOpen = !userMenuOpen"
+                    class="flex items-center gap-3 rounded-xl px-2 py-1 hover:bg-slate-100 transition"
+                >
+                    <div class="w-9 h-9 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold">
+                        {{ strtoupper(substr($currentUser->name, 0, 1)) }}
+                    </div>
+
+                    <div class="hidden sm:block lg:block text-left">
+                        <p class="text-sm font-semibold text-slate-800">
+                            {{ $currentUser->name }}
+                        </p>
+
+                        <p class="text-xs text-slate-500">
+                            {{ $userRole }}
+                        </p>
+                    </div>
+
+                    <svg
+                        class="w-4 h-4 text-slate-500"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="m19.5 8.25-7.5 7.5-7.5-7.5"
+                        />
+                    </svg>
+                </button>
+
+                <div
+                    x-show="userMenuOpen"
+                    @click.away="userMenuOpen = false"
+                    x-transition
+                    class="absolute right-0 mt-2 w-52 rounded-xl border border-slate-200 bg-white shadow-lg z-40 overflow-hidden"
+                >
+                    <a
+                        href="{{ route('profile.show') }}"
+                        class="block px-4 py-3 text-sm text-slate-700 hover:bg-slate-50 transition"
+                    >
+                        Profil Pengguna
+                    </a>
+
+                    <a
+                        href="{{ route('password.change.edit') }}"
+                        class="block px-4 py-3 text-sm text-slate-700 hover:bg-slate-50 transition"
+                    >
+                        Tukar Kata Laluan
+                    </a>
                 </div>
-
-                <div class="hidden sm:block lg:block">
-
-                    <p class="text-sm font-semibold text-slate-800">
-                        {{ auth()->user()->name }}
-                    </p>
-
-                    <p class="text-xs text-slate-500">
-                        Administrator
-                    </p>
-
-                </div>
-
             </div>
 
 

@@ -58,6 +58,12 @@ class PermissionSeeder extends Seeder
             'approve assessments',
 
             'view reports',
+
+            'view users',
+
+            'create users',
+            'update users',
+            'delete users',
         ];
 
         foreach ($permissions as $permission) {
@@ -66,7 +72,6 @@ class PermissionSeeder extends Seeder
                 'guard_name' => 'web',
             ]);
         }
-
 
         $superAdmin = Role::findByName(
             'Super Admin',
@@ -93,12 +98,10 @@ class PermissionSeeder extends Seeder
             'web'
         );
 
-
         // Super Admin
         $superAdmin->syncPermissions(
             Permission::all()
         );
-
 
         // WBL Coordinator
         $wblCoordinator->syncPermissions([
@@ -149,8 +152,11 @@ class PermissionSeeder extends Seeder
             'approve assessments',
 
             'view reports',
-        ]);
 
+            'view users',
+            'create users',
+            'update users',
+        ]);
 
         // Lecturer
         $lecturer->syncPermissions([
@@ -178,7 +184,6 @@ class PermissionSeeder extends Seeder
             'view reports',
         ]);
 
-
         // Industry Mentor
         $industryMentor->syncPermissions([
             'view dashboard',
@@ -198,25 +203,19 @@ class PermissionSeeder extends Seeder
             'view reports',
         ]);
 
-
         // Student
-        $student->syncPermissions([
-            'view dashboard',
+       $student->syncPermissions([
+        'view dashboard',
 
-            'view programmes',
-            'view courses',
+        'view placements',
 
-            'view students',
+        'view daily logbooks',
+        'create daily logbooks',
+        'update daily logbooks',
+        'delete daily logbooks',
+        'submit daily logbooks',
 
-            'view placements',
-
-            'view daily logbooks',
-            'create daily logbooks',
-            'update daily logbooks',
-            'delete daily logbooks',
-            'submit daily logbooks',
-
-            'view assessments',
-        ]);
+        'view assessments',
+]);
     }
 }

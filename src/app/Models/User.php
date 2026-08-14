@@ -3,7 +3,6 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use App\Models\Student;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -25,6 +24,12 @@ class User extends Authenticatable
      *
      * @return array<string, string>
      */
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+    ];
+
     protected function casts(): array
     {
         return [
@@ -32,6 +37,7 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
     public function student(): HasOne
     {
         return $this->hasOne(Student::class);

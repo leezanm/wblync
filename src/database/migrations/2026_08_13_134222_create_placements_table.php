@@ -30,14 +30,14 @@ return new class extends Migration
             $table->date('end_date');
 
             $table->enum('status', [
-    'Draft',
-    'Applied',
-    'Approved',
-    'Rejected',
-    'Active',
-    'Completed',
-    'Cancelled',
-])->default('Draft');
+                'Draft',
+                'Applied',
+                'Approved',
+                'Rejected',
+                'Active',
+                'Completed',
+                'Cancelled',
+            ])->default('Draft');
 
             $table->text('remarks')
                 ->nullable();

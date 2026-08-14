@@ -52,53 +52,6 @@
             @enderror
         </div>
 
-        {{-- Company Contact --}}
-        <div>
-            <label
-                for="company_contact_id"
-                class="block text-sm font-medium text-slate-700 mb-2"
-            >
-                Company Contact
-            </label>
-
-            <select
-                id="company_contact_id"
-                name="company_contact_id"
-                class="w-full rounded-xl border-slate-300 bg-white px-4 py-3 focus:border-blue-500 focus:ring-blue-500"
-            >
-
-                <option value="">
-                    Select Company Contact
-                </option>
-
-                @foreach ($companyContacts as $contact)
-
-                    <option
-                        value="{{ $contact->id }}"
-                        @selected(
-                            (string) old(
-                                'company_contact_id',
-                                $placement->company_contact_id ?? ''
-                            ) === (string) $contact->id
-                        )
-                    >
-                        {{ $contact->name }}
-                        —
-                        {{ $contact->company->name }}
-                    </option>
-
-                @endforeach
-
-            </select>
-
-            @error('company_contact_id')
-                <p class="mt-2 text-sm text-red-600">
-                    {{ $message }}
-                </p>
-            @enderror
-
-        </div>
-
         {{-- Name --}}
         <div>
             <label

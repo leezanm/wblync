@@ -22,6 +22,16 @@ class PlacementController extends Controller
                 'academicSession',
             ]);
 
+        $studentUser = auth()->user()?->hasRole('Student')
+            ? auth()->user()?->student
+            : null;
+
+        if ($studentUser) {
+            $query->where('student_id', $studentUser->id);
+        } elseif ($request->filled('student_id')) {
+            $query->where('student_id', $request->integer('student_id'));
+        }
+
         if ($request->filled('search')) {
             $search = $request->string('search')->trim();
 
@@ -66,17 +76,17 @@ class PlacementController extends Controller
             ->latest()
             ->paginate(10);
 
-$academicSessions = AcademicSession::query()
-    ->orderByDesc('start_date')
-    ->get();
+        $academicSessions = AcademicSession::query()
+            ->orderByDesc('start_date')
+            ->get();
 
-return view(
-    'placements.index',
-    compact(
-        'placements',
-        'academicSessions'
-    )
-);
+        return view(
+            'placements.index',
+            compact(
+                'placements',
+                'academicSessions'
+            )
+        );
 
         // return view(
         //     'placements.index',
@@ -148,7 +158,6 @@ return view(
     //     );
     // }
 
-
     public function store(
         PlacementRequest $request
     ): RedirectResponse {
@@ -166,7 +175,6 @@ return view(
             );
     }
 
-
     public function show(Placement $placement): View
     {
         $placement->load([
@@ -181,7 +189,6 @@ return view(
             compact('placement')
         );
     }
-
 
     public function edit(Placement $placement): View
     {
@@ -249,7 +256,6 @@ return view(
     //         )
     //     );
     // }
-
 
     public function update(
         PlacementRequest $request,

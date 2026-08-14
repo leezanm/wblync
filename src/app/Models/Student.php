@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Placement;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -15,6 +14,7 @@ class Student extends Model
 
     protected $fillable = [
         'uuid',
+        'user_id',
         'class_room_id',
         'student_no',
         'name',
@@ -22,7 +22,6 @@ class Student extends Model
         'email',
         'phone',
         'status',
-        'user_id'
     ];
 
     protected function casts(): array

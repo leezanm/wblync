@@ -127,7 +127,7 @@ class SystemSeeder extends Seeder
                     'end_date' => $data['end_date'],
                     'status' => $data['status'],
                     'current' => $data['current'],
-                    'description' => $data['name'] . ' demo data.',
+                    'description' => $data['name'].' demo data.',
                     'created_by' => $coordinator->id,
                 ]
             );
@@ -273,7 +273,7 @@ class SystemSeeder extends Seeder
                 ]
             );
 
-            $classCourses[$data['class_room_code'] . ':' . $data['course_code']] = $classCourse;
+            $classCourses[$data['class_room_code'].':'.$data['course_code']] = $classCourse;
         }
 
         $students = [];
@@ -362,7 +362,7 @@ class SystemSeeder extends Seeder
                 Enrollment::updateOrCreate(
                     [
                         'student_id' => $student->id,
-                        'class_course_id' => $classCourses[$classRoomCode . ':' . $courseCode]->id,
+                        'class_course_id' => $classCourses[$classRoomCode.':'.$courseCode]->id,
                     ],
                     [
                         'status' => true,

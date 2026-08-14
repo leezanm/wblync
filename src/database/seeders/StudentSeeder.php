@@ -63,7 +63,6 @@ class StudentSeeder extends Seeder
 
             $user->syncRoles(['Student']);
 
-
             Student::updateOrCreate(
                 [
                     'student_no' => $data['student_no'],
