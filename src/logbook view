@@ -1,0 +1,61 @@
+
+Structure :
+
+DailyLogbookController
+└── Student punya daily logbook
+
+IndustrySupervisorLogbookController
+├── index()    → senarai weekly submission
+├── show()     → review weekly logbook
+├── approve()  → approve
+└── reject()   → reject
+
+View :
+
+resources/views/
+├── daily-logbooks/
+│   ├── index.blade.php
+│   ├── create.blade.php
+│   ├── edit.blade.php
+│   └── show.blade.php
+│
+└── industry-supervisors/
+    └── logbook-approvals/
+        ├── index.blade.php
+        └── show.blade.php
+
+/daily-logbooks
+    → Student
+
+/industry-supervisor/logbook-approvals
+    → Industry Supervisor
+
+
+                    ┌──────────────┐
+                    │    Draft     │
+                    └──────┬───────┘
+                           │
+                    Submit This Week
+                           │
+                           ▼
+                    ┌──────────────┐
+                    │   Submitted  │
+                    └──────┬───────┘
+                           │
+                 Industry Supervisor
+                      Review
+                    ┌──────┴───────┐
+                    │              │
+                 Approve         Reject
+                    │              │
+                    ▼              ▼
+              ┌──────────┐   ┌──────────┐
+              │ Approved │   │ Rejected │
+              └──────────┘   └────┬─────┘
+                                   │
+                             Student Edit
+                                   │
+                             Resubmit Week
+                                   │
+                                   ▼
+                              Submitted

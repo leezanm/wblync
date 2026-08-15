@@ -52,6 +52,10 @@ class PermissionSeeder extends Seeder
             'approve daily logbooks',
             'reject daily logbooks',
 
+            'view weekly logbook approvals',
+             'approve weekly logbooks',
+            'reject weekly logbooks',
+
             'view assessments',
             'create assessments',
             'update assessments',
@@ -141,10 +145,14 @@ class PermissionSeeder extends Seeder
             'view daily logbooks',
 
             'update daily logbooks',
-       
+
             'submit daily logbooks',
             'approve daily logbooks',
             'reject daily logbooks',
+
+            'view weekly logbook approvals',
+            'approve weekly logbooks',
+            'reject weekly logbooks',
 
             'view assessments',
             'create assessments',
@@ -157,6 +165,7 @@ class PermissionSeeder extends Seeder
             'view users',
             'create users',
             'update users',
+
         ]);
 
         // Lecturer
@@ -198,6 +207,10 @@ class PermissionSeeder extends Seeder
             'approve daily logbooks',
             'reject daily logbooks',
 
+            'view weekly logbook approvals',
+            'approve weekly logbooks',
+            'reject weekly logbooks',
+
             'view assessments',
             'create assessments',
             'update assessments',
@@ -218,6 +231,6 @@ class PermissionSeeder extends Seeder
         'submit daily logbooks',
 
         'view assessments',
-]);
+        ]);
     }
 }

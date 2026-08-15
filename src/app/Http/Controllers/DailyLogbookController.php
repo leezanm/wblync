@@ -5,58 +5,214 @@ namespace App\Http\Controllers;
 use App\Http\Requests\DailyLogbookRequest;
 use App\Models\DailyLogbook;
 use App\Models\Placement;
+use App\Models\WeeklyLogbookSubmission;
+use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class DailyLogbookController extends Controller
 {
-    public function index(Request $request): View
-    {
-        $user = $request->user();
+   public function index(Request $request): View
+{
+    $user = $request->user();
 
-        $query = DailyLogbook::query()
+    $studentUser = $user?->hasRole('Student')
+        ? $user?->student
+        : null;
+
+    $isIndustryMentor = $user?->hasAnyRole([
+        'Industry Supervisor',
+        'Industry Mentor',
+    ]);
+
+    $industrySupervisorUser = $isIndustryMentor
+        ? $user?->industrySupervisor
+        : null;
+
+    /*
+    |--------------------------------------------------------------------------
+    | STUDENT VIEW
+    |--------------------------------------------------------------------------
+    |
+    | Student sees their current active placement and current week's
+    | daily logbooks.
+    |
+    */
+
+    if ($studentUser) {
+
+        abort_unless(
+            $studentUser,
+            403
+        );
+
+        $placement = $studentUser
+            ->placements()
             ->with([
-                'placement.student',
-                'placement.company',
-            ]);
+                'company',
+                'industrySupervisor',
+            ])
+            ->where('status', 'Active')
+            ->latest('start_date')
+            ->first();
 
-        $studentUser = $user?->hasRole('Student')
-            ? $user?->student
-            : null;
+        /*
+        |--------------------------------------------------------------------------
+        | No Active Placement
+        |--------------------------------------------------------------------------
+        */
 
-        $isIndustryMentor = $user?->hasAnyRole([
-            'Industry Supervisor',
-            'Industry Mentor',
+        if (! $placement) {
+            return view(
+                'daily-logbooks.index',
+                [
+                    'placement' => null,
+                    'weekStart' => now()->startOfWeek(),
+                    'weekEnd' => now()->endOfWeek(),
+                    'dailyLogbooks' => collect(),
+                    'weeklySubmission' => null,
+                    'logbooks' => collect(),
+                ]
+            );
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Current Week
+        |--------------------------------------------------------------------------
+        */
+
+        $date = $request->filled('date')
+            ? $request->date('date')
+            : now();
+
+        $weekStart = $date
+            ->copy()
+            ->startOfWeek();
+
+        $weekEnd = $date
+            ->copy()
+            ->endOfWeek();
+
+        /*
+        |--------------------------------------------------------------------------
+        | Daily Logbooks
+        |--------------------------------------------------------------------------
+        */
+
+        $dailyLogbooks = $placement
+            ->dailyLogbooks()
+            ->whereBetween('log_date', [
+                $weekStart->toDateString(),
+                $weekEnd->toDateString(),
+            ])
+            ->orderBy('log_date')
+            ->get();
+
+        /*
+        |--------------------------------------------------------------------------
+        | Weekly Submission
+        |--------------------------------------------------------------------------
+        */
+
+        $weeklySubmission = $placement
+            ->weeklyLogbookSubmissions()
+            ->whereDate(
+                'week_start_date',
+                $weekStart->toDateString()
+            )
+            ->first();
+
+        return view(
+            'daily-logbooks.index',
+            compact(
+                'placement',
+                'weekStart',
+                'weekEnd',
+                'dailyLogbooks',
+                'weeklySubmission'
+            )
+        );
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | INDUSTRY SUPERVISOR / ADMIN VIEW
+    |--------------------------------------------------------------------------
+    */
+
+    $query = DailyLogbook::query()
+        ->with([
+            'placement.student',
+            'placement.company',
+            'placement.industrySupervisor',
         ]);
 
-        $industrySupervisorUser = $isIndustryMentor
-            ? $user?->industrySupervisor
-            : null;
+    /*
+    |--------------------------------------------------------------------------
+    | Industry Supervisor
+    |--------------------------------------------------------------------------
+    */
 
-        if ($isIndustryMentor && ! $industrySupervisorUser) {
-            abort(403, 'Industry mentor profile not found.');
-        }
+    if ($isIndustryMentor && ! $industrySupervisorUser) {
+        abort(
+            403,
+            'Industry mentor profile not found.'
+        );
+    }
 
-        if ($studentUser) {
-            $query->whereHas('placement', function ($query) use ($studentUser) {
-                $query->where('student_id', $studentUser->id);
-            });
-        } elseif ($industrySupervisorUser) {
-            $query->whereHas('placement', function ($query) use ($industrySupervisorUser) {
-                $query->where('industry_supervisor_id', $industrySupervisorUser->id);
-            });
-        } elseif ($request->filled('student_id')) {
-            $query->whereHas('placement', function ($query) use ($request) {
-                $query->where('student_id', $request->integer('student_id'));
-            });
-        }
+    if ($industrySupervisorUser) {
 
-        if ($request->filled('search')) {
+        $query->whereHas(
+            'placement',
+            function ($query) use ($industrySupervisorUser) {
 
-            $search = $request->string('search')->trim();
+                $query->where(
+                    'industry_supervisor_id',
+                    $industrySupervisorUser->id
+                );
+            }
+        );
+    }
 
-            $query->whereHas('placement', function ($query) use ($search) {
+    /*
+    |--------------------------------------------------------------------------
+    | Admin / Other Users - Student Filter
+    |--------------------------------------------------------------------------
+    */
+
+    elseif ($request->filled('student_id')) {
+
+        $query->whereHas(
+            'placement',
+            function ($query) use ($request) {
+
+                $query->where(
+                    'student_id',
+                    $request->integer('student_id')
+                );
+            }
+        );
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Search
+    |--------------------------------------------------------------------------
+    */
+
+    if ($request->filled('search')) {
+
+        $search = $request
+            ->string('search')
+            ->trim();
+
+        $query->whereHas(
+            'placement',
+            function ($query) use ($search) {
 
                 $query->whereHas(
                     'student',
@@ -93,61 +249,119 @@ class DailyLogbookController extends Controller
                             );
                     }
                 );
-            });
-        }
-
-        if ($request->filled('status')) {
-
-            $query->where(
-                'status',
-                $request->status
-            );
-
-        }
-
-        if ($request->filled('date_from')) {
-            $query->whereDate(
-                'log_date',
-                '>=',
-                $request->date('date_from')->toDateString()
-            );
-        }
-
-        if ($request->filled('date_to')) {
-            $query->whereDate(
-                'log_date',
-                '<=',
-                $request->date('date_to')->toDateString()
-            );
-        }
-
-        $logbooks = $query
-            ->latest('log_date')
-            ->paginate(10);
-
-        return view(
-            'daily-logbooks.index',
-            compact('logbooks')
+            }
         );
     }
 
-    public function create(): View
+
+    /*
+    |--------------------------------------------------------------------------
+    | Logbook Status Filter
+    |--------------------------------------------------------------------------
+    */
+
+    if ($request->filled('status')) {
+
+        $query->where(
+            'status',
+            $request->status
+        );
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Date From
+    |--------------------------------------------------------------------------
+    */
+
+    if ($request->filled('date_from')) {
+
+        $query->whereDate(
+            'log_date',
+            '>=',
+            $request
+                ->date('date_from')
+                ->toDateString()
+        );
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Date To
+    |--------------------------------------------------------------------------
+    */
+
+    if ($request->filled('date_to')) {
+
+        $query->whereDate(
+            'log_date',
+            '<=',
+            $request
+                ->date('date_to')
+                ->toDateString()
+        );
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Pagination
+    |--------------------------------------------------------------------------
+    */
+
+    $logbooks = $query
+        ->latest('log_date')
+        ->paginate(10)
+        ->withQueryString();
+
+    /*
+    |--------------------------------------------------------------------------
+    | Legacy / Supervisor View
+    |--------------------------------------------------------------------------
+    */
+
+    return view(
+        'daily-logbooks.index',
+        [
+            'logbooks' => $logbooks,
+
+            'placement' => null,
+
+            'weekStart' => now()->startOfWeek(),
+
+            'weekEnd' => now()->endOfWeek(),
+
+            'dailyLogbooks' => collect(),
+
+            'weeklySubmission' => null,
+        ]
+    );
+}
+
+    public function create(Request $request): View
     {
-        $placements = Placement::query()
+        $student = $request->user()->student;
+
+        abort_unless($student, 403);
+
+        $placement = $student
+            ->placements()
             ->with([
-                'student',
+                'student.classRoom.programme',
                 'company',
+                'companyContact',
+                'industrySupervisor',
+                'academicSession',
             ])
-            ->whereIn('status', [
-                'Active',
-                'Completed',
-            ])
-            ->orderByDesc('start_date')
-            ->get();
+            ->where('status', 'Active')
+            ->latest('start_date')
+            ->firstOrFail();
 
         return view(
             'daily-logbooks.create',
-            compact('placements')
+            compact('placement')
         );
     }
 
@@ -237,25 +451,21 @@ class DailyLogbookController extends Controller
             abort(403, 'Approved logbooks cannot be edited.');
         }
 
-        $dailyLogbook->load('placement');
+        $dailyLogbook->load([
+            'placement.student.classRoom.programme',
+            'placement.company',
+            'placement.companyContact',
+            'placement.industrySupervisor',
+            'placement.academicSession',
+        ]);
 
-        $placements = Placement::query()
-            ->with([
-                'student',
-                'company',
-            ])
-            ->whereIn('status', [
-                'Active',
-                'Completed',
-            ])
-            ->orderByDesc('start_date')
-            ->get();
+        $placement = $dailyLogbook->placement;
 
         return view(
             'daily-logbooks.edit',
             compact(
                 'dailyLogbook',
-                'placements'
+                'placement'
             )
         );
     }
@@ -376,6 +586,81 @@ class DailyLogbookController extends Controller
         return back()->with(
             'success',
             'Daily logbook rejected successfully.'
+        );
+    }
+
+    public function submitWeek(
+    Request $request
+    ): RedirectResponse {
+
+        $student = $request->user()->student;
+
+        abort_unless($student, 403);
+
+        // Get active placement for this student
+        $placement = $student
+            ->placements()
+            ->where('status', 'Active')
+            ->latest('start_date')
+            ->firstOrFail();
+
+        // Determine the week from the requested date
+        $date = Carbon::parse(
+            $request->input('date', now())
+        );
+
+        $weekStart = $date->copy()->startOfWeek();
+        $weekEnd = $date->copy()->endOfWeek();
+
+        // Get daily logbooks for this week
+        $dailyLogbooks = $placement
+            ->dailyLogbooks()
+            ->whereBetween('log_date', [
+                $weekStart->toDateString(),
+                $weekEnd->toDateString(),
+            ])
+            ->orderBy('log_date')
+            ->get();
+
+        // Must have at least one daily logbook
+        if ($dailyLogbooks->isEmpty()) {
+            return back()->with(
+                'error',
+                'There are no daily logbooks to submit for this week.'
+            );
+        }
+
+        // Check if this week has already been submitted
+        $existingSubmission = WeeklyLogbookSubmission::query()
+            ->where('placement_id', $placement->id)
+            ->whereDate('week_start_date', $weekStart)
+            ->first();
+
+        if ($existingSubmission) {
+            return back()->with(
+                'error',
+                'This week has already been submitted.'
+            );
+        }
+
+        $submission = WeeklyLogbookSubmission::create([
+            'placement_id' => $placement->id,
+            'week_start_date' => $weekStart->toDateString(),
+            'week_end_date' => $weekEnd->toDateString(),
+            'status' => 'Submitted',
+            'submitted_at' => now(),
+        ]);
+
+        // Link daily logbooks to the weekly submission
+        $dailyLogbooks->each(function ($logbook) use ($submission) {
+            $logbook->update([
+                'weekly_logbook_submission_id' => $submission->id,
+            ]);
+        });
+
+        return back()->with(
+            'success',
+            'Weekly logbook submitted successfully.'
         );
     }
 }

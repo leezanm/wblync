@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\WeeklyLogbookSubmission;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -109,6 +110,11 @@ class Placement extends Model
     {
         return $this->hasMany(DailyLogbook::class);
     }
+    public function weeklyLogbookSubmissions(): HasMany
+    {
+        return $this->hasMany(
+            WeeklyLogbookSubmission::class
+        );
+    }
 
-   
 }

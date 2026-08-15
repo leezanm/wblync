@@ -1,5 +1,11 @@
 <div class="space-y-6">
 
+    <input
+        type="hidden"
+        name="placement_id"
+        value="{{ old('placement_id', $placement->id) }}"
+    >
+
     <div>
 
         <h3 class="text-lg font-bold text-slate-800">
@@ -13,99 +19,167 @@
     </div>
 
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
 
         {{-- Placement --}}
-        <div class="md:col-span-2">
+        <div class="rounded-xl bg-slate-50 border border-slate-200 p-4">
 
-            <label
-                for="placement_id"
-                class="block text-sm font-medium text-slate-700 mb-2"
-            >
-                Placement <span class="text-red-500">*</span>
-            </label>
+            <p class="text-xs uppercase tracking-wide text-slate-400 font-semibold">
+                Current Placement
+            </p>
 
-            <select
-                id="placement_id"
-                name="placement_id"
-                required
-                class="w-full rounded-xl border-slate-300 bg-white px-4 py-3 focus:border-blue-500 focus:ring-blue-500"
-            >
+            <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                <div>
+                    <p class="text-xs text-slate-400 uppercase tracking-wide">
+                        Student
+                    </p>
+                    <p class="font-semibold text-slate-800 mt-1">
+                        {{ $placement->student?->name ?? '-' }}
+                    </p>
+                    <p class="text-slate-500">
+                        {{ $placement->student?->student_no ?? '-' }}
+                    </p>
+                </div>
 
-                <option value="">
-                    Select Placement
-                </option>
-
-                @foreach ($placements as $placement)
-
-                    <option
-                        value="{{ $placement->id }}"
-                        @selected(
-                            (string) old(
-                                'placement_id',
-                                $dailyLogbook->placement_id ?? ''
-                            ) === (string) $placement->id
-                        )
-                    >
-                        {{ $placement->student->student_no }}
+                <div>
+                    <p class="text-xs text-slate-400 uppercase tracking-wide">
+                        Academic Session
+                    </p>
+                    <p class="font-semibold text-slate-800 mt-1">
+                        {{ $placement->academicSession?->name ?? '-' }}
+                    </p>
+                    <p class="text-slate-500">
+                        {{ $placement->academicSession?->start_date?->format('d M Y') ?? '-' }}
                         -
-                        {{ $placement->student->name }}
-                        —
-                        {{ $placement->company->name }}
-                    </option>
+                        {{ $placement->academicSession?->end_date?->format('d M Y') ?? '-' }}
+                    </p>
+                </div>
 
-                @endforeach
+                <div>
+                    <p class="text-xs text-slate-400 uppercase tracking-wide">
+                        Company
+                    </p>
+                    <p class="font-semibold text-slate-800 mt-1">
+                        {{ $placement->company?->code ? $placement->company->code . ' - ' : '' }}{{ $placement->company?->name ?? '-' }}
+                    </p>
+                    <p class="text-slate-500">
+                        {{ $placement->company?->industry ?? '-' }}
+                    </p>
+                </div>
 
-            </select>
+                <div>
+                    <p class="text-xs text-slate-400 uppercase tracking-wide">
+                        Industry Supervisor
+                    </p>
+                    <p class="font-semibold text-slate-800 mt-1">
+                        {{ $placement->industrySupervisor?->name ?? '-' }}
+                    </p>
+                    <p class="text-slate-500">
+                        {{ $placement->industrySupervisor?->position ?? '-' }}
+                    </p>
+                </div>
 
-            @error('placement_id')
+                <div>
+                    <p class="text-xs text-slate-400 uppercase tracking-wide">
+                        Programme / Class
+                    </p>
+                    <p class="font-semibold text-slate-800 mt-1">
+                        {{ $placement->student?->classRoom?->programme?->name ?? '-' }}
+                    </p>
+                    <p class="text-slate-500">
+                        {{ $placement->student?->classRoom?->name ?? '-' }}
+                    </p>
+                </div>
 
-                <p class="mt-2 text-sm text-red-600">
-                    {{ $message }}
-                </p>
-
-            @enderror
-
+                <div>
+                    <p class="text-xs text-slate-400 uppercase tracking-wide">
+                        Placement Period
+                    </p>
+                    <p class="font-semibold text-slate-800 mt-1">
+                        {{ $placement->start_date?->format('d M Y') ?? '-' }}
+                        -
+                        {{ $placement->end_date?->format('d M Y') ?? '-' }}
+                    </p>
+                    <p class="text-slate-500">
+                        Status: {{ $placement->status ?? '-' }}
+                    </p>
+                </div>
+            </div>
         </div>
 
-
-        {{-- Log Date --}}
         <div>
-
+             {{-- Log Date --}}
+        <div class="mb-2">
             <label
                 for="log_date"
-                class="block text-sm font-medium text-slate-700 mb-2"
+                class="block text-sm font-semibold text-slate-700 mb-2"
             >
-                Log Date <span class="text-red-500">*</span>
+                Date
             </label>
 
             <input
                 type="date"
                 id="log_date"
                 name="log_date"
-                value="{{ old(
-                    'log_date',
-                    isset($dailyLogbook) && $dailyLogbook->log_date
-                        ? $dailyLogbook->log_date->format('Y-m-d')
-                        : ''
-                ) }}"
+                value="{{ old('log_date', now()->toDateString()) }}"
                 required
-                class="w-full rounded-xl border-slate-300 bg-white px-4 py-3 focus:border-blue-500 focus:ring-blue-500"
+                class="w-full rounded-xl border-slate-200 bg-slate-50 px-4 py-3"
             >
 
             @error('log_date')
-
                 <p class="mt-2 text-sm text-red-600">
                     {{ $message }}
                 </p>
-
             @enderror
+        </div>
 
+
+        {{-- Work Status --}}
+        <div class="mb-2">
+            <label
+                for="work_status"
+                class="block text-sm font-medium text-slate-700 mb-2"
+            >
+                Working Status <span class="text-red-500">*</span>
+            </label>
+
+            <select
+                id="work_status"
+                name="work_status"
+                required
+                class="w-full rounded-xl border-slate-300 bg-white px-4 py-3 focus:border-blue-500 focus:ring-blue-500"
+            >
+                @foreach ([
+                    'Working',
+                    'Off Day',
+                    'Public Holiday',
+                    'Leave',
+                    'Medical Leave',
+                ] as $workStatus)
+                    <option
+                        value="{{ $workStatus }}"
+                        @selected(
+                            old(
+                                'work_status',
+                                $dailyLogbook->work_status ?? 'Working'
+                            ) === $workStatus
+                        )
+                    >
+                        {{ $workStatus }}
+                    </option>
+                @endforeach
+            </select>
+
+            @error('work_status')
+                <p class="mt-2 text-sm text-red-600">
+                    {{ $message }}
+                </p>
+            @enderror
         </div>
 
 
         {{-- Working Hours --}}
-        <div>
+        <div class="mb-2">
 
             <label
                 for="working_hours"
@@ -141,7 +215,7 @@
 
 
         {{-- Status --}}
-        <div>
+        <div class="mb-2">
 
             <label
                 for="status"
@@ -187,6 +261,8 @@
                 </p>
 
             @enderror
+
+        </div>
 
         </div>
 
@@ -287,3 +363,40 @@
     </div>
 
 </div>
+
+<script>
+    (function () {
+        const workStatusSelect = document.getElementById('work_status');
+        const activityTextarea = document.getElementById('activity');
+        const nonWorkingStatuses = [
+            'Off Day',
+            'Public Holiday',
+            'Leave',
+            'Medical Leave',
+        ];
+
+        if (!workStatusSelect || !activityTextarea) {
+            return;
+        }
+
+        const applyWorkStatusActivity = () => {
+            const workStatus = workStatusSelect.value;
+            const isNonWorking = nonWorkingStatuses.includes(workStatus);
+
+            if (isNonWorking) {
+                activityTextarea.value = workStatus;
+                activityTextarea.readOnly = true;
+                return;
+            }
+
+            activityTextarea.readOnly = false;
+
+            if (nonWorkingStatuses.includes(activityTextarea.value)) {
+                activityTextarea.value = '';
+            }
+        };
+
+        workStatusSelect.addEventListener('change', applyWorkStatusActivity);
+        applyWorkStatusActivity();
+    })();
+</script>

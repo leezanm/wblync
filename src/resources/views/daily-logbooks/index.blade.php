@@ -7,20 +7,139 @@
             <div>
 
                 <h2 class="text-2xl font-bold text-slate-800">
-                    Daily Logbook
+                    My Daily Logbooks
                 </h2>
+
+                {{-- <p class="text-sm text-slate-500 mt-1">
+                    Record your daily internship activities and submit your weekly logbook for supervisor approval.
+                </p> --}}
 
             </div>
 
-             {{-- only student can view this button --}}
-             @role('student')
-            <a
-                href="{{ route('daily-logbooks.create') }}"
-                class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition"
-            >
+        </div>
+
+    </x-slot>
+
+
+    {{-- Success --}}
+    @if (session('success'))
+
+        <div class="mb-6 rounded-xl border border-green-200 bg-green-50 px-4 py-4 text-sm font-medium text-green-800">
+            {{ session('success') }}
+        </div>
+
+    @endif
+
+
+    {{-- Error --}}
+    @if (session('error'))
+
+        <div class="mb-6 rounded-xl border border-red-200 bg-red-50 px-4 py-4 text-sm font-medium text-red-800">
+            {{ session('error') }}
+        </div>
+
+    @endif
+
+
+    {{-- Validation Errors --}}
+    @if ($errors->any())
+
+        <div class="mb-6 rounded-xl border border-red-200 bg-red-50 px-4 py-4">
+
+            <p class="text-sm font-semibold text-red-800 mb-2">
+                Please correct the following errors:
+            </p>
+
+            <ul class="list-disc list-inside text-sm text-red-700 space-y-1">
+
+                @foreach ($errors->all() as $error)
+
+                    <li>
+                        {{ $error }}
+                    </li>
+
+                @endforeach
+
+            </ul>
+
+        </div>
+
+    @endif
+
+
+    {{-- Placement Information --}}
+    @if ($placement)
+
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 mb-6">
+
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
+
+                <div>
+
+                    <p class="text-xs uppercase tracking-wide text-slate-400 font-semibold">
+                        Current Placement
+                    </p>
+
+                    <h3 class="text-xl font-bold text-slate-800 mt-1">
+                        {{ $placement->company?->name ?? '-' }}
+                    </h3>
+
+                    <div class="flex flex-wrap items-center gap-3 mt-2 text-sm text-slate-500">
+
+                        <span>
+                            {{ $placement->start_date?->format('d M Y') ?? '-' }}
+                            -
+                            {{ $placement->end_date?->format('d M Y') ?? '-' }}
+                        </span>
+
+                        <span class="text-slate-300">
+                            |
+                        </span>
+
+                        <span>
+                            Industry Supervisor:
+                            <strong class="text-slate-700">
+                                {{ $placement->industrySupervisor?->name ?? '-' }}
+                            </strong>
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                @if ($placement->status === 'Active')
+
+                    <span class="inline-flex items-center gap-2 self-start lg:self-center px-3 py-1.5 rounded-full bg-green-100 text-green-700 text-xs font-semibold">
+
+                        <span class="w-2 h-2 rounded-full bg-green-500"></span>
+
+                        Active Placement
+
+                    </span>
+
+                @else
+
+                    <span class="inline-flex self-start lg:self-center px-3 py-1.5 rounded-full bg-slate-100 text-slate-600 text-xs font-semibold">
+
+                        {{ $placement->status }}
+
+                    </span>
+
+                @endif
+
+            </div>
+
+        </div>
+
+    @else
+
+        <div class="bg-white rounded-2xl border border-amber-200 shadow-sm p-8 text-center">
+
+            <div class="w-14 h-14 mx-auto rounded-2xl bg-amber-100 flex items-center justify-center">
 
                 <svg
-                    class="w-5 h-5"
+                    class="w-7 h-7 text-amber-600"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -28,353 +147,385 @@
                     <path
                         stroke-linecap="round"
                         stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M12 5v14M5 12h14"
+                        stroke-width="1.8"
+                        d="M12 9v4m0 4h.01M10.29 3.86l-8.02 14A2 2 0 003.99 21h16.02a2 2 0 001.72-3.14l-8.02-14a2 2 0 00-3.42 0z"
                     />
                 </svg>
 
-                Add Logbook
+            </div>
 
-            </a>
-            @endrole
+            <h3 class="mt-4 text-lg font-bold text-slate-800">
+                No Active Placement
+            </h3>
 
-
-        </div>
-
-    </x-slot>
-
-
-    {{-- Page Section --}}
-    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-
-        <div>
-
-            <h2 class="text-2xl font-bold text-slate-800">
-                List of Daily Logbooks
-            </h2>
-
-            <p class="mt-1 text-sm text-slate-500">
-                Manage students' daily WBL activities and learning records.
+            <p class="text-sm text-slate-500 mt-1">
+                You do not currently have an active internship placement.
             </p>
 
         </div>
 
-        @role('student')
-        <a
-            href="{{ route('daily-logbooks.create') }}"
-            class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition shadow-sm"
-        >
-
-            <svg
-                class="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-            >
-                <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M12 5v14M5 12h14"
-                />
-            </svg>
-
-            Add Logbook
-
-        </a>
-        @endrole
-    </div>
-
-
-    {{-- Success --}}
-    @if (session('success'))
-
-        <div class="mb-6 mt-6 rounded-xl border border-green-200 bg-green-50 px-4 py-4 text-sm font-medium text-green-800">
-            {{ session('success') }}
-        </div>
-
     @endif
-    @php
-
-        $statusClasses = [
-            'Draft' => 'bg-slate-100 text-slate-600',
-            'Submitted' => 'bg-blue-100 text-blue-700',
-            'Approved' => 'bg-green-100 text-green-700',
-            'Rejected' => 'bg-red-100 text-red-700',
-        ];
-
-    @endphp
-
-    {{-- Filters --}}
-    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 mt-6 mb-6">
-
-        <form
-            method="GET"
-            action="{{ route('daily-logbooks.index') }}"
-            class="grid grid-cols-1 md:grid-cols-12 gap-4"
-        >
-
-            {{-- Search --}}
-            <div class="md:col-span-4">
-
-                <input
-                    type="search"
-                    name="search"
-                    value="{{ request('search') }}"
-                    placeholder="Search student, student no. or company..."
-                    class="w-full px-4 py-3 rounded-xl border-slate-200 bg-slate-50 focus:border-blue-500 focus:ring-blue-500"
-                >
-
-            </div>
 
 
-            {{-- Date From --}}
-            <div class="md:col-span-2">
-                <input
-                    type="date"
-                    name="date_from"
-                    value="{{ request('date_from') }}"
-                    class="w-full py-3 rounded-xl border-slate-200 bg-slate-50 focus:border-blue-500 focus:ring-blue-500"
-                >
-            </div>
+    @if ($placement)
+
+        {{-- Week Header --}}
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+
+            <div class="p-6 border-b border-slate-100">
+
+                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
+
+                    <div>
+
+                        <p class="text-xs uppercase tracking-wide text-slate-400 font-semibold">
+                            Weekly Logbook
+                        </p>
+
+                        <h3 class="text-xl font-bold text-slate-800 mt-1">
+
+                            {{ $weekStart->format('d M Y') }}
+
+                            <span class="text-slate-400 font-normal">
+                                -
+                            </span>
+
+                            {{ $weekEnd->format('d M Y') }}
+
+                        </h3>
+
+                        <p class="text-sm text-slate-500 mt-1">
+                            All seven days are included in the weekly submission.
+                        </p>
+
+                    </div>
 
 
-            {{-- Date To --}}
-            <div class="md:col-span-2">
-                <input
-                    type="date"
-                    name="date_to"
-                    value="{{ request('date_to') }}"
-                    class="w-full py-3 rounded-xl border-slate-200 bg-slate-50 focus:border-blue-500 focus:ring-blue-500"
-                >
-            </div>
+                    {{-- Weekly Submission Status --}}
+                    <div>
+
+                        @if ($weeklySubmission?->status === 'Submitted')
+
+                            <span class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-100 text-amber-700 text-sm font-semibold">
+
+                                <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+
+                                Pending Approval
+
+                            </span>
 
 
-            {{-- Status --}}
-            <div class="md:col-span-2">
+                        @elseif ($weeklySubmission?->status === 'Approved')
 
-                <select
-                    name="status"
-                    class="w-full py-3 rounded-xl border-slate-200 bg-slate-50 focus:border-blue-500 focus:ring-blue-500"
-                >
+                            <span class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-green-100 text-green-700 text-sm font-semibold">
 
-                    <option value="">
-                        All Status
-                    </option>
+                                <svg
+                                    class="w-4 h-4"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M5 13l4 4L19 7"
+                                    />
+                                </svg>
 
-                    <option
-                        value="Draft"
-                        @selected(request('status') === 'Draft')
-                    >
-                        Draft
-                    </option>
+                                Approved
 
-                    <option
-                        value="Submitted"
-                        @selected(request('status') === 'Submitted')
-                    >
-                        Submitted
-                    </option>
-
-                    <option
-                        value="Approved"
-                        @selected(request('status') === 'Approved')
-                    >
-                        Approved
-                    </option>
-
-                    <option
-                        value="Rejected"
-                        @selected(request('status') === 'Rejected')
-                    >
-                        Rejected
-                    </option>
-
-                </select>
-
-            </div>
+                            </span>
 
 
-            {{-- Filter --}}
-            <div class="md:col-span-2 flex gap-2">
+                        @elseif ($weeklySubmission?->status === 'Rejected')
 
-                <button
-                    type="submit"
-                    class="flex-1 px-5 py-3 rounded-xl bg-slate-800 text-white font-medium hover:bg-slate-900"
-                >
-                    Filter
-                </button>
+                            <span class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-red-100 text-red-700 text-sm font-semibold">
+
+                                <span class="w-2 h-2 rounded-full bg-red-500"></span>
+
+                                Rejected
+
+                            </span>
 
 
-                @if(request()->hasAny(['search', 'status', 'date_from', 'date_to']))
+                        @else
 
-                    <a
-                        href="{{ route('daily-logbooks.index') }}"
-                        class="px-4 py-3 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50"
-                    >
-                        Clear
-                    </a>
+                            <span class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 text-slate-600 text-sm font-semibold">
+
+                                <span class="w-2 h-2 rounded-full bg-slate-400"></span>
+
+                                Draft
+
+                            </span>
+
+                        @endif
+
+                    </div>
+
+                </div>
+
+
+                {{-- Rejection Remarks --}}
+                @if (
+                    $weeklySubmission?->status === 'Rejected'
+                    && $weeklySubmission?->remarks
+                )
+
+                    <div class="mt-5 rounded-xl border border-red-200 bg-red-50 p-4">
+
+                        <p class="text-xs font-semibold uppercase tracking-wide text-red-500">
+                            Supervisor Remarks
+                        </p>
+
+                        <p class="text-sm text-red-800 mt-1">
+                            {{ $weeklySubmission->remarks }}
+                        </p>
+
+                    </div>
 
                 @endif
 
             </div>
 
-        </form>
 
-    </div>
+            {{-- Daily Logbooks --}}
+            <div class="overflow-x-auto">
 
+                <table class="w-full">
 
-    {{-- Desktop --}}
-    <div class="hidden md:block bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                    <thead class="bg-slate-50 border-b border-slate-200">
 
-        <div class="overflow-x-auto">
+                        <tr>
 
-            <table class="w-full">
+                            <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+                                Date
+                            </th>
 
-                <thead class="bg-slate-50 border-b border-slate-200">
+                            <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+                                Day
+                            </th>
 
-                    <tr>
+                            <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+                                Work Status
+                            </th>
 
-                        <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
-                            #
-                        </th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+                                Activity / Remarks
+                            </th>
 
-                        <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
-                            Student
-                        </th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+                                Hours
+                            </th>
 
-                        <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
-                            Company
-                        </th>
+                            <th class="px-6 py-4 text-right text-xs font-semibold uppercase tracking-wide text-slate-500">
+                                Action
+                            </th>
 
-                        <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
-                            Log Date
-                        </th>
+                        </tr>
 
-                        <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
-                            Hours
-                        </th>
-
-                        <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
-                            Status
-                        </th>
-
-                        <th class="px-6 py-4 text-right text-xs font-semibold uppercase tracking-wider text-slate-500">
-                            Action
-                        </th>
-
-                    </tr>
-
-                </thead>
+                    </thead>
 
 
-                <tbody class="divide-y divide-slate-100">
+                    <tbody class="divide-y divide-slate-100">
 
-                    @forelse ($logbooks as $logbook)
+                        @forelse ($dailyLogbooks as $logbook)
 
-                        <tr class="hover:bg-slate-50 transition">
+                            <tr class="hover:bg-slate-50 transition">
 
-                            {{-- # --}}
-                            <td class="px-6 py-4 text-sm text-slate-500">
+                                {{-- Date --}}
+                                <td class="px-6 py-5 whitespace-nowrap">
 
-                                {{ $loop->iteration + ($logbooks->currentPage() - 1) * $logbooks->perPage() }}
+                                    <div class="font-semibold text-slate-800">
+                                        {{ $logbook->log_date?->format('d M Y') ?? '-' }}
+                                    </div>
 
-                            </td>
-
-
-                            {{-- Student --}}
-                            <td class="px-6 py-4">
-
-                                <div class="font-bold text-blue-600">
-                                    {{ $logbook->placement->student->student_no }}
-                                </div>
-
-                                <div class="text-sm text-slate-700 mt-1">
-                                    {{ $logbook->placement->student->name }}
-                                </div>
-
-                            </td>
+                                </td>
 
 
-                            {{-- Company --}}
-                            <td class="px-6 py-4">
+                                {{-- Day --}}
+                                <td class="px-6 py-5 whitespace-nowrap">
 
-                                <div class="font-semibold text-slate-800">
-                                    {{ $logbook->placement->company->name }}
-                                </div>
-
-                                <div class="text-xs text-slate-400 mt-1">
-                                    {{ $logbook->placement->company->code }}
-                                </div>
-
-                            </td>
-
-
-                            {{-- Date --}}
-                            <td class="px-6 py-4 text-sm text-slate-600">
-
-                                {{ $logbook->log_date->format('d/m/Y') }}
-
-                            </td>
-
-
-                            {{-- Hours --}}
-                            <td class="px-6 py-4 text-sm">
-
-                                @if ($logbook->working_hours !== null)
-
-                                    <span class="font-semibold text-slate-700">
-                                        {{ number_format((float) $logbook->working_hours, 2) }}
+                                    <span class="text-sm text-slate-600">
+                                        {{ $logbook->log_date?->format('l') ?? '-' }}
                                     </span>
 
-                                    <span class="text-slate-400">
-                                        hrs
-                                    </span>
-
-                                @else
-
-                                    <span class="text-slate-400">
-                                        -
-                                    </span>
-
-                                @endif
-
-                            </td>
+                                </td>
 
 
-                            {{-- Status --}}
-                            <td class="px-6 py-4">
+                                {{-- Work Status --}}
+                                <td class="px-6 py-5">
+
+                                    @switch($logbook->work_status)
+
+                                        @case('Working')
+
+                                            <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-100 text-blue-700 text-xs font-semibold">
+
+                                                <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+
+                                                Working
+
+                                            </span>
+
+                                            @break
 
 
+                                        @case('Off Day')
+
+                                            <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 text-slate-600 text-xs font-semibold">
+
+                                                <span class="w-2 h-2 rounded-full bg-slate-400"></span>
+
+                                                Off Day
+
+                                            </span>
+
+                                            @break
 
 
-                                <span
-                                    class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold {{ $statusClasses[$logbook->status] ?? 'bg-slate-100 text-slate-600' }}"
+                                        @case('Public Holiday')
+
+                                            <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-100 text-purple-700 text-xs font-semibold">
+
+                                                Public Holiday
+
+                                            </span>
+
+                                            @break
+
+
+                                        @case('Leave')
+
+                                            <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-100 text-amber-700 text-xs font-semibold">
+
+                                                Leave
+
+                                            </span>
+
+                                            @break
+
+
+                                        @case('Medical Leave')
+
+                                            <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-100 text-red-700 text-xs font-semibold">
+
+                                                Medical Leave
+
+                                            </span>
+
+                                            @break
+
+
+                                        @default
+
+                                            <span class="inline-flex px-3 py-1.5 rounded-full bg-slate-100 text-slate-600 text-xs font-semibold">
+
+                                                {{ $logbook->work_status ?? 'Not Set' }}
+
+                                            </span>
+
+                                    @endswitch
+
+                                </td>
+
+
+                                {{-- Activity --}}
+                                <td class="px-6 py-5 max-w-md">
+
+                                    @if ($logbook->activity)
+
+                                        <p class="text-sm text-slate-700 line-clamp-2">
+                                            {{ $logbook->activity }}
+                                        </p>
+
+                                    @elseif ($logbook->remarks)
+
+                                        <p class="text-sm text-slate-500 line-clamp-2">
+                                            {{ $logbook->remarks }}
+                                        </p>
+
+                                    @else
+
+                                        <span class="text-sm text-slate-400">
+                                            No entry
+                                        </span>
+
+                                    @endif
+
+                                </td>
+
+
+                                {{-- Hours --}}
+                                <td class="px-6 py-5 whitespace-nowrap">
+
+                                    @if ($logbook->working_hours !== null)
+
+                                        <span class="text-sm font-medium text-slate-700">
+
+                                            {{ $logbook->working_hours }}
+
+                                            {{ $logbook->working_hours == 1 ? 'hour' : 'hours' }}
+
+                                        </span>
+
+                                    @else
+
+                                        <span class="text-sm text-slate-400">
+                                            -
+                                        </span>
+
+                                    @endif
+
+                                </td>
+
+
+                                {{-- Action --}}
+                                <td class="px-6 py-5 whitespace-nowrap">
+
+                                    <div class="flex justify-end gap-2">
+
+                                        <a
+                                            href="{{ route('daily-logbooks.show', $logbook) }}"
+                                            class="inline-flex items-center justify-center px-3 py-2 rounded-lg bg-slate-100 text-slate-600 text-sm font-medium hover:bg-slate-200"
+                                        >
+                                            View
+                                        </a>
+
+
+                                        @if (
+                                            !$weeklySubmission
+                                            || $weeklySubmission->status === 'Rejected'
+                                        )
+
+                                            <a
+                                                href="{{ route('daily-logbooks.edit', $logbook) }}"
+                                                class="inline-flex items-center justify-center px-3 py-2 rounded-lg bg-blue-50 text-blue-600 text-sm font-medium hover:bg-blue-100"
+                                            >
+                                                Edit
+                                            </a>
+
+                                        @endif
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        @empty
+
+                            <tr>
+
+                                <td
+                                    colspan="6"
+                                    class="px-6 py-16 text-center"
                                 >
 
-                                    <span class="w-2 h-2 rounded-full bg-current opacity-70"></span>
+                                    <div class="w-14 h-14 mx-auto rounded-2xl bg-slate-100 flex items-center justify-center">
 
-                                    {{ $logbook->status }}
-
-                                </span>
-
-                            </td>
-
-
-                            {{-- Actions --}}
-                           <td class="px-6 py-4">
-
-                                <div class="flex justify-end items-center gap-2">
-
-                                    {{-- View --}}
-                                    <a
-                                        href="{{ route('daily-logbooks.show', $logbook) }}"
-                                        title="View"
-                                        aria-label="View logbook"
-                                        class="inline-flex items-center justify-center w-9 h-9 rounded-lg text-blue-600 hover:bg-blue-50"
-                                    >
                                         <svg
-                                            class="w-5 h-5"
+                                            class="w-7 h-7 text-slate-400"
                                             fill="none"
                                             stroke="currentColor"
                                             viewBox="0 0 24 24"
@@ -383,615 +534,233 @@
                                                 stroke-linecap="round"
                                                 stroke-linejoin="round"
                                                 stroke-width="1.8"
-                                                d="M2.25 12s3.5-6 9.75-6 9.75 6 9.75 6-3.5 6-9.75 6S2.25 12 2.25 12z"
-                                            />
-
-                                            <circle
-                                                cx="12"
-                                                cy="12"
-                                                r="2.5"
-                                                stroke-width="1.8"
+                                                d="M8 7V3m8 4V3M4 11h16M5 5h14a1 1 0 011 1v13a1 1 0 01-1 1H5a1 1 0 01-1-1V6a1 1 0 011-1z"
                                             />
                                         </svg>
-                                    </a>
 
+                                    </div>
 
-                                    {{-- Draft --}}
-                                    @if ($logbook->status === 'Draft')
+                                    <h3 class="mt-4 font-semibold text-slate-700">
+                                        No daily logbooks
+                                    </h3>
 
-                                        {{-- Edit --}}
-                                        <a
-                                            href="{{ route('daily-logbooks.edit', $logbook) }}"
-                                            title="Edit"
-                                            aria-label="Edit logbook"
-                                            class="inline-flex items-center justify-center w-9 h-9 rounded-lg text-amber-600 hover:bg-amber-50"
-                                        >
-                                            <svg
-                                                class="w-5 h-5"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                viewBox="0 0 24 24"
-                                            >
-                                                <path
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    stroke-width="1.8"
-                                                    d="M12 20h9"
-                                                />
+                                    <p class="text-sm text-slate-500 mt-1">
+                                        No logbook entries have been recorded for this week.
+                                    </p>
 
-                                                <path
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    stroke-width="1.8"
-                                                    d="M16.5 3.5a2.12 2.12 0 013 3L8 18l-4 1-1-4L16.5 3.5z"
-                                                />
-                                            </svg>
-                                        </a>
+                                </td>
 
+                            </tr>
 
-                                        {{-- Submit --}}
-                                        <form
-                                            method="POST"
-                                            action="{{ route('daily-logbooks.submit', $logbook) }}"
-                                            onsubmit="return confirm('Submit this logbook for approval?');"
-                                        >
+                        @endforelse
 
-                                            @csrf
+                    </tbody>
 
-                                            <button
-                                                type="submit"
-                                                title="Submit"
-                                                aria-label="Submit logbook"
-                                                class="inline-flex items-center justify-center w-9 h-9 rounded-lg text-green-600 hover:bg-green-50"
-                                            >
+                </table>
 
-                                                <svg
-                                                    class="w-5 h-5"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    viewBox="0 0 24 24"
-                                                >
-                                                    <path
-                                                        stroke-linecap="round"
-                                                        stroke-linejoin="round"
-                                                        stroke-width="1.8"
-                                                        d="M5 12h14M13 6l6 6-6 6"
-                                                    />
-                                                </svg>
+            </div>
 
-                                            </button>
 
-                                        </form>
+            {{-- Weekly Actions --}}
+            <div class="p-6 border-t border-slate-100 bg-slate-50">
 
-
-                                        {{-- Delete --}}
-                                        <form
-                                            method="POST"
-                                            action="{{ route('daily-logbooks.destroy', $logbook) }}"
-                                            onsubmit="return confirm('Delete this daily logbook?');"
-                                        >
-
-                                            @csrf
-                                            @method('DELETE')
-
-                                            <button
-                                                type="submit"
-                                                title="Delete"
-                                                aria-label="Delete logbook"
-                                                class="inline-flex items-center justify-center w-9 h-9 rounded-lg text-red-600 hover:bg-red-50"
-                                            >
-
-                                                <svg
-                                                    class="w-5 h-5"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    viewBox="0 0 24 24"
-                                                >
-                                                    <path
-                                                        stroke-linecap="round"
-                                                        stroke-linejoin="round"
-                                                        stroke-width="1.8"
-                                                        d="M4 7h16M10 11v6M14 11v6M6 7v13h12V7M9 7V4h6v3"
-                                                    />
-                                                </svg>
-
-                                            </button>
-
-                                        </form>
-
-                                    @endif
-
-
-                                    {{-- Submitted --}}
-                                    @if ($logbook->status === 'Submitted')
-
-                                        {{-- Approve --}}
-                                        <form
-                                            method="POST"
-                                            action="{{ route('daily-logbooks.approve', $logbook) }}"
-                                            onsubmit="return confirm('Approve this logbook?');"
-                                            >
-
-                                            @csrf
-
-                                            <button
-                                                type="submit"
-                                                title="Approve"
-                                                aria-label="Approve logbook"
-                                                class="inline-flex items-center justify-center w-9 h-9 rounded-lg text-green-600 hover:bg-green-50"
-                                                >
-
-                                                <svg
-                                                    class="w-5 h-5"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    viewBox="0 0 24 24">
-                                                    <path
-                                                        stroke-linecap="round"
-                                                        stroke-linejoin="round"
-                                                        stroke-width="1.8"
-                                                        d="M5 13l4 4L19 7"
-                                                    />
-                                                </svg>
-
-                                            </button>
-
-                                        </form>
-
-
-                                        {{-- Reject --}}
-                                        <form
-                                            method="POST"
-                                            action="{{ route('daily-logbooks.reject', $logbook) }}"
-                                            onsubmit="return confirm('Reject this logbook?');"
-                                            >
-
-                                            @csrf
-
-                                            <button
-                                                type="submit"
-                                                title="Reject"
-                                                aria-label="Reject logbook"
-                                                class="inline-flex items-center justify-center w-9 h-9 rounded-lg text-red-600 hover:bg-red-50"
-                                            >
-
-                                                <svg
-                                                    class="w-5 h-5"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    viewBox="0 0 24 24"
-                                                >
-                                                    <path
-                                                        stroke-linecap="round"
-                                                        stroke-linejoin="round"
-                                                        stroke-width="1.8"
-                                                        d="M6 6l12 12M18 6L6 18"
-                                                    />
-                                                </svg>
-
-                                            </button>
-
-                                        </form>
-
-                                    @endif
-
-
-                                    {{-- Rejected --}}
-                                    @if ($logbook->status === 'Rejected')
-
-                                        <a
-                                            href="{{ route('daily-logbooks.edit', $logbook) }}"
-                                            title="Edit & Resubmit"
-                                            aria-label="Edit and resubmit logbook"
-                                            class="inline-flex items-center justify-center w-9 h-9 rounded-lg text-amber-600 hover:bg-amber-50"
-                                        >
-
-                                            <svg
-                                                class="w-5 h-5"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                viewBox="0 0 24 24"
-                                            >
-                                                <path
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    stroke-width="1.8"
-                                                    d="M16.5 3.5a2.12 2.12 0 013 3L8 18l-4 1-1-4L16.5 3.5z"
-                                                />
-
-                                                <path
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    stroke-width="1.8"
-                                                    d="M5 12h6"
-                                                />
-                                            </svg>
-
-                                        </a>
-
-                                    @endif
-
-                                </div>
-
-                            </td>
-
-                        </tr>
-
-                    @empty
-
-                        <tr>
-
-                            <td
-                                colspan="7"
-                                class="px-6 py-16 text-center"
-                            >
-
-                                <h3 class="font-semibold text-slate-700">
-                                    No daily logbooks found
-                                </h3>
-
-                                <p class="text-sm text-slate-500 mt-1">
-                                    Add your first daily logbook to get started.
-                                </p>
-
-                            </td>
-
-                        </tr>
-
-                    @endforelse
-
-                </tbody>
-
-            </table>
-
-        </div>
-
-    </div>
-
-
-    {{-- Mobile --}}
-    <div class="md:hidden space-y-4">
-
-        @forelse ($logbooks as $logbook)
-
-            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
-
-                <div class="flex items-start justify-between gap-4">
-
-                    <div class="min-w-0">
-
-                        <div class="text-sm font-bold text-blue-600">
-                            {{ $logbook->placement->student->student_no }}
-                        </div>
-
-                        <h3 class="font-semibold text-slate-800 mt-1">
-                            {{ $logbook->placement->student->name }}
-                        </h3>
-
-                        <p class="text-sm text-slate-500 mt-1">
-                            {{ $logbook->placement->company->name }}
-                        </p>
-
-                    </div>
-
-
-                    <span
-                        class="shrink-0 px-2.5 py-1 rounded-full text-xs font-semibold {{ $statusClasses[$logbook->status] ?? 'bg-slate-100 text-slate-600' }}"
-                    >
-                        {{ $logbook->status }}
-                    </span>
-
-                </div>
-
-
-                <div class="mt-5 space-y-3 text-sm">
-
-                    <div class="flex justify-between gap-4">
-
-                        <span class="text-slate-500">
-                            Log Date
-                        </span>
-
-                        <span class="font-medium text-slate-700 text-right">
-                            {{ $logbook->log_date->format('d/m/Y') }}
-                        </span>
-
-                    </div>
-
-
-                    <div class="flex justify-between gap-4">
-
-                        <span class="text-slate-500">
-                            Working Hours
-                        </span>
-
-                        <span class="font-medium text-slate-700 text-right">
-
-                            {{ $logbook->working_hours !== null
-                                ? number_format((float) $logbook->working_hours, 2) . ' hrs'
-                                : '-' }}
-
-                        </span>
-
-                    </div>
-
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
 
                     <div>
 
-                        <p class="text-slate-500">
-                            Activity
-                        </p>
+                        @if ($weeklySubmission?->status === 'Submitted')
 
-                        <p class="font-medium text-slate-700 mt-1 line-clamp-2">
-                            {{ $logbook->activity }}
-                        </p>
+                            <p class="text-sm font-medium text-amber-700">
+                                This week's logbook has been submitted for supervisor approval.
+                            </p>
+
+                            @if ($weeklySubmission->submitted_at)
+
+                                <p class="text-xs text-slate-500 mt-1">
+                                    Submitted on
+                                    {{ $weeklySubmission->submitted_at->format('d M Y, h:i A') }}
+                                </p>
+
+                            @endif
+
+
+                        @elseif ($weeklySubmission?->status === 'Approved')
+
+                            <p class="text-sm font-medium text-green-700">
+                                This week's logbook has been approved by your Industry Supervisor.
+                            </p>
+
+
+                        @elseif ($weeklySubmission?->status === 'Rejected')
+
+                            <p class="text-sm font-medium text-red-700">
+                                Your weekly logbook was rejected. Please update the required entries and resubmit.
+                            </p>
+
+
+                        @else
+
+                            <p class="text-sm font-medium text-slate-700">
+                                Review your entries before submitting this week.
+                            </p>
+
+                            <p class="text-xs text-slate-500 mt-1">
+                                All seven days are included, including off days, leave and medical leave.
+
+                            </p>
+
+                        @endif
 
                     </div>
 
+
+                    {{-- Submit / Resubmit --}}
+                    @if (
+                        !$weeklySubmission
+                        || $weeklySubmission->status === 'Rejected'
+                    )
+
+                        <form
+                            method="POST"
+                            action="{{ route('daily-logbooks.submit-week') }}"
+                            onsubmit="return confirm('Submit this week\\'s logbook for Industry Supervisor approval?');"
+                        >
+
+                            @csrf
+
+                            <input
+                                type="hidden"
+                                name="date"
+                                value="{{ $weekStart->toDateString() }}"
+                            >
+
+                            <button
+                                type="submit"
+                                class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition shadow-sm"
+                            >
+
+                                <svg
+                                    class="w-5 h-5"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M5 13l4 4L19 7"
+                                    />
+                                </svg>
+
+                                @if ($weeklySubmission?->status === 'Rejected')
+                                    Resubmit This Week
+                                @else
+                                    Submit This Week
+                                @endif
+
+                            </button>
+
+                        </form>
+
+                    @elseif ($weeklySubmission?->status === 'Submitted')
+
+                        <span class="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-amber-100 text-amber-700 font-semibold">
+
+                            <svg
+                                class="w-5 h-5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M12 8v4l3 2"
+                                />
+
+                                <circle
+                                    cx="12"
+                                    cy="12"
+                                    r="9"
+                                    stroke-width="2"
+                                />
+                            </svg>
+
+                            Pending Approval
+
+                        </span>
+
+                    @elseif ($weeklySubmission?->status === 'Approved')
+
+                        <span class="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-green-100 text-green-700 font-semibold">
+
+                            <svg
+                                class="w-5 h-5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M5 13l4 4L19 7"
+                                />
+                            </svg>
+
+                            Week Approved
+
+                        </span>
+
+                    @endif
+
                 </div>
 
-
-                <div class="flex items-center justify-end gap-2 mt-5 pt-4 border-t border-slate-100">
-
-    {{-- View --}}
-    <a
-        href="{{ route('daily-logbooks.show', $logbook) }}"
-        title="View"
-        aria-label="View logbook"
-        class="inline-flex items-center justify-center w-9 h-9 rounded-lg text-blue-600 bg-blue-50"
-    >
-        <svg
-            class="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-        >
-            <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="1.8"
-                d="M2.25 12s3.5-6 9.75-6 9.75 6 9.75 6-3.5 6-9.75 6S2.25 12 2.25 12z"
-            />
-
-            <circle
-                cx="12"
-                cy="12"
-                r="2.5"
-                stroke-width="1.8"
-            />
-        </svg>
-    </a>
-
-
-    @if ($logbook->status === 'Draft')
-
-        {{-- Edit --}}
-        <a
-            href="{{ route('daily-logbooks.edit', $logbook) }}"
-            title="Edit"
-            aria-label="Edit logbook"
-            class="inline-flex items-center justify-center w-9 h-9 rounded-lg text-amber-600 bg-amber-50"
-        >
-            <svg
-                class="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-            >
-                <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="1.8"
-                    d="M12 20h9"
-                />
-
-                <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="1.8"
-                    d="M16.5 3.5a2.12 2.12 0 013 3L8 18l-4 1-1-4L16.5 3.5z"
-                />
-            </svg>
-        </a>
-
-
-        {{-- Submit --}}
-        <form
-            method="POST"
-            action="{{ route('daily-logbooks.submit', $logbook) }}"
-            onsubmit="return confirm('Submit this logbook for approval?');"
-        >
-
-            @csrf
-
-            <button
-                type="submit"
-                title="Submit"
-                aria-label="Submit logbook"
-                class="inline-flex items-center justify-center w-9 h-9 rounded-lg text-green-600 bg-green-50"
-            >
-                <svg
-                    class="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                >
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="1.8"
-                        d="M5 12h14M13 6l6 6-6 6"
-                    />
-                </svg>
-            </button>
-
-        </form>
-
-
-        {{-- Delete --}}
-        <form
-            method="POST"
-            action="{{ route('daily-logbooks.destroy', $logbook) }}"
-            onsubmit="return confirm('Delete this daily logbook?');"
-        >
-
-            @csrf
-            @method('DELETE')
-
-            <button
-                type="submit"
-                title="Delete"
-                aria-label="Delete logbook"
-                class="inline-flex items-center justify-center w-9 h-9 rounded-lg text-red-600 bg-red-50"
-            >
-                <svg
-                    class="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                >
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="1.8"
-                        d="M4 7h16M10 11v6M14 11v6M6 7v13h12V7M9 7V4h6v3"
-                    />
-                </svg>
-            </button>
-
-        </form>
-
-    @elseif ($logbook->status === 'Submitted')
-
-        {{-- Approve --}}
-        <form
-            method="POST"
-            action="{{ route('daily-logbooks.approve', $logbook) }}"
-            onsubmit="return confirm('Approve this logbook?');"
-        >
-
-            @csrf
-
-            <button
-                type="submit"
-                title="Approve"
-                aria-label="Approve logbook"
-                class="inline-flex items-center justify-center w-9 h-9 rounded-lg text-green-600 bg-green-50"
-            >
-                <svg
-                    class="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                >
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="1.8"
-                        d="M5 13l4 4L19 7"
-                    />
-                </svg>
-            </button>
-
-        </form>
-
-
-        {{-- Reject --}}
-        <form
-            method="POST"
-            action="{{ route('daily-logbooks.reject', $logbook) }}"
-            onsubmit="return confirm('Reject this logbook?');"
-        >
-
-            @csrf
-
-            <button
-                type="submit"
-                title="Reject"
-                aria-label="Reject logbook"
-                class="inline-flex items-center justify-center w-9 h-9 rounded-lg text-red-600 bg-red-50"
-            >
-                <svg
-                    class="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                >
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="1.8"
-                        d="M6 6l12 12M18 6L6 18"
-                    />
-                </svg>
-            </button>
-
-        </form>
-
-    @elseif ($logbook->status === 'Rejected')
-
-        {{-- Edit & Resubmit --}}
-        <a
-            href="{{ route('daily-logbooks.edit', $logbook) }}"
-            title="Edit & Resubmit"
-            aria-label="Edit and resubmit logbook"
-            class="inline-flex items-center justify-center w-9 h-9 rounded-lg text-amber-600 bg-amber-50"
-        >
-            <svg
-                class="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-            >
-                <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="1.8"
-                    d="M16.5 3.5a2.12 2.12 0 013 3L8 18l-4 1-1-4L16.5 3.5z"
-                />
-
-                <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="1.8"
-                    d="M5 12h6"
-                />
-            </svg>
-        </a>
-
-    @endif
-
-</div>
-
             </div>
-
-        @empty
-
-            <div class="bg-white rounded-2xl border border-slate-200 p-10 text-center">
-
-                <h3 class="font-semibold text-slate-700">
-                    No daily logbooks found
-                </h3>
-
-                <p class="text-sm text-slate-500 mt-1">
-                    Add your first daily logbook to get started.
-                </p>
-
-            </div>
-
-        @endforelse
-
-    </div>
-
-
-    {{-- Pagination --}}
-    @if ($logbooks->hasPages())
-
-        <div class="mt-6">
-
-            {{ $logbooks->withQueryString()->links() }}
 
         </div>
+
+
+        {{-- Add Logbook --}}
+        @can('create daily logbooks')
+
+            @if (
+                !$weeklySubmission
+                || $weeklySubmission->status === 'Rejected'
+            )
+
+                <div class="mt-6 flex justify-end">
+
+                    <a
+                        href="{{ route('daily-logbooks.create') }}"
+                        class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition shadow-sm"
+                    >
+
+                        <svg
+                            class="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M12 5v14M5 12h14"
+                            />
+                        </svg>
+
+                        Add Logbook
+
+                    </a>
+
+                </div>
+
+            @endif
+
+        @endcan
 
     @endif
 

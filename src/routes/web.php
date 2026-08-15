@@ -12,6 +12,7 @@ use App\Http\Controllers\DailyLogbookController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EnrollmentController;
 use App\Http\Controllers\IndustrySupervisorController;
+use App\Http\Controllers\IndustrySupervisorLogbookController;
 use App\Http\Controllers\LecturerController;
 use App\Http\Controllers\PlacementController;
 use App\Http\Controllers\ProfileController;
@@ -99,14 +100,61 @@ Route::middleware('auth')->group(function () {
         [DailyLogbookController::class, 'reject']
     )->name('daily-logbooks.reject');
 
+    Route::post(
+        '/daily-logbooks/submit-week',
+        [DailyLogbookController::class, 'submitWeek']
+    )->name('daily-logbooks.submit-week');
+
+
     //mentor - student
     Route::get(
         '/industry-supervisor/students',
         [IndustrySupervisorController::class, 'students']
     )->name('industry-supervisor.students');
 
+
     Route::resource('users', UserController::class);
 
+
+
+
+});
+
+Route::middleware([
+    'auth',
+    'role:Industry Mentor|Industry Supervisor',
+    'permission:view weekly logbook approvals',
+])->prefix('industry-supervisor')->name('industry-supervisor.')->group(function () {
+
+    Route::get(
+        '/logbook-approvals',
+        [IndustrySupervisorLogbookController::class, 'index']
+    )->name('logbook-approvals.index');
+
+     Route::get(
+    '/logbook-approvals/history',
+    [IndustrySupervisorLogbookController::class, 'history']
+    )->name('logbook-approvals.history');
+
+
+    Route::get(
+        '/logbook-approvals/{weeklyLogbookSubmission}',
+        [IndustrySupervisorLogbookController::class, 'show']
+    )->name('logbook-approvals.show');
+
+    Route::post(
+        '/logbook-approvals/{weeklyLogbookSubmission}/approve',
+        [IndustrySupervisorLogbookController::class, 'approve']
+    )
+        ->middleware('permission:approve weekly logbooks')
+        ->name('logbook-approvals.approve');
+
+    Route::post(
+        '/logbook-approvals/{weeklyLogbookSubmission}/reject',
+        [IndustrySupervisorLogbookController::class, 'reject']
+    )
+        ->middleware('permission:reject weekly logbooks')
+        ->name('logbook-approvals.reject');
 
 
 });

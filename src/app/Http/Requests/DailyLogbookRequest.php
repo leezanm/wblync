@@ -25,6 +25,17 @@ class DailyLogbookRequest extends FormRequest
                 'date',
             ],
 
+            'work_status' => [
+                'required',
+                Rule::in([
+                    'Working',
+                    'Off Day',
+                    'Public Holiday',
+                    'Leave',
+                    'Medical Leave',
+                ]),
+            ],
+
             'activity' => [
                 'required',
                 'string',
@@ -57,5 +68,16 @@ class DailyLogbookRequest extends FormRequest
                 'string',
             ],
         ];
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $workStatus = $this->input('work_status');
+
+        if ($workStatus && $workStatus !== 'Working') {
+            $this->merge([
+                'activity' => $workStatus,
+            ]);
+        }
     }
 }

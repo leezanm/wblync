@@ -200,59 +200,86 @@
             </p>
 
 
-            {{-- Daily Logbook --}}
-            <a
-                href="{{ route('daily-logbooks.index') }}"
-                @click="sidebarOpen = false"
-                class="
-                    flex
-                    items-center
-                    gap-3
-                    px-4
-                    py-3
-                    rounded-xl
-                    transition
-                    {{ request()->routeIs('daily-logbooks.*')
-                        ? 'bg-blue-600 text-white'
-                        : 'text-slate-300 hover:bg-slate-800 hover:text-white'
-                    }}
-                "
-            >
+            {{--  Logbook --}}
 
-                <svg
-                    class="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+                <a
+                    href="{{ route('industry-supervisor.logbook-approvals.index') }}"
+                    class="
+                        flex items-center gap-3 px-4 py-3 mb-2 rounded-xl transition
+                        {{ request()->routeIs('industry-supervisor.logbook-approvals.index')
+                            ? 'bg-blue-600 text-white'
+                            : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                        }}
+                    "
                 >
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="1.8"
-                        d="M6 3.75h9.5L19 7.25v13H6a2 2 0 01-2-2v-12.5a2 2 0 012-2z"
-                    />
 
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="1.8"
-                        d="M15 3.75v4h4"
-                    />
+                    <svg
+                        class="w-5 h-5 shrink-0"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="1.8"
+                            d="M9 12l2 2 4-4"
+                        />
 
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="1.8"
-                        d="M8.5 11h7M8.5 14.5h7M8.5 18h4"
-                    />
-                </svg>
+                        <circle
+                            cx="12"
+                            cy="12"
+                            r="9"
+                            stroke-width="1.8"
+                        />
+                    </svg>
 
-                <span>
-                    Daily Logbook
-                </span>
+                    <span>
+                        Logbook Approvals
+                    </span>
 
-            </a>
+                </a>
 
+
+
+                <a
+                    href="{{ route('industry-supervisor.logbook-approvals.history') }}"
+                    class="
+                        flex items-center gap-3 px-4 py-3 rounded-xl transition
+                        {{ request()->routeIs('industry-supervisor.logbook-approvals.history')
+                            ? 'bg-blue-600 text-white'
+                            : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                        }}
+                    "
+                >
+
+                    <svg
+                        class="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <circle
+                            cx="12"
+                            cy="12"
+                            r="8.25"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="1.8"
+                        />
+
+                        <path
+                            d="M12 7.5v4.5l3 2.25"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="1.8"
+                        />
+                    </svg>
+                    <span>
+                        Approval History
+                    </span>
+
+                </a>
 
             {{-- Assessment --}}
             {{-- <a

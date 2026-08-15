@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\WeeklyLogbookSubmission;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,14 +11,16 @@ class DailyLogbook extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'placement_id',
-        'log_date',
-        'activity',
-        'learning_outcome',
-        'working_hours',
-        'status',
-        'remarks',
+   protected $fillable = [
+    'placement_id',
+    'weekly_logbook_submission_id',
+    'log_date',
+    'work_status',
+    'activity',
+    'learning_outcome',
+    'working_hours',
+    'status',
+    'remarks',
     ];
 
     protected function casts(): array
@@ -26,10 +29,19 @@ class DailyLogbook extends Model
             'log_date' => 'date',
             'working_hours' => 'decimal:2',
         ];
+
     }
 
     public function placement(): BelongsTo
     {
         return $this->belongsTo(Placement::class);
+    }
+
+    public function weeklySubmission(): BelongsTo
+    {
+        return $this->belongsTo(
+            WeeklyLogbookSubmission::class,
+            'weekly_logbook_submission_id'
+        );
     }
 }
