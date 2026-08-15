@@ -61,12 +61,12 @@ class PlacementRequest extends FormRequest
             ],
 
             'start_date' => [
-                'required',
+                'nullable',
                 'date',
             ],
 
             'end_date' => [
-                'required',
+                'nullable',
                 'date',
                 'after_or_equal:start_date',
             ],
@@ -92,10 +92,6 @@ class PlacementRequest extends FormRequest
             'academic_session_id.required' => 'Academic session is required.',
 
             'academic_session_id.exists' => 'Selected academic session does not exist.',
-
-            'start_date.required' => 'Start date is required.',
-
-            'end_date.required' => 'End date is required.',
 
             'end_date.after_or_equal' => 'End date must be on or after the start date.',
 

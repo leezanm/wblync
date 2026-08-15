@@ -170,8 +170,22 @@ class PlacementController extends Controller
     public function store(
         PlacementRequest $request
     ): RedirectResponse {
+        $academicSession = AcademicSession::query()->find(
+            $request->integer('academic_session_id')
+        );
+
+        if (! $academicSession || ! $academicSession->start_date || ! $academicSession->end_date) {
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'academic_session_id' => 'Selected academic session period is invalid.',
+                ]);
+        }
+
         Placement::create([
             ...$request->validated(),
+            'start_date' => $academicSession->start_date->toDateString(),
+            'end_date' => $academicSession->end_date->toDateString(),
             'uuid' => (string) str()->uuid(),
 
         ]);
@@ -278,8 +292,24 @@ class PlacementController extends Controller
         PlacementRequest $request,
         Placement $placement
     ): RedirectResponse {
+        $academicSession = AcademicSession::query()->find(
+            $request->integer('academic_session_id')
+        );
+
+        if (! $academicSession || ! $academicSession->start_date || ! $academicSession->end_date) {
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'academic_session_id' => 'Selected academic session period is invalid.',
+                ]);
+        }
+
         $placement->update(
-            $request->validated()
+            [
+                ...$request->validated(),
+                'start_date' => $academicSession->start_date->toDateString(),
+                'end_date' => $academicSession->end_date->toDateString(),
+            ]
         );
 
         return redirect()

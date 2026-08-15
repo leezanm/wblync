@@ -125,6 +125,8 @@
                 @foreach ($academicSessions as $session)
                     <option
                         value="{{ $session->id }}"
+                        data-start-date="{{ $session->start_date?->format('Y-m-d') }}"
+                        data-end-date="{{ $session->end_date?->format('Y-m-d') }}"
                         @selected(
                             (string) old(
                                 'academic_session_id',
@@ -145,7 +147,7 @@
         </div>
 
 
-        
+
 
         {{-- Industry Supervisor --}}
         <div>
@@ -247,8 +249,13 @@
                 name="start_date"
                 value="{{ old('start_date', isset($placement) && $placement->start_date ? $placement->start_date->format('Y-m-d') : '') }}"
                 required
+                readonly
                 class="w-full rounded-xl border-slate-300 bg-white px-4 py-3 focus:border-blue-500 focus:ring-blue-500"
             >
+
+            <p class="mt-2 text-xs text-slate-500">
+                Automatically based on selected academic session period.
+            </p>
 
             @error('start_date')
                 <p class="mt-2 text-sm text-red-600">
@@ -257,45 +264,7 @@
             @enderror
         </div>
 
-        <script>
-            (function () {
-                const companySelect = document.getElementById('company_id');
-                const supervisorSelect = document.getElementById('industry_supervisor_id');
 
-                if (!companySelect || !supervisorSelect) {
-                    return;
-                }
-
-                const supervisorOptions = Array.from(supervisorSelect.options).slice(1);
-
-                const filterByCompany = (selectEl, options, companyId) => {
-                    const currentValue = selectEl.value;
-                    let hasCurrentValue = false;
-
-                    options.forEach((option) => {
-                        const match = !companyId || option.dataset.companyId === companyId;
-                        option.hidden = !match;
-                        option.disabled = !match;
-
-                        if (option.value === currentValue && match) {
-                            hasCurrentValue = true;
-                        }
-                    });
-
-                    if (currentValue && !hasCurrentValue) {
-                        selectEl.value = '';
-                    }
-                };
-
-                const applyFilters = () => {
-                    const companyId = companySelect.value;
-                    filterByCompany(supervisorSelect, supervisorOptions, companyId);
-                };
-
-                companySelect.addEventListener('change', applyFilters);
-                applyFilters();
-            })();
-        </script>
 
 
         {{-- End Date --}}
@@ -314,8 +283,13 @@
                 name="end_date"
                 value="{{ old('end_date', isset($placement) && $placement->end_date ? $placement->end_date->format('Y-m-d') : '') }}"
                 required
+                readonly
                 class="w-full rounded-xl border-slate-300 bg-white px-4 py-3 focus:border-blue-500 focus:ring-blue-500"
             >
+
+            <p class="mt-2 text-xs text-slate-500">
+                Automatically based on selected academic session period.
+            </p>
 
             @error('end_date')
                 <p class="mt-2 text-sm text-red-600">
@@ -354,3 +328,56 @@
     </div>
 
 </div>
+   <script>
+            (function () {
+                const companySelect = document.getElementById('company_id');
+                const sessionSelect = document.getElementById('academic_session_id');
+                const startDateInput = document.getElementById('start_date');
+                const endDateInput = document.getElementById('end_date');
+                const supervisorSelect = document.getElementById('industry_supervisor_id');
+
+                if (!companySelect || !sessionSelect || !startDateInput || !endDateInput || !supervisorSelect) {
+                    return;
+                }
+
+                const supervisorOptions = Array.from(supervisorSelect.options).slice(1);
+
+                const filterByCompany = (selectEl, options, companyId) => {
+                    const currentValue = selectEl.value;
+                    let hasCurrentValue = false;
+
+                    options.forEach((option) => {
+                        const match = !!companyId && option.dataset.companyId === companyId;
+                        option.hidden = !match;
+                        option.disabled = !match;
+
+                        if (option.value === currentValue && match) {
+                            hasCurrentValue = true;
+                        }
+                    });
+
+                    if (currentValue && !hasCurrentValue) {
+                        selectEl.value = '';
+                    }
+                };
+
+                const applyFilters = () => {
+                    const companyId = companySelect.value;
+                    filterByCompany(supervisorSelect, supervisorOptions, companyId);
+                };
+
+                const applySessionPeriod = () => {
+                    const selectedOption = sessionSelect.options[sessionSelect.selectedIndex];
+                    const startDate = selectedOption?.dataset?.startDate ?? '';
+                    const endDate = selectedOption?.dataset?.endDate ?? '';
+
+                    startDateInput.value = startDate;
+                    endDateInput.value = endDate;
+                };
+
+                companySelect.addEventListener('change', applyFilters);
+                sessionSelect.addEventListener('change', applySessionPeriod);
+                applyFilters();
+                applySessionPeriod();
+            })();
+        </script>
