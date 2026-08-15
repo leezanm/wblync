@@ -42,9 +42,9 @@ class BackfillUsers extends Command
         $students = Student::query()
             ->whereNull('user_id')
             ->get();
+        $password = 'password';
 
         $this->info("Students found: {$students->count()}");
-
         foreach ($students as $student) {
 
             if (! $student->email) {
@@ -61,7 +61,7 @@ class BackfillUsers extends Command
                 ],
                 [
                     'name' => $student->name,
-                    'password' => Hash::make(Str::random(32)),
+                    'password' => Hash::make($password),
                 ]
             );
 
@@ -84,6 +84,7 @@ class BackfillUsers extends Command
         $lecturers = Lecturer::query()
             ->whereNull('user_id')
             ->get();
+        $password = 'password';
 
         $this->info("Lecturers found: {$lecturers->count()}");
 
@@ -103,7 +104,7 @@ class BackfillUsers extends Command
                 ],
                 [
                     'name' => $lecturer->name,
-                    'password' => Hash::make(Str::random(32)),
+                    'password' => Hash::make($password),
                 ]
             );
 
@@ -130,6 +131,7 @@ class BackfillUsers extends Command
         $this->info(
             "Industry supervisors found: {$supervisors->count()}"
         );
+        $password = 'password';
 
         foreach ($supervisors as $supervisor) {
 
@@ -147,7 +149,7 @@ class BackfillUsers extends Command
                 ],
                 [
                     'name' => $supervisor->name,
-                    'password' => Hash::make(Str::random(32)),
+                    'password' => Hash::make($password),
                 ]
             );
 
