@@ -53,7 +53,7 @@ class PermissionSeeder extends Seeder
             'reject daily logbooks',
 
             'view weekly logbook approvals',
-             'approve weekly logbooks',
+            'approve weekly logbooks',
             'reject weekly logbooks',
 
             'view assessments',
@@ -219,18 +219,18 @@ class PermissionSeeder extends Seeder
         ]);
 
         // Student
-       $student->syncPermissions([
-        'view dashboard',
+        $student->syncPermissions([
+            'view dashboard',
 
-        'view placements',
+            'view placements',
 
-        'view daily logbooks',
-        'create daily logbooks',
-        'update daily logbooks',
-        'delete daily logbooks',
-        'submit daily logbooks',
+            'view daily logbooks',
+            'create daily logbooks',
+            'update daily logbooks',
+            'delete daily logbooks',
+            'submit daily logbooks',
 
-        'view assessments',
+            'view assessments',
         ]);
     }
 }

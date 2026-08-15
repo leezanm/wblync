@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\WeeklyLogbookSubmission;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,16 +10,16 @@ class DailyLogbook extends Model
 {
     use HasFactory;
 
-   protected $fillable = [
-    'placement_id',
-    'weekly_logbook_submission_id',
-    'log_date',
-    'work_status',
-    'activity',
-    'learning_outcome',
-    'working_hours',
-    'status',
-    'remarks',
+    protected $fillable = [
+        'placement_id',
+        'weekly_logbook_submission_id',
+        'log_date',
+        'work_status',
+        'activity',
+        'learning_outcome',
+        'working_hours',
+        'status',
+        'remarks',
     ];
 
     protected function casts(): array

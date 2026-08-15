@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Supervisor;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -35,7 +34,7 @@ class Lecturer extends Model
         return $this->belongsTo(User::class);
     }
 
-   public function supervisors(): HasMany
+    public function supervisors(): HasMany
     {
         return $this->hasMany(
             Supervisor::class

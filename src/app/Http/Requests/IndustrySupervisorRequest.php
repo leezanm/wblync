@@ -55,5 +55,4 @@ class IndustrySupervisorRequest extends FormRequest
             ],
         ];
     }
-
 }

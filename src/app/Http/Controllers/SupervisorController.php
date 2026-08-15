@@ -6,6 +6,7 @@ use App\Http\Requests\SupervisorRequest;
 use App\Models\AcademicSession;
 use App\Models\Lecturer;
 use App\Models\Semester;
+use App\Models\Student;
 use App\Models\Supervisor;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -111,8 +112,17 @@ class SupervisorController extends Controller
         SupervisorRequest $request
     ): RedirectResponse {
 
-        $supervisor = Supervisor::create(
-            $request->validated()
+        $validated = $request->validated();
+
+        $supervisor = Supervisor::firstOrCreate(
+            [
+                'lecturer_id' => $validated['lecturer_id'],
+                'academic_session_id' => $validated['academic_session_id'],
+                'semester_id' => $validated['semester_id'],
+            ],
+            [
+                'status' => $validated['status'],
+            ]
         );
 
         return redirect()
@@ -123,8 +133,8 @@ class SupervisorController extends Controller
             );
     }
 
-  public function show(
-    Supervisor $supervisor
+    public function show(
+        Supervisor $supervisor
     ): View {
 
         $supervisor->load([
@@ -200,7 +210,7 @@ class SupervisorController extends Controller
     }
 
     public function addStudent(
-    Supervisor $supervisor
+        Supervisor $supervisor
     ): View {
 
         $supervisor->load([
@@ -213,7 +223,7 @@ class SupervisorController extends Controller
             ->students()
             ->pluck('student_id');
 
-        $students = \App\Models\Student::query()
+        $students = Student::query()
             ->whereNotIn('id', $assignedStudentIds)
             ->orderBy('name')
             ->get();
@@ -228,8 +238,8 @@ class SupervisorController extends Controller
     }
 
     public function storeStudent(
-    Request $request,
-    Supervisor $supervisor
+        Request $request,
+        Supervisor $supervisor
     ): RedirectResponse {
 
         $data = $request->validate([

@@ -3,7 +3,6 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use App\Models\IndustrySupervisor;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -44,7 +43,7 @@ class User extends Authenticatable
         return $this->hasOne(Student::class);
     }
 
-     public function lecturer(): HasOne
+    public function lecturer(): HasOne
     {
         return $this->hasOne(Lecturer::class);
     }

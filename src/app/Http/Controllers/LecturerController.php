@@ -50,12 +50,10 @@ class LecturerController extends Controller
         );
     }
 
-
     public function create(): View
     {
         return view('lecturers.create');
     }
-
 
     public function store(
         LecturerRequest $request
@@ -91,7 +89,6 @@ class LecturerController extends Controller
             );
     }
 
-
     public function show(
         Lecturer $lecturer
     ): View {
@@ -104,7 +101,6 @@ class LecturerController extends Controller
         );
     }
 
-
     public function edit(
         Lecturer $lecturer
     ): View {
@@ -114,7 +110,6 @@ class LecturerController extends Controller
             compact('lecturer')
         );
     }
-
 
     public function update(
         LecturerRequest $request,
@@ -149,7 +144,6 @@ class LecturerController extends Controller
                 'Lecturer updated successfully.'
             );
     }
-
 
     public function destroy(
         Lecturer $lecturer

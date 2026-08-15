@@ -221,7 +221,7 @@ class IndustrySupervisorLogbookController extends Controller
     }
 
     public function submitWeek(
-    Request $request
+        Request $request
     ): RedirectResponse {
         $student = $request->user()->student;
 

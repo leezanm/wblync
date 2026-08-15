@@ -20,7 +20,7 @@ class IndustrySupervisor extends Model
         'email',
         'phone',
         'status',
-        'user_id'
+        'user_id',
     ];
 
     protected static function booted(): void
@@ -46,5 +46,4 @@ class IndustrySupervisor extends Model
     {
         return $this->hasMany(Placement::class);
     }
-
 }

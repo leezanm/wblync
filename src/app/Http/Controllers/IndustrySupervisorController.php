@@ -18,8 +18,6 @@ class IndustrySupervisorController extends Controller
         $query = IndustrySupervisor::query()
             ->with('company');
 
-
-
         if ($request->filled('search')) {
 
             $search = $request->string('search')->trim();
@@ -41,14 +39,12 @@ class IndustrySupervisorController extends Controller
             });
         }
 
-
         if ($request->filled('company_id')) {
             $query->where(
                 'company_id',
                 $request->integer('company_id')
             );
         }
-
 
         if ($request->filled('status')) {
 
@@ -58,16 +54,13 @@ class IndustrySupervisorController extends Controller
             );
         }
 
-
         $supervisors = $query
             ->latest()
             ->paginate(10);
 
-
         $companies = Company::query()
             ->orderBy('name')
             ->get();
-
 
         return view(
             'industry-supervisors.index',
@@ -77,7 +70,6 @@ class IndustrySupervisorController extends Controller
             )
         );
     }
-
 
     public function create(): View
     {
@@ -94,9 +86,8 @@ class IndustrySupervisorController extends Controller
         );
     }
 
-
-   public function store(
-    IndustrySupervisorRequest $request
+    public function store(
+        IndustrySupervisorRequest $request
     ): RedirectResponse {
 
         $data = $request->validated();
@@ -133,9 +124,8 @@ class IndustrySupervisorController extends Controller
             );
     }
 
-
     public function show(
-    IndustrySupervisor $industrySupervisor
+        IndustrySupervisor $industrySupervisor
     ): View {
 
         $industrySupervisor->load([
@@ -148,7 +138,6 @@ class IndustrySupervisorController extends Controller
             compact('industrySupervisor')
         );
     }
-
 
     public function edit(
         IndustrySupervisor $industrySupervisor
@@ -167,12 +156,10 @@ class IndustrySupervisorController extends Controller
         );
     }
 
-
     public function update(
         IndustrySupervisorRequest $request,
         IndustrySupervisor $industrySupervisor
     ): RedirectResponse {
-
 
         $data = $request->validated();
 
@@ -190,7 +177,6 @@ class IndustrySupervisorController extends Controller
             'email' => $data['email'],
         ]);
 
-
         return redirect()
             ->route(
                 'industry-supervisors.show',
@@ -202,13 +188,11 @@ class IndustrySupervisorController extends Controller
             );
     }
 
-
     public function destroy(
         IndustrySupervisor $industrySupervisor
     ): RedirectResponse {
 
         $industrySupervisor->delete();
-
 
         return redirect()
             ->route('industry-supervisors.index')
