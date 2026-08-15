@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -35,13 +34,7 @@ return new class extends Migration
                 $table->boolean('status')->default(true);
 
                 $table->timestamps();
-            });
-        }
 
-        $indexExists = collect(DB::select("SHOW INDEX FROM class_rooms WHERE Key_name = 'class_rooms_acad_sem_prog_code_unique'"))->isNotEmpty();
-
-        if (! $indexExists) {
-            Schema::table('class_rooms', function (Blueprint $table) {
                 $table->unique([
                     'academic_session_id',
                     'semester_id',

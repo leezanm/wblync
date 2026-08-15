@@ -24,11 +24,9 @@ use App\Http\Controllers\SupervisorController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
-
-Route::redirect('/', '/login');
+Route::get('/', function () {
+    return view('welcome');
+});
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
@@ -38,6 +36,8 @@ Route::middleware('auth')->group(function () {
 
     // Profile routes
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/change-password', [ChangePasswordController::class, 'edit'])->name('password.change.edit');
     Route::put('/change-password', [ChangePasswordController::class, 'update'])->name('password.change.update');
 

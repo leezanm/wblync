@@ -9,6 +9,20 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (DB::getDriverName() === 'sqlite') {
+            if (! Schema::hasColumn('industry_supervisors', 'company_id')) {
+                Schema::table('industry_supervisors', function (Blueprint $table) {
+                    $table->foreignId('company_id')
+                        ->nullable()
+                        ->after('uuid')
+                        ->constrained('companies')
+                        ->nullOnDelete();
+                });
+            }
+
+            return;
+        }
+
         Schema::table('industry_supervisors', function (Blueprint $table) {
             $table->foreignId('company_id')
                 ->nullable()
@@ -32,6 +46,16 @@ return new class extends Migration
 
     public function down(): void
     {
+        if (DB::getDriverName() === 'sqlite') {
+            if (Schema::hasColumn('industry_supervisors', 'company_id')) {
+                Schema::table('industry_supervisors', function (Blueprint $table) {
+                    $table->dropColumn('company_id');
+                });
+            }
+
+            return;
+        }
+
         Schema::table('industry_supervisors', function (Blueprint $table) {
             $table->foreignId('company_contact_id')
                 ->nullable()

@@ -9,6 +9,10 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (DB::getDriverName() === 'sqlite') {
+            return;
+        }
+
         Schema::table('industry_supervisors', function (Blueprint $table) {
             $table->dropForeign(['company_contact_id']);
         });
@@ -27,6 +31,10 @@ return new class extends Migration
 
     public function down(): void
     {
+        if (DB::getDriverName() === 'sqlite') {
+            return;
+        }
+
         DB::table('industry_supervisors')
             ->whereNull('company_contact_id')
             ->delete();
