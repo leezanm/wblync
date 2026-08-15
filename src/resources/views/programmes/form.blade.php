@@ -30,9 +30,10 @@
             name="duration"
             min="1"
             max="10"
+            step="0.1"
             value="{{ old('duration', $programme->duration ?? '') }}"
             class="w-full rounded-xl border-slate-300 focus:border-blue-600 focus:ring-blue-600"
-            placeholder="3"
+            placeholder="2.5"
         >
 
         @error('duration')

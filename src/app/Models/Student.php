@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\SupervisorStudent;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -59,4 +60,10 @@ class Student extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function supervisorAssignments(): HasMany
+    {
+        return $this->hasMany(SupervisorStudent::class);
+    }
+
 }

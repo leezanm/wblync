@@ -32,6 +32,7 @@ class PermissionSeeder extends Seeder
             'create students',
             'update students',
             'delete students',
+            'view supervised students',
 
             'view companies',
             'create companies',
@@ -138,9 +139,9 @@ class PermissionSeeder extends Seeder
             'delete placements',
 
             'view daily logbooks',
-            'create daily logbooks',
+
             'update daily logbooks',
-            'delete daily logbooks',
+       
             'submit daily logbooks',
             'approve daily logbooks',
             'reject daily logbooks',
@@ -191,6 +192,7 @@ class PermissionSeeder extends Seeder
             'view students',
             'view companies',
             'view placements',
+            'view supervised students',
 
             'view daily logbooks',
             'approve daily logbooks',

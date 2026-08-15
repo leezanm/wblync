@@ -12,12 +12,14 @@ use App\Http\Controllers\DailyLogbookController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EnrollmentController;
 use App\Http\Controllers\IndustrySupervisorController;
+use App\Http\Controllers\LecturerController;
 use App\Http\Controllers\PlacementController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProgrammeController;
 use App\Http\Controllers\SemesterController;
 use App\Http\Controllers\StudentAcademicProfileController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\SupervisorController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -66,7 +68,20 @@ Route::middleware('auth')->group(function () {
     Route::patch('placements/{placement}/status', [PlacementController::class, 'updateStatus'])->name('placements.status');
     Route::resource('company-contacts', CompanyContactController::class);
     Route::resource('assessments', AssessmentController::class);
-Route::resource('industry-supervisors', IndustrySupervisorController::class);
+    Route::resource('industry-supervisors', IndustrySupervisorController::class);
+    Route::resource('lecturers',LecturerController::class);
+    Route::resource('supervisors',SupervisorController::class);
+    //assign supervisor
+    Route::get(
+        'supervisors/{supervisor}/students/create',
+        [SupervisorController::class, 'addStudent']
+    )->name('supervisors.students.create');
+
+    Route::post(
+        'supervisors/{supervisor}/students',
+        [SupervisorController::class, 'storeStudent']
+    )->name('supervisors.students.store');
+
     // logbooks
     Route::resource('daily-logbooks', DailyLogbookController::class);
     Route::post(
@@ -84,7 +99,15 @@ Route::resource('industry-supervisors', IndustrySupervisorController::class);
         [DailyLogbookController::class, 'reject']
     )->name('daily-logbooks.reject');
 
+    //mentor - student
+    Route::get(
+        '/industry-supervisor/students',
+        [IndustrySupervisorController::class, 'students']
+    )->name('industry-supervisor.students');
+
     Route::resource('users', UserController::class);
+
+
 
 });
 

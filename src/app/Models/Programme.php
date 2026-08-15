@@ -21,6 +21,7 @@ class Programme extends Model
     protected function casts(): array
     {
         return [
+            'duration' => 'decimal:1',
             'status' => 'boolean',
         ];
     }

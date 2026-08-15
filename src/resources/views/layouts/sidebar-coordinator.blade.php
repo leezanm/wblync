@@ -381,49 +381,6 @@
 
             </a>
 
-
-            {{-- Students --}}
-            <a
-                href="{{ route('students.index') }}"
-                @click="sidebarOpen = false"
-                class="
-                    flex
-                    items-center
-                    gap-3
-                    px-4
-                    py-3
-                    rounded-xl
-                    transition
-                    {{ request()->routeIs('students.*')
-                        ? 'bg-blue-600 text-white'
-                        : 'text-slate-300 hover:bg-slate-800 hover:text-white'
-                    }}
-                "
-            >
-
-                <svg
-                    class="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                >
-
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="1.8"
-                        d="M16 19v-1.5A3.5 3.5 0 0012.5 14h-5A3.5 3.5 0 004 17.5V19M10 10a3 3 0 100-6 3 3 0 000 6zM16 7a3 3 0 110 6M17 19v-1.5a3.5 3.5 0 00-2-3.18"
-                    />
-
-                </svg>
-
-                <span>
-                    Students
-                </span>
-
-            </a>
-
-
             {{-- Class Courses --}}
             <a
                 href="{{ route('class-courses.index') }}"
@@ -470,6 +427,139 @@
                     Class Courses
                 </span>
 
+            </a>
+
+            {{-- Students --}}
+            <a
+                href="{{ route('students.index') }}"
+                @click="sidebarOpen = false"
+                class="
+                    flex
+                    items-center
+                    gap-3
+                    px-4
+                    py-3
+                    rounded-xl
+                    transition
+                    {{ request()->routeIs('students.*')
+                        ? 'bg-blue-600 text-white'
+                        : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                    }}
+                "
+            >
+
+                <svg
+                    class="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                >
+
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="1.8"
+                        d="M16 19v-1.5A3.5 3.5 0 0012.5 14h-5A3.5 3.5 0 004 17.5V19M10 10a3 3 0 100-6 3 3 0 000 6zM16 7a3 3 0 110 6M17 19v-1.5a3.5 3.5 0 00-2-3.18"
+                    />
+
+                </svg>
+
+                <span>
+                    Students
+                </span>
+
+            </a>
+
+
+            {{-- Enrolments --}}
+            <a
+                href="{{ route('enrollments.index') }}"
+                @click="sidebarOpen = false"
+                class="
+                    flex
+                    items-center
+                    gap-3
+                    px-4
+                    py-3
+                    rounded-xl
+                    transition
+                    {{ request()->routeIs('enrollments.*')
+                        ? 'bg-blue-600 text-white'
+                        : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                    }}
+                "
+            >
+
+                <svg
+                    class="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="1.8"
+                        d="M7.5 3.75h9A2.25 2.25 0 0118.75 6v14.25H5.25V6A2.25 2.25 0 017.5 3.75z"
+                    />
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="1.8"
+                        d="M9 8.25h6M9 12h6M9 15.75h3"
+                    />
+                </svg>
+
+                <span>
+                    Enrolments
+                </span>
+
+            </a>
+
+
+            {{-- Lecturers --}}
+            <a
+                href="{{ route('lecturers.index') }}"
+                @click="sidebarOpen = false"
+                class="
+                    flex items-center gap-3 px-4 py-3 rounded-xl transition
+                    {{ request()->routeIs('lecturers.*')
+                        ? 'bg-blue-600 text-white'
+                        : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                    }}
+                "
+            >
+                <svg
+                    class="w-5 h-5 shrink-0"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="1.8"
+                        d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"
+                    />
+
+                    <circle
+                        cx="9"
+                        cy="7"
+                        r="4"
+                        stroke-width="1.8"
+                    />
+
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="1.8"
+                        d="M19 8v6M22 11h-6"
+                    />
+                </svg>
+
+                <span>
+                    Lecturers
+                </span>
             </a>
 
         </div>
@@ -586,55 +676,52 @@
 
             {{-- Industry Supervisor --}}
           <a
-    href="{{ route('industry-supervisors.index') }}"
-    @click="sidebarOpen = false"
-    class="
-        flex items-center gap-3 px-4 py-3 rounded-xl transition
-        {{ request()->routeIs('industry-supervisors.*')
-            ? 'bg-blue-600 text-white'
-            : 'text-slate-300 hover:bg-slate-800 hover:text-white'
-        }}
-    "
->
+                href="{{ route('industry-supervisors.index') }}"
+                @click="sidebarOpen = false"
+                class="
+                    flex items-center gap-3 px-4 py-3 rounded-xl transition
+                    {{ request()->routeIs('industry-supervisors.*')
+                        ? 'bg-blue-600 text-white'
+                        : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                    }}
+                "
+            >
 
-    <svg
-        class="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-    >
+                <svg
+                    class="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                >
 
-        <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="1.8"
-            d="M16 19v-1.5A3.5 3.5 0 0012.5 14h-5A3.5 3.5 0 004 17.5V19M10 10a3 3 0 100-6 3 3 0 000 6z"
-        />
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="1.8"
+                        d="M16 19v-1.5A3.5 3.5 0 0012.5 14h-5A3.5 3.5 0 004 17.5V19M10 10a3 3 0 100-6 3 3 0 000 6z"
+                    />
 
-        <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="1.8"
-            d="M16 11a3 3 0 100-6"
-        />
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="1.8"
+                        d="M16 11a3 3 0 100-6"
+                    />
 
-        <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="1.8"
-            d="M17 14.5a3.5 3.5 0 013 3.5V19"
-        />
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="1.8"
+                        d="M17 14.5a3.5 3.5 0 013 3.5V19"
+                    />
 
-    </svg>
+                </svg>
 
-    <span>
-        Industry Supervisors
-    </span>
+                <span>
+                    Industry Mentor
+                </span>
 
-</a>
-
-
-
+            </a>
 
             {{-- Student Placement --}}
             <a
@@ -683,6 +770,52 @@
                 </span>
 
             </a>
+
+            {{-- Supervisors --}}
+            <a
+                href="{{ route('supervisors.index') }}"
+                @click="sidebarOpen = false"
+                class="
+                    flex items-center gap-3 px-4 py-3 rounded-xl transition
+                    {{ request()->routeIs('supervisors.*')
+                        ? 'bg-blue-600 text-white'
+                        : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                    }}
+                "
+            >
+                <svg
+                    class="w-5 h-5 shrink-0"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="1.8"
+                        d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"
+                    />
+
+                    <circle
+                        cx="9"
+                        cy="7"
+                        r="4"
+                        stroke-width="1.8"
+                    />
+
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="1.8"
+                        d="M19 8v6M22 11h-6"
+                    />
+                </svg>
+
+                <span>
+                    Supervisors
+                </span>
+            </a>
+
 
         </div>
 

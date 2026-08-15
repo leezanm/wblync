@@ -4,7 +4,7 @@
 
         <div>
             <h2 class="text-2xl font-bold text-slate-800">
-                Add Company Contact
+                Company Contact
             </h2>
         </div>
 

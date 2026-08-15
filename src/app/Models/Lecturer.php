@@ -2,39 +2,32 @@
 
 namespace App\Models;
 
+use App\Models\Supervisor;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
-class IndustrySupervisor extends Model
+class Lecturer extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'uuid',
-        'company_id',
+        'user_id',
+        'staff_no',
         'name',
-        'position',
         'email',
         'phone',
         'status',
-        'user_id'
     ];
 
     protected static function booted(): void
     {
-        static::creating(function (IndustrySupervisor $supervisor) {
-            $supervisor->uuid ??= (string) Str::uuid();
+        static::creating(function (Lecturer $lecturer) {
+            $lecturer->uuid ??= (string) Str::uuid();
         });
-    }
-
-    public function company(): BelongsTo
-    {
-        return $this->belongsTo(
-            Company::class
-        );
     }
 
     public function user(): BelongsTo
@@ -42,9 +35,10 @@ class IndustrySupervisor extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function placements(): HasMany
+   public function supervisors(): HasMany
     {
-        return $this->hasMany(Placement::class);
+        return $this->hasMany(
+            Supervisor::class
+        );
     }
-
 }

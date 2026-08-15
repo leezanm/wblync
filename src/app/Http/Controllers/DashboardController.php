@@ -47,7 +47,7 @@ class DashboardController extends Controller
                 ->pluck('id');
 
             $activePlacement = Placement::query()
-                ->with(['company', 'academicSession', 'companyContact'])
+                ->with(['company', 'academicSession', 'companyContact', 'industrySupervisor'])
                 ->where('student_id', $student->id)
                 ->whereIn('status', ['Active', 'Approved', 'Applied', 'Draft'])
                 ->orderByRaw("

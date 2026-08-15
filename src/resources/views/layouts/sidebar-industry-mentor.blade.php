@@ -115,11 +115,6 @@
         </a>
 
 
-        {{-- ========================================================= --}}
-        {{-- Academic --}}
-        {{-- ========================================================= --}}
-
-
 
 
         {{-- ========================================================= --}}
@@ -133,74 +128,30 @@
             </p>
 
 
-            {{-- Companies --}}
+
+
+
+
+
+
+            {{-- My Student Placement --}}
             <a
-                href="{{ route('companies.index') }}"
+                href="{{ route('industry-supervisor.students') }}"
                 @click="sidebarOpen = false"
                 class="
-                    flex
-                    items-center
-                    gap-3
-                    px-4
-                    py-3
-                    rounded-xl
-                    transition
-                    {{ request()->routeIs('companies.*')
+                    flex items-center gap-3 px-4 py-3 rounded-xl transition
+                    {{ request()->routeIs('industry-supervisor.students')
                         ? 'bg-blue-600 text-white'
                         : 'text-slate-300 hover:bg-slate-800 hover:text-white'
                     }}
                 "
             >
-
                 <svg
-                    class="w-5 h-5"
+                    class="w-5 h-5 shrink-0"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
                 >
-
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="1.8"
-                        d="M3 21h18M5 21V5a2 2 0 012-2h10a2 2 0 012 2v16M9 7h2M9 11h2M9 15h2M15 7h2M15 11h2M15 15h2"
-                    />
-
-                </svg>
-
-                <span>
-                    Companies
-                </span>
-
-            </a>
-
-
-            {{-- Company Contacts --}}
-            <a
-                href="{{ route('company-contacts.index') }}"
-                @click="sidebarOpen = false"
-                class="
-                    flex
-                    items-center
-                    gap-3
-                    px-4
-                    py-3
-                    rounded-xl
-                    transition
-                    {{ request()->routeIs('company-contacts.*')
-                        ? 'bg-blue-600 text-white'
-                        : 'text-slate-300 hover:bg-slate-800 hover:text-white'
-                    }}
-                "
-            >
-
-                <svg
-                    class="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                >
-
                     <path
                         stroke-linecap="round"
                         stroke-linejoin="round"
@@ -219,91 +170,20 @@
                         stroke-linecap="round"
                         stroke-linejoin="round"
                         stroke-width="1.8"
-                        d="M19 8v6M22 11h-6"
+                        d="M22 21v-2a4 4 0 00-3-3.87"
                     />
-
-                </svg>
-
-                <span>
-                    Company Contacts
-                </span>
-
-            </a>
-
-
-            {{-- Industry Supervisor --}}
-            <a
-                href="#"
-                class="
-                    flex
-                    items-center
-                    gap-3
-                    px-4
-                    py-3
-                    rounded-xl
-                    text-slate-300
-                    hover:bg-slate-800
-                    hover:text-white
-                "
-            >
-
-                <span class="w-5">
-                    •
-                </span>
-
-                <span>
-                    Industry Supervisor
-                </span>
-
-            </a>
-
-
-            {{-- Student Placement --}}
-            <a
-                href="{{ route('placements.index') }}"
-                @click="sidebarOpen = false"
-                class="
-                    flex
-                    items-center
-                    gap-3
-                    px-4
-                    py-3
-                    rounded-xl
-                    transition
-                    {{ request()->routeIs('placements.*')
-                        ? 'bg-blue-600 text-white'
-                        : 'text-slate-300 hover:bg-slate-800 hover:text-white'
-                    }}
-                "
-            >
-
-                <svg
-                    class="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                >
 
                     <path
                         stroke-linecap="round"
                         stroke-linejoin="round"
                         stroke-width="1.8"
-                        d="M12 21s7-4.35 7-10.5A7 7 0 005 10.5C5 16.65 12 21 12 21z"
+                        d="M16 3.13a4 4 0 010 7.75"
                     />
-
-                    <circle
-                        cx="12"
-                        cy="10"
-                        r="2.5"
-                        stroke-width="1.8"
-                    />
-
                 </svg>
 
                 <span>
-                    Student Placement
+                    My Students
                 </span>
-
             </a>
 
         </div>
@@ -375,7 +255,7 @@
 
 
             {{-- Assessment --}}
-            <a
+            {{-- <a
                 href="{{ route('assessments.index') }}"
                 @click="sidebarOpen = false"
                 class="
@@ -420,72 +300,17 @@
                     Assessment
                 </span>
 
-            </a>
+            </a> --}}
 
 
-            {{-- Reports --}}
-            <a
-                href="#"
-                class="
-                    flex
-                    items-center
-                    gap-3
-                    px-4
-                    py-3
-                    rounded-xl
-                    text-slate-300
-                    hover:bg-slate-800
-                    hover:text-white
-                "
-            >
 
-                <span class="w-5">
-                    •
-                </span>
-
-                <span>
-                    Reports
-                </span>
-
-            </a>
 
         </div>
-       
+
 
     </nav>
 
 
-    {{-- User --}}
- <div class="shrink-0 border-t border-slate-800 p-4 bg-slate-900">
-    {{-- </div>   <div class="absolute bottom-0 left-0 right-0 border-t border-slate-800 p-4 bg-slate-900"> --}}
 
-        <div class="flex items-center gap-3">
-
-            <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center font-semibold">
-
-                {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
-
-            </div>
-
-
-            <div class="min-w-0">
-
-                <p class="text-sm font-semibold truncate">
-
-                    {{ auth()->user()->name }}
-
-                </p>
-
-                <p class="text-xs text-slate-400 truncate">
-
-                    {{ auth()->user()->email }}
-
-                </p>
-
-            </div>
-
-        </div>
-
-    </div>
 
 </aside>

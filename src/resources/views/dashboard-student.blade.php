@@ -100,7 +100,28 @@
                         <div class="mt-4 space-y-4">
                             <div>
                                 <p class="text-xs text-slate-400 uppercase tracking-wide">Syarikat</p>
-                                <p class="text-sm font-semibold text-slate-800">{{ $activePlacement->company?->name ?? '-' }}</p>
+                                <p class="text-sm font-semibold text-slate-800">
+                                    {{ $activePlacement->company?->code ? $activePlacement->company->code . ' - ' : '' }}{{ $activePlacement->company?->name ?? '-' }}
+                                </p>
+                                <p class="text-xs text-slate-500 mt-1">
+                                    {{ $activePlacement->company?->industry ?? 'Industri tidak dinyatakan' }}
+                                </p>
+                            </div>
+
+                            <div>
+                                <p class="text-xs text-slate-400 uppercase tracking-wide">Industry Supervisor</p>
+                                <p class="text-sm font-semibold text-slate-800">
+                                    {{ $activePlacement->industrySupervisor?->name ?? 'Belum ditetapkan' }}
+                                </p>
+                                <p class="text-xs text-slate-500 mt-1">
+                                    {{ $activePlacement->industrySupervisor?->position ?? '-' }}
+                                </p>
+                                <p class="text-xs text-slate-500">
+                                    {{ $activePlacement->industrySupervisor?->email ?? '-' }}
+                                </p>
+                                <p class="text-xs text-slate-500">
+                                    {{ $activePlacement->industrySupervisor?->phone ?? '-' }}
+                                </p>
                             </div>
                             <div>
                                 <p class="text-xs text-slate-400 uppercase tracking-wide">Tempoh</p>

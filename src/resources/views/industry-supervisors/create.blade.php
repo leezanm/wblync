@@ -7,12 +7,10 @@
             <div>
 
                 <h2 class="text-2xl font-bold text-slate-800">
-                    Create Industry Supervisor
+                    Industry Mentor
                 </h2>
 
-                <p class="text-sm text-slate-500 mt-1">
-                    Add an industry supervisor for a company.
-                </p>
+
 
             </div>
 
@@ -20,6 +18,17 @@
 
     </x-slot>
 
+  <div>
+
+                <h2 class="text-2xl font-bold text-slate-800">
+                    Create Industry Mentor
+                </h2>
+
+                <p class="text-sm text-slate-500 mt-1">
+                    Add an industry mentor for a company.
+                </p>
+
+            </div>
 
     <div class="max-w-3xl mx-auto">
 
@@ -28,11 +37,11 @@
             <div class="mb-8">
 
                 <h3 class="text-lg font-bold text-slate-800">
-                    Supervisor Information
+                    Mentor Information
                 </h3>
 
                 <p class="text-sm text-slate-500 mt-1">
-                    Enter the supervisor's company and contact details.
+                    Enter the industry mentor's company and contact details.
                 </p>
 
             </div>

@@ -40,7 +40,7 @@ class ProgrammeRequest extends FormRequest
 
             'duration' => [
                 'nullable',
-                'integer',
+                'numeric',
                 'min:1',
                 'max:10',
             ],
@@ -63,7 +63,7 @@ class ProgrammeRequest extends FormRequest
 
             'description.max' => 'Description may not exceed 1000 characters.',
 
-            'duration.integer' => 'Duration must be a valid number.',
+            'duration.numeric' => 'Duration must be a valid number.',
 
             'duration.min' => 'Duration must be at least 1 year.',
 

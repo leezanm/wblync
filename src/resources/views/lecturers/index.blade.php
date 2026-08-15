@@ -7,66 +7,83 @@
             <div>
 
                 <h2 class="text-2xl font-bold text-slate-800">
-                    Company Contacts
+                    Lecturers
                 </h2>
+
+
 
             </div>
 
-           
+
+
 
         </div>
 
     </x-slot>
 
+     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 ">
 
-    {{-- Page Section --}}
-    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
 
-        <div>
+                <h2 class="text-2xl font-bold text-slate-800">
+                    List Of Lecturers
+                </h2>
 
-            <h2 class="text-2xl font-bold text-slate-800">
-                List of Company Contacts
-            </h2>
+                <p class="text-sm text-slate-500 mt-1">
+                    Manage lecturers.
+                </p>
 
-            <p class="mt-1 text-sm text-slate-500">
-                Manage contact persons for industry partners.
-            </p>
+            </div>
+
+
+            <a
+                href="{{ route('lecturers.create') }}"
+                class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition shadow-sm"
+            >
+
+                <svg
+                    class="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M12 5v14M5 12h14"
+                    />
+                </svg>
+
+                Add Lecturer
+
+            </a>
 
         </div>
 
 
-        <a
-            href="{{ route('company-contacts.create') }}"
-            class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition shadow-sm"
-        >
-
-            <svg
-                class="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-            >
-                <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M12 5v14M5 12h14"
-                />
-            </svg>
-
-            Add Contact
-
-        </a>
-
-    </div>
-
-
-    {{-- Success --}}
     @if (session('success'))
 
-        <div class="mb-6 mt-6 rounded-xl border border-green-200 bg-green-50 px-4 py-4 text-sm font-medium text-green-800">
-
+        <div class="mb-6 rounded-xl border border-green-200 bg-green-50 px-4 py-4 mt-6 text-sm font-medium text-green-800">
             {{ session('success') }}
+        </div>
+
+    @endif
+
+
+    @if ($errors->any())
+
+        <div class="mb-6 mt-6 rounded-xl border border-red-200 bg-red-50 px-4 py-4 text-sm text-red-700">
+
+            <ul class="list-disc list-inside space-y-1">
+
+                @foreach ($errors->all() as $error)
+
+                    <li>{{ $error }}</li>
+
+                @endforeach
+
+            </ul>
 
         </div>
 
@@ -74,58 +91,28 @@
 
 
     {{-- Filters --}}
-    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 mt-6 mb-6">
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 mb-6">
 
         <form
             method="GET"
-            action="{{ route('company-contacts.index') }}"
+            action="{{ route('lecturers.index') }}"
             class="grid grid-cols-1 md:grid-cols-12 gap-4"
         >
 
-            <div class="md:col-span-6">
+            <div class="md:col-span-7">
 
                 <input
                     type="search"
                     name="search"
                     value="{{ request('search') }}"
-                    placeholder="Search contact, company, position or email..."
+                    placeholder="Search staff no, name, email or phone..."
                     class="w-full px-4 py-3 rounded-xl border-slate-200 bg-slate-50 focus:border-blue-500 focus:ring-blue-500"
                 >
 
             </div>
 
 
-            <div class="md:col-span-2">
-
-                <select
-                    name="company_id"
-                    class="w-full py-3 rounded-xl border-slate-200 bg-slate-50 focus:border-blue-500 focus:ring-blue-500"
-                >
-
-                    <option value="">
-                        All Companies
-                    </option>
-
-                    @foreach ($companies as $company)
-
-                        <option
-                            value="{{ $company->id }}"
-                            @selected(
-                                (string) request('company_id')
-                                === (string) $company->id
-                            )
-                        >
-                            {{ $company->name }}
-                        </option>
-
-                    @endforeach
-
-                </select>
-
-            </div>
-
-
-            <div class="md:col-span-2">
+            <div class="md:col-span-3">
 
                 <select
                     name="status"
@@ -159,19 +146,15 @@
 
                 <button
                     type="submit"
-                    class="flex-1 px-5 py-3 rounded-xl bg-slate-800 text-white font-medium hover:bg-slate-900"
+                    class="flex-1 px-5 py-3 rounded-xl bg-slate-800 text-white font-medium hover:bg-slate-900 transition"
                 >
                     Filter
                 </button>
 
-                @if(request()->hasAny([
-                    'search',
-                    'company_id',
-                    'status'
-                ]))
+                @if (request()->hasAny(['search', 'status']))
 
                     <a
-                        href="{{ route('company-contacts.index') }}"
+                        href="{{ route('lecturers.index') }}"
                         class="px-4 py-3 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50"
                     >
                         Clear
@@ -202,15 +185,11 @@
                         </th>
 
                         <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
-                            Contact
+                            Lecturer
                         </th>
 
                         <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
-                            Company
-                        </th>
-
-                        <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
-                            Position
+                            Staff No
                         </th>
 
                         <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
@@ -232,13 +211,13 @@
 
                 <tbody class="divide-y divide-slate-100">
 
-                    @forelse ($contacts as $contact)
+                    @forelse ($lecturers as $lecturer)
 
                         <tr class="hover:bg-slate-50 transition">
 
                             <td class="px-6 py-4 text-sm text-slate-500">
 
-                                {{ $loop->iteration + ($contacts->currentPage() - 1) * $contacts->perPage() }}
+                                {{ $loop->iteration + ($lecturers->currentPage() - 1) * $lecturers->perPage() }}
 
                             </td>
 
@@ -246,61 +225,32 @@
                             <td class="px-6 py-4">
 
                                 <div class="font-bold text-blue-600">
-                                    {{ $contact->name }}
+                                    {{ $lecturer->name }}
                                 </div>
-
-                                @if ($contact->email)
-
-                                    <div class="text-xs text-slate-400 mt-1">
-                                        {{ $contact->email }}
-                                    </div>
-
-                                @endif
 
                             </td>
 
 
                             <td class="px-6 py-4">
 
-                                <div class="font-semibold text-slate-800">
-                                    {{ $contact->company->name }}
-                                </div>
+                                <span class="font-medium text-slate-700">
+                                    {{ $lecturer->staff_no }}
+                                </span>
 
-                                <div class="text-xs text-slate-400 mt-1">
-                                    {{ $contact->company->code }}
-                                </div>
-
-                            </td>
-
-
-                            <td class="px-6 py-4 text-sm text-slate-600">
-                                {{ $contact->position ?: '-' }}
                             </td>
 
 
                             <td class="px-6 py-4">
 
-                                @if ($contact->email)
+                                <div class="text-sm text-slate-700">
+                                    {{ $lecturer->email }}
+                                </div>
 
-                                    <div class="text-sm text-slate-700">
-                                        {{ $contact->email }}
-                                    </div>
-
-                                @endif
-
-                                @if ($contact->phone)
+                                @if ($lecturer->phone)
 
                                     <div class="text-xs text-slate-500 mt-1">
-                                        {{ $contact->phone }}
+                                        {{ $lecturer->phone }}
                                     </div>
-
-                                @endif
-
-                                @if (!$contact->email && !$contact->phone)
-
-                                    <span class="text-sm text-slate-400">
-                                        -
-                                    </span>
 
                                 @endif
 
@@ -309,7 +259,7 @@
 
                             <td class="px-6 py-4">
 
-                                @if ($contact->status === 'Active')
+                                @if ($lecturer->status === 'Active')
 
                                     <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-100 text-green-700 text-xs font-semibold">
 
@@ -336,11 +286,9 @@
 
                                 <div class="flex justify-end items-center gap-2">
 
-                                    {{-- View --}}
                                     <a
-                                        href="{{ route('company-contacts.show', $contact) }}"
+                                        href="{{ route('lecturers.show', $lecturer) }}"
                                         title="View"
-                                        aria-label="View company contact"
                                         class="inline-flex items-center justify-center w-9 h-9 rounded-lg text-blue-600 hover:bg-blue-50"
                                     >
 
@@ -363,17 +311,14 @@
                                                 r="2.5"
                                                 stroke-width="1.8"
                                             />
-
                                         </svg>
 
                                     </a>
 
 
-                                    {{-- Edit --}}
                                     <a
-                                        href="{{ route('company-contacts.edit', $contact) }}"
+                                        href="{{ route('lecturers.edit', $lecturer) }}"
                                         title="Edit"
-                                        aria-label="Edit company contact"
                                         class="inline-flex items-center justify-center w-9 h-9 rounded-lg text-amber-600 hover:bg-amber-50"
                                     >
 
@@ -394,19 +339,17 @@
                                                 stroke-linecap="round"
                                                 stroke-linejoin="round"
                                                 stroke-width="1.8"
-                                                d="M16.5 3.5a2.12 2.12 0 013 3L8 18l-4 1 1-4L16.5 3.5z"
+                                                d="M16.5 3.5a2.12 2.12 0 013 3L8 18l-4 1-1-4L16.5 3.5z"
                                             />
-
                                         </svg>
 
                                     </a>
 
 
-                                    {{-- Delete --}}
                                     <form
                                         method="POST"
-                                        action="{{ route('company-contacts.destroy', $contact) }}"
-                                        onsubmit="return confirm('Delete this company contact?');"
+                                        action="{{ route('lecturers.destroy', $lecturer) }}"
+                                        onsubmit="return confirm('Delete this lecturer and their user account?');"
                                     >
 
                                         @csrf
@@ -415,7 +358,6 @@
                                         <button
                                             type="submit"
                                             title="Delete"
-                                            aria-label="Delete company contact"
                                             class="inline-flex items-center justify-center w-9 h-9 rounded-lg text-red-600 hover:bg-red-50"
                                         >
 
@@ -429,9 +371,8 @@
                                                     stroke-linecap="round"
                                                     stroke-linejoin="round"
                                                     stroke-width="1.8"
-                                                    d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"
+                                                    d="M4 7h16M10 11v6M14 11v6M6 7v13h12V7M9 7V4h6v3"
                                                 />
-
                                             </svg>
 
                                         </button>
@@ -449,16 +390,16 @@
                         <tr>
 
                             <td
-                                colspan="7"
+                                colspan="6"
                                 class="px-6 py-16 text-center"
                             >
 
                                 <h3 class="font-semibold text-slate-700">
-                                    No company contacts found
+                                    No lecturers found
                                 </h3>
 
                                 <p class="text-sm text-slate-500 mt-1">
-                                    Add your first company contact to get started.
+                                    Add your first lecturer to get started.
                                 </p>
 
                             </td>
@@ -479,7 +420,7 @@
     {{-- Mobile --}}
     <div class="md:hidden space-y-4">
 
-        @forelse ($contacts as $contact)
+        @forelse ($lecturers as $lecturer)
 
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
 
@@ -487,26 +428,18 @@
 
                     <div class="min-w-0">
 
-                        <div class="text-sm font-bold text-blue-600">
-                            {{ $contact->company->code }}
+                        <div class="text-xs font-semibold text-blue-600">
+                            {{ $lecturer->staff_no }}
                         </div>
 
                         <h3 class="font-semibold text-slate-800 mt-1">
-                            {{ $contact->name }}
+                            {{ $lecturer->name }}
                         </h3>
-
-                        @if ($contact->position)
-
-                            <p class="text-sm text-slate-500 mt-1">
-                                {{ $contact->position }}
-                            </p>
-
-                        @endif
 
                     </div>
 
 
-                    @if ($contact->status === 'Active')
+                    @if ($lecturer->status === 'Active')
 
                         <span class="shrink-0 px-2.5 py-1 rounded-full bg-green-100 text-green-700 text-xs font-semibold">
                             Active
@@ -528,24 +461,11 @@
                     <div class="flex justify-between gap-4">
 
                         <span class="text-slate-500">
-                            Company
-                        </span>
-
-                        <span class="font-medium text-slate-700 text-right">
-                            {{ $contact->company->name }}
-                        </span>
-
-                    </div>
-
-
-                    <div class="flex justify-between gap-4">
-
-                        <span class="text-slate-500">
                             Email
                         </span>
 
                         <span class="font-medium text-slate-700 text-right break-all">
-                            {{ $contact->email ?: '-' }}
+                            {{ $lecturer->email }}
                         </span>
 
                     </div>
@@ -558,7 +478,7 @@
                         </span>
 
                         <span class="font-medium text-slate-700 text-right">
-                            {{ $contact->phone ?: '-' }}
+                            {{ $lecturer->phone ?: '-' }}
                         </span>
 
                     </div>
@@ -568,14 +488,11 @@
 
                 <div class="flex items-center justify-end gap-2 mt-5 pt-4 border-t border-slate-100">
 
-                    {{-- View --}}
                     <a
-                        href="{{ route('company-contacts.show', $contact) }}"
+                        href="{{ route('lecturers.show', $lecturer) }}"
                         title="View"
-                        aria-label="View company contact"
                         class="inline-flex items-center justify-center w-9 h-9 rounded-lg text-blue-600 bg-blue-50"
                     >
-
                         <svg
                             class="w-5 h-5"
                             fill="none"
@@ -595,20 +512,15 @@
                                 r="2.5"
                                 stroke-width="1.8"
                             />
-
                         </svg>
-
                     </a>
 
 
-                    {{-- Edit --}}
                     <a
-                        href="{{ route('company-contacts.edit', $contact) }}"
+                        href="{{ route('lecturers.edit', $lecturer) }}"
                         title="Edit"
-                        aria-label="Edit company contact"
                         class="inline-flex items-center justify-center w-9 h-9 rounded-lg text-amber-600 bg-amber-50"
                     >
-
                         <svg
                             class="w-5 h-5"
                             fill="none"
@@ -626,19 +538,16 @@
                                 stroke-linecap="round"
                                 stroke-linejoin="round"
                                 stroke-width="1.8"
-                                d="M16.5 3.5a2.12 2.12 0 013 3L8 18l-4 1 1-4L16.5 3.5z"
+                                d="M16.5 3.5a2.12 2.12 0 013 3L8 18l-4 1-1-4L16.5 3.5z"
                             />
-
                         </svg>
-
                     </a>
 
 
-                    {{-- Delete --}}
                     <form
                         method="POST"
-                        action="{{ route('company-contacts.destroy', $contact) }}"
-                        onsubmit="return confirm('Delete this company contact?');"
+                        action="{{ route('lecturers.destroy', $lecturer) }}"
+                        onsubmit="return confirm('Delete this lecturer and their user account?');"
                     >
 
                         @csrf
@@ -647,10 +556,8 @@
                         <button
                             type="submit"
                             title="Delete"
-                            aria-label="Delete company contact"
                             class="inline-flex items-center justify-center w-9 h-9 rounded-lg text-red-600 bg-red-50"
                         >
-
                             <svg
                                 class="w-5 h-5"
                                 fill="none"
@@ -661,11 +568,9 @@
                                     stroke-linecap="round"
                                     stroke-linejoin="round"
                                     stroke-width="1.8"
-                                    d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"
+                                    d="M4 7h16M10 11v6M14 11v6M6 7v13h12V7M9 7V4h6v3"
                                 />
-
                             </svg>
-
                         </button>
 
                     </form>
@@ -679,11 +584,11 @@
             <div class="bg-white rounded-2xl border border-slate-200 p-10 text-center">
 
                 <h3 class="font-semibold text-slate-700">
-                    No company contacts found
+                    No lecturers found
                 </h3>
 
                 <p class="text-sm text-slate-500 mt-1">
-                    Add your first company contact to get started.
+                    Add your first lecturer to get started.
                 </p>
 
             </div>
@@ -693,13 +598,10 @@
     </div>
 
 
-    {{-- Pagination --}}
-    @if ($contacts->hasPages())
+    @if ($lecturers->hasPages())
 
         <div class="mt-6">
-
-            {{ $contacts->withQueryString()->links() }}
-
+            {{ $lecturers->withQueryString()->links() }}
         </div>
 
     @endif

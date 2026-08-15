@@ -12,7 +12,8 @@
 
             </div>
 
-
+             {{-- only student can view this button --}}
+             @role('student')
             <a
                 href="{{ route('daily-logbooks.create') }}"
                 class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition"
@@ -35,6 +36,8 @@
                 Add Logbook
 
             </a>
+            @endrole
+
 
         </div>
 
@@ -56,7 +59,7 @@
 
         </div>
 
-
+        @role('student')
         <a
             href="{{ route('daily-logbooks.create') }}"
             class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition shadow-sm"
@@ -79,7 +82,7 @@
             Add Logbook
 
         </a>
-
+        @endrole
     </div>
 
 
@@ -112,7 +115,7 @@
         >
 
             {{-- Search --}}
-            <div class="md:col-span-8">
+            <div class="md:col-span-4">
 
                 <input
                     type="search"
@@ -122,6 +125,28 @@
                     class="w-full px-4 py-3 rounded-xl border-slate-200 bg-slate-50 focus:border-blue-500 focus:ring-blue-500"
                 >
 
+            </div>
+
+
+            {{-- Date From --}}
+            <div class="md:col-span-2">
+                <input
+                    type="date"
+                    name="date_from"
+                    value="{{ request('date_from') }}"
+                    class="w-full py-3 rounded-xl border-slate-200 bg-slate-50 focus:border-blue-500 focus:ring-blue-500"
+                >
+            </div>
+
+
+            {{-- Date To --}}
+            <div class="md:col-span-2">
+                <input
+                    type="date"
+                    name="date_to"
+                    value="{{ request('date_to') }}"
+                    class="w-full py-3 rounded-xl border-slate-200 bg-slate-50 focus:border-blue-500 focus:ring-blue-500"
+                >
             </div>
 
 
@@ -181,7 +206,7 @@
                 </button>
 
 
-                @if(request()->hasAny(['search', 'status']))
+                @if(request()->hasAny(['search', 'status', 'date_from', 'date_to']))
 
                     <a
                         href="{{ route('daily-logbooks.index') }}"

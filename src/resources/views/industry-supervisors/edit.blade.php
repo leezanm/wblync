@@ -7,12 +7,9 @@
             <div>
 
                 <h2 class="text-2xl font-bold text-slate-800">
-                    Edit Industry Supervisor
+                    Industry Mentor
                 </h2>
 
-                <p class="text-sm text-slate-500 mt-1">
-                    Update supervisor information.
-                </p>
 
             </div>
 
@@ -20,6 +17,17 @@
 
     </x-slot>
 
+   <div>
+
+                <h2 class="text-2xl font-bold text-slate-800">
+                    Edit Industry Mentor
+                </h2>
+
+                <p class="text-sm text-slate-500 mt-1">
+                    Update industry mentor information.
+                </p>
+
+            </div>
 
     <div class="max-w-3xl mx-auto">
 
@@ -28,7 +36,7 @@
             <div class="mb-8">
 
                 <h3 class="text-lg font-bold text-slate-800">
-                    Supervisor Information
+                    Industry Mentor Information
                 </h3>
 
                 <p class="text-sm text-slate-500 mt-1">

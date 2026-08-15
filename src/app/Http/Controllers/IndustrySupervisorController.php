@@ -7,6 +7,8 @@ use App\Models\Company;
 use App\Models\IndustrySupervisor;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
 
 class IndustrySupervisorController extends Controller
@@ -93,32 +95,53 @@ class IndustrySupervisorController extends Controller
     }
 
 
-    public function store(
-        IndustrySupervisorRequest $request
+   public function store(
+    IndustrySupervisorRequest $request
     ): RedirectResponse {
 
-        $supervisor = IndustrySupervisor::create(
-            $request->validated()
-        );
+        $data = $request->validated();
 
+        $industrySupervisor = DB::transaction(function () use ($data) {
+
+            // Create User
+            $user = User::create([
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'password' => Hash::make('password'),
+            ]);
+
+            // Assign role kepada User
+            $user->assignRole('Industry Mentor');
+
+            // Create Industry Supervisor
+            return IndustrySupervisor::create([
+                'user_id' => $user->id,
+                'company_id' => $data['company_id'],
+                'name' => $data['name'],
+                'position' => $data['position'] ?? null,
+                'email' => $data['email'],
+                'phone' => $data['phone'] ?? null,
+                'status' => $data['status'],
+            ]);
+        });
 
         return redirect()
-            ->route(
-                'industry-supervisors.show',
-                $supervisor
-            )
+            ->route('industry-supervisors.show', $industrySupervisor)
             ->with(
                 'success',
-                'Industry supervisor created successfully.'
+                'Industry Supervisor created successfully.'
             );
     }
 
 
     public function show(
-        IndustrySupervisor $industrySupervisor
+    IndustrySupervisor $industrySupervisor
     ): View {
-        $industrySupervisor->load('company');
 
+        $industrySupervisor->load([
+            'user',
+            'company',
+        ]);
 
         return view(
             'industry-supervisors.show',
@@ -150,9 +173,22 @@ class IndustrySupervisorController extends Controller
         IndustrySupervisor $industrySupervisor
     ): RedirectResponse {
 
-        $industrySupervisor->update(
-            $request->validated()
-        );
+
+        $data = $request->validated();
+
+        $industrySupervisor->update([
+            'name' => $data['name'],
+            'company_id' => $data['company_id'],
+            'position' => $data['position'] ?? null,
+            'email' => $data['email'],
+            'phone' => $data['phone'] ?? null,
+            'status' => $data['status'],
+        ]);
+
+        $industrySupervisor->user?->update([
+            'name' => $data['name'],
+            'email' => $data['email'],
+        ]);
 
 
         return redirect()
@@ -180,5 +216,36 @@ class IndustrySupervisorController extends Controller
                 'success',
                 'Industry supervisor deleted successfully.'
             );
+    }
+
+    public function students(Request $request): View
+    {
+        $user = $request->user();
+
+        $industrySupervisor = $user
+            ->industrySupervisor;
+
+        abort_unless(
+            $industrySupervisor,
+            403
+        );
+
+        $placements = $industrySupervisor
+            ->placements()
+            ->with([
+                'student',
+                'company',
+                'academicSession',
+            ])
+            ->latest()
+            ->paginate(12);
+
+        return view(
+            'industry-supervisors.students',
+            compact(
+                'industrySupervisor',
+                'placements'
+            )
+        );
     }
 }

@@ -7,7 +7,7 @@
             <div>
 
                 <h2 class="text-2xl font-bold text-slate-800">
-                    Industry Supervisors
+                    Industry Mentors
                 </h2>
 
             </div>
@@ -25,11 +25,11 @@
         <div>
 
             <h2 class="text-2xl font-bold text-slate-800">
-                List of Industry Supervisors
+                List of Industry Mentors
             </h2>
 
             <p class="mt-1 text-sm text-slate-500">
-                Manage industry supervisors and company assignments.
+                Manage industry mentors and company assignments.
             </p>
 
         </div>

@@ -7,12 +7,29 @@
             <div>
 
                 <h2 class="text-2xl font-bold text-slate-800">
-                    Industry Supervisor Details
+                    Industry Mentor Details
                 </h2>
 
-                <p class="text-sm text-slate-500 mt-1">
-                    View industry supervisor information.
-                </p>
+
+
+            </div>
+
+
+
+
+        </div>
+
+    </x-slot>
+
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 ">
+
+            <div>
+
+                <h2 class="text-2xl font-bold text-slate-800">
+                    Industry Mentor Details
+                </h2>
+
+
 
             </div>
 
@@ -36,19 +53,17 @@
                     />
                 </svg>
 
-                Edit Supervisor
+                Edit Industry Mentor
 
             </a>
 
         </div>
 
-    </x-slot>
-
 
     {{-- Success --}}
     @if (session('success'))
 
-        <div class="mb-6 rounded-xl border border-green-200 bg-green-50 px-4 py-4 text-sm font-medium text-green-800">
+        <div class="mb-6 rounded-xl border border-green-200 bg-green-50 px-4 py-4 mt-6 text-sm font-medium text-green-800">
             {{ session('success') }}
         </div>
 
@@ -56,7 +71,7 @@
 
 
     {{-- Supervisor Summary --}}
-    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm mt-6 p-6">
 
         <div class="flex flex-col sm:flex-row sm:items-center gap-5">
 
@@ -157,7 +172,7 @@
                 <div>
 
                     <h3 class="text-lg font-bold text-slate-800">
-                        Supervisor Information
+                        Industry Mentor Information
                     </h3>
 
                     <p class="text-sm text-slate-500">

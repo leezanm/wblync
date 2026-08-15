@@ -13,19 +13,38 @@ class DailyLogbookController extends Controller
 {
     public function index(Request $request): View
     {
+        $user = $request->user();
+
         $query = DailyLogbook::query()
             ->with([
                 'placement.student',
                 'placement.company',
             ]);
 
-        $studentUser = auth()->user()?->hasRole('Student')
-            ? auth()->user()?->student
+        $studentUser = $user?->hasRole('Student')
+            ? $user?->student
             : null;
+
+        $isIndustryMentor = $user?->hasAnyRole([
+            'Industry Supervisor',
+            'Industry Mentor',
+        ]);
+
+        $industrySupervisorUser = $isIndustryMentor
+            ? $user?->industrySupervisor
+            : null;
+
+        if ($isIndustryMentor && ! $industrySupervisorUser) {
+            abort(403, 'Industry mentor profile not found.');
+        }
 
         if ($studentUser) {
             $query->whereHas('placement', function ($query) use ($studentUser) {
                 $query->where('student_id', $studentUser->id);
+            });
+        } elseif ($industrySupervisorUser) {
+            $query->whereHas('placement', function ($query) use ($industrySupervisorUser) {
+                $query->where('industry_supervisor_id', $industrySupervisorUser->id);
             });
         } elseif ($request->filled('student_id')) {
             $query->whereHas('placement', function ($query) use ($request) {
@@ -84,6 +103,22 @@ class DailyLogbookController extends Controller
                 $request->status
             );
 
+        }
+
+        if ($request->filled('date_from')) {
+            $query->whereDate(
+                'log_date',
+                '>=',
+                $request->date('date_from')->toDateString()
+            );
+        }
+
+        if ($request->filled('date_to')) {
+            $query->whereDate(
+                'log_date',
+                '<=',
+                $request->date('date_to')->toDateString()
+            );
         }
 
         $logbooks = $query
@@ -156,6 +191,30 @@ class DailyLogbookController extends Controller
     public function show(
         DailyLogbook $dailyLogbook
     ): View {
+        $user = auth()->user();
+        $isIndustryMentor = $user?->hasAnyRole([
+            'Industry Supervisor',
+            'Industry Mentor',
+        ]);
+
+        $industrySupervisorUser = $isIndustryMentor
+            ? $user?->industrySupervisor
+            : null;
+
+        if ($isIndustryMentor && ! $industrySupervisorUser) {
+            abort(403, 'Industry mentor profile not found.');
+        }
+
+        if ($industrySupervisorUser) {
+            $dailyLogbook->loadMissing('placement');
+
+            abort_unless(
+                $dailyLogbook->placement
+                && (int) $dailyLogbook->placement->industry_supervisor_id === (int) $industrySupervisorUser->id,
+                403,
+                'You can only view daily logbooks of students under your supervision.'
+            );
+        }
 
         $dailyLogbook->load([
             'placement.student',
