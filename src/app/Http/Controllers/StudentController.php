@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StudentRequest;
 use App\Models\ClassRoom;
+use App\Models\Enrollment;
 use App\Models\Student;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -102,7 +104,7 @@ class StudentController extends Controller
             return Student::create([
                 'uuid' => (string) Str::uuid(),
                 'user_id' => $user->id,
-                'class_room_id' => $data['class_room_id'] ?? null,
+                'class_room_id' => null,
                 'student_no' => $data['student_no'],
                 'name' => $data['name'],
                 'ic_no' => $data['ic_no'] ?? null,
@@ -245,7 +247,7 @@ class StudentController extends Controller
 
         return back()->with(
             'success',
-            'Student berjaya di-enrol ke class.'
+            'Students were enrolled in the class successfully.'
         );
     }
 }

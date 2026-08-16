@@ -126,7 +126,7 @@
                             </p>
 
                             <h3 class="text-xl font-bold text-slate-800 mt-1">
-                                Lawatan {{ $i }}
+                                Visit {{ $i }}
                             </h3>
 
                             @if ($monitoring)
@@ -140,7 +140,7 @@
                             @else
 
                                 <p class="text-sm text-slate-400 mt-1">
-                                    Belum dilaksanakan
+                                    Not completed yet
                                 </p>
 
                             @endif
@@ -183,7 +183,7 @@
                                 class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition"
                             >
 
-                                Isi Borang
+                                Fill Form
 
                             </a>
 

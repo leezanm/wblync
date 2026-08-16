@@ -143,14 +143,14 @@
                         href="{{ route('profile.show') }}"
                         class="block px-4 py-3 text-sm text-slate-700 hover:bg-slate-50 transition"
                     >
-                        Profil Pengguna
+                        User Profile
                     </a>
 
                     <a
                         href="{{ route('password.change.edit') }}"
                         class="block px-4 py-3 text-sm text-slate-700 hover:bg-slate-50 transition"
                     >
-                        Tukar Kata Laluan
+                        Change Password
                     </a>
                 </div>
             </div>

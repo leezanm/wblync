@@ -24,6 +24,7 @@ use App\Http\Controllers\ProgrammeController;
 use App\Http\Controllers\SemesterController;
 use App\Http\Controllers\StudentAcademicProfileController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\StudentEnrollmentController;
 use App\Http\Controllers\SupervisorController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -65,16 +66,13 @@ Route::middleware('auth')->group(function () {
     Route::resource('class-courses', ClassCourseController::class);
     // enrollment
     Route::resource('enrollments', EnrollmentController::class);
-    Route::get(
-        '/enrollments/create',
-        [EnrollmentController::class, 'create']
-    )->name('enrollments.create');
-
-    Route::post(
-        '/enrollments',
-        [EnrollmentController::class, 'store']
-    )->name('enrollments.store');
-
+    Route::resource(
+            'student-enrollments',
+            StudentEnrollmentController::class
+        )->only([
+            'create',
+            'store',
+        ]);
 
     Route::get('students/{student}/academic-profile', [StudentAcademicProfileController::class, 'show'])->name('students.academic-profile');
     Route::resource('companies', CompanyController::class);

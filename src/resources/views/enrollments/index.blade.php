@@ -23,7 +23,7 @@
         </div>
 
         <a
-            href="{{ route('enrollments.create') }}"
+            href="{{ route('student-enrollments.create') }}"
             class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition shadow-sm"
         >
 

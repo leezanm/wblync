@@ -7,11 +7,11 @@
             <div>
 
                 <h2 class="text-2xl font-bold text-slate-800">
-                    Tukar Kata Laluan
+                    Change Password
                 </h2>
 
                 <p class="text-sm text-slate-500 mt-1">
-                    Kemas kini kata laluan akaun anda.
+                    Update your account password.
                 </p>
 
             </div>
@@ -44,11 +44,11 @@
             <div class="mb-8">
 
                 <h3 class="text-lg font-bold text-slate-800">
-                    Maklumat Kata Laluan
+                    Password Information
                 </h3>
 
                 <p class="text-sm text-slate-500 mt-1">
-                    Masukkan kata laluan semasa dan kata laluan baharu.
+                    Enter your current password and a new password.
                 </p>
 
             </div>
@@ -59,7 +59,7 @@
 
                 <div>
                     <label for="current_password" class="block text-sm font-semibold text-slate-700 mb-2">
-                        Kata Laluan Semasa
+                        Current Password
                     </label>
                     <input
                         type="password"
@@ -73,7 +73,7 @@
 
                 <div>
                     <label for="password" class="block text-sm font-semibold text-slate-700 mb-2">
-                        Kata Laluan Baharu
+                        New Password
                     </label>
                     <input
                         type="password"
@@ -87,7 +87,7 @@
 
                 <div>
                     <label for="password_confirmation" class="block text-sm font-semibold text-slate-700 mb-2">
-                        Sahkan Kata Laluan Baharu
+                        Confirm New Password
                     </label>
                     <input
                         type="password"
@@ -104,14 +104,14 @@
                         href="{{ route('dashboard') }}"
                         class="inline-flex items-center justify-center px-5 py-3 rounded-xl border border-slate-200 text-slate-600 font-medium hover:bg-slate-50 transition"
                     >
-                        Batal
+                        Cancel
                     </a>
 
                     <button
                         type="submit"
                         class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition shadow-sm"
                     >
-                        Simpan Kata Laluan
+                        Save Password
                     </button>
                 </div>
             </form>

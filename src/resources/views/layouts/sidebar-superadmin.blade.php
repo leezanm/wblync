@@ -838,7 +838,7 @@
 
 
             {{-- Daily Logbook --}}
-            <a
+            {{-- <a
                 href="{{ route('daily-logbooks.index') }}"
                 @click="sidebarOpen = false"
                 class="
@@ -888,11 +888,11 @@
                     Daily Logbook
                 </span>
 
-            </a>
+            </a> --}}
 
 
             {{-- Assessment --}}
-            <a
+            {{-- <a
                 href="{{ route('assessments.index') }}"
                 @click="sidebarOpen = false"
                 class="
@@ -937,11 +937,11 @@
                     Assessment
                 </span>
 
-            </a>
+            </a> --}}
 
 
             {{-- Reports --}}
-            <a
+            {{-- <a
                 href="#"
                 class="
                     flex
@@ -964,7 +964,7 @@
                     Reports
                 </span>
 
-            </a>
+            </a> --}}
 
         </div>
         {{-- ========================================================= --}}
@@ -1068,7 +1068,7 @@
 
 
     {{-- User --}}
- <div class="shrink-0 border-t border-slate-800 p-4 bg-slate-900">
+    <div class="shrink-0 border-t border-slate-800 p-4 bg-slate-900">
     {{-- </div>   <div class="absolute bottom-0 left-0 right-0 border-t border-slate-800 p-4 bg-slate-900"> --}}
 
         <div class="flex items-center gap-3">

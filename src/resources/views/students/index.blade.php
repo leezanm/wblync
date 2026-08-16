@@ -116,7 +116,7 @@
             </div>
 
 
-             <div class="flex">
+             {{-- <div class="flex">
 
                 <select
                     name="class_room_id"
@@ -135,15 +135,15 @@
                                 request('class_room_id') == $classRoom->id
                             )
                         >
-                            {{ $classRoom->code }} -
-                            {{ $classRoom->name }}
+                            {{ $classRoom->code?? '' }} -
+                            {{ $classRoom->name?? '' }}
                         </option>
 
                     @endforeach
 
                 </select>
 
-            </div>
+            </div> --}}
 
 
             <div class="flex gap-2">
@@ -196,13 +196,13 @@
                             Student
                         </th>
 
-                        <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
+                        {{-- <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
                             Class
                         </th>
 
                         <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
                             Programme
-                        </th>
+                        </th> --}}
 
                         <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
                             Contact
@@ -245,7 +245,7 @@
                             </td>
 
 
-                            <td class="px-6 py-4">
+                            {{-- <td class="px-6 py-4">
 
                                 <div class="font-medium text-slate-700">
                                     {{ $student->classRoom?->code ?? '-' }}
@@ -270,7 +270,7 @@
                                     {{ $student->classRoom?->programme?->name ?? '-' }}
                                 </div>
 
-                            </td>
+                            </td> --}}
 
 
                             <td class="px-6 py-4">
@@ -318,33 +318,33 @@
 
                                 <div class="flex justify-end items-center gap-2">
 
-        <a
-    href="{{ route('students.academic-profile', $student) }}"
-    title="Academic Profile"
-    aria-label="Academic Profile"
-    class="inline-flex items-center justify-center w-9 h-9 rounded-lg text-indigo-600 hover:bg-indigo-50 transition"
->
-    <svg
-        class="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-    >
-        <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="1.8"
-            d="M12 14a4 4 0 100-8 4 4 0 000 8z"
-        />
+        {{-- <a
+            href="{{ route('students.academic-profile', $student) }}"
+            title="Academic Profile"
+            aria-label="Academic Profile"
+            class="inline-flex items-center justify-center w-9 h-9 rounded-lg text-indigo-600 hover:bg-indigo-50 transition"
+        >
+            <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+            >
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1.8"
+                    d="M12 14a4 4 0 100-8 4 4 0 000 8z"
+                />
 
-        <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="1.8"
-            d="M4 20a8 8 0 0116 0"
-        />
-    </svg>
-</a>
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1.8"
+                    d="M4 20a8 8 0 0116 0"
+                />
+            </svg>
+        </a> --}}
 
                                     <a
                                         href="{{ route('students.show', $student) }}"
@@ -486,7 +486,7 @@
                 </div>
 
 
-                <div class="mt-5 space-y-3 text-sm">
+                {{-- <div class="mt-5 space-y-3 text-sm">
 
                     <div class="flex justify-between gap-4">
                         <span class="text-slate-500">Class</span>
@@ -509,11 +509,11 @@
                         </span>
                     </div>
 
-                </div>
+                </div> --}}
 
 
                 <div class="flex items-center justify-end gap-2 mt-5 pt-4 border-t border-slate-100">
-                  
+
                     <a
                         href="{{ route('students.academic-profile', $student) }}"
                         title="Academic Profile"

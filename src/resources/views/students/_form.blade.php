@@ -1,7 +1,7 @@
 <div class="space-y-6">
 
     {{-- Class --}}
-    <div>
+    {{-- <div>
         <label
             for="class_room_id"
             class="block text-sm font-medium text-slate-700 mb-2"
@@ -44,7 +44,7 @@
         <p class="mt-2 text-xs text-slate-500">
             Academic session, semester and programme are determined by the selected class.
         </p>
-    </div>
+    </div> --}}
 
 
     {{-- Class Information --}}
@@ -309,42 +309,42 @@
 @endphp
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const classSelect = document.getElementById('class_room_id');
-        const information = document.getElementById('class-information');
-        const academicSessionName = document.getElementById('academic-session-name');
-        const semesterName = document.getElementById('semester-name');
-        const programmeName = document.getElementById('programme-name');
+    // document.addEventListener('DOMContentLoaded', function () {
+    //     const classSelect = document.getElementById('class_room_id');
+    //     const information = document.getElementById('class-information');
+    //     const academicSessionName = document.getElementById('academic-session-name');
+    //     const semesterName = document.getElementById('semester-name');
+    //     const programmeName = document.getElementById('programme-name');
 
-        const classes = @json($classInformation);
+    //     const classes = @json($classInformation);
 
-        function updateClassInformation() {
-            const selectedId = classSelect.value;
-            const selectedClass = classes.find(function (item) {
-                return String(item.id) === String(selectedId);
-            });
+    //     function updateClassInformation() {
+    //         const selectedId = classSelect.value;
+    //         const selectedClass = classes.find(function (item) {
+    //             return String(item.id) === String(selectedId);
+    //         });
 
-            if (!selectedClass) {
-                information.classList.add('hidden');
+    //         if (!selectedClass) {
+    //             information.classList.add('hidden');
 
-                academicSessionName.textContent = '-';
-                semesterName.textContent = '-';
-                programmeName.textContent = '-';
+    //             academicSessionName.textContent = '-';
+    //             semesterName.textContent = '-';
+    //             programmeName.textContent = '-';
 
-                return;
-            }
+    //             return;
+    //         }
 
-            academicSessionName.textContent = selectedClass.academic_session ?? '-';
-            semesterName.textContent = selectedClass.semester ?? '-';
-            programmeName.textContent = selectedClass.programme ?? '-';
+    //         academicSessionName.textContent = selectedClass.academic_session ?? '-';
+    //         semesterName.textContent = selectedClass.semester ?? '-';
+    //         programmeName.textContent = selectedClass.programme ?? '-';
 
-            information.classList.remove('hidden');
-        }
+    //         information.classList.remove('hidden');
+    //     }
 
-        classSelect.addEventListener('change', updateClassInformation);
+    //     classSelect.addEventListener('change', updateClassInformation);
 
-        updateClassInformation();
-    });
+    //     updateClassInformation();
+    // });
 </script>
 
 

@@ -129,26 +129,26 @@
                     </div>
 
 
-                    <div>
+                    {{-- <div>
                         <dt class="text-sm text-slate-500">
                             Class
                         </dt>
 
                         <dd class="mt-1 font-semibold text-slate-800">
-                            {{ $student->classRoom->code }}
+                            {{ $student->classRoom->code??'' }}
                             -
-                            {{ $student->classRoom->name }}
+                            {{ $student->classRoom->name??'' }}
                         </dd>
-                    </div>
+                    </div> --}}
 
 
-                    <div>
+                    {{-- <div>
                         <dt class="text-sm text-slate-500">
                             Academic Session
                         </dt>
 
                         <dd class="mt-1 font-semibold text-slate-800">
-                            {{ $student->classRoom->academicSession->name }}
+                            {{ $student->classRoom->academicSession->name??'' }}
                         </dd>
                     </div>
 
@@ -159,9 +159,9 @@
                         </dt>
 
                         <dd class="mt-1 font-semibold text-slate-800">
-                            {{ $student->classRoom->semester->code }}
+                            {{ $student->classRoom->semester->code??'' }}
                             -
-                            {{ $student->classRoom->semester->name }}
+                            {{ $student->classRoom->semester->name??'' }}
                         </dd>
                     </div>
 
@@ -172,11 +172,11 @@
                         </dt>
 
                         <dd class="mt-1 font-semibold text-slate-800">
-                            {{ $student->classRoom->programme->code }}
+                            {{ $student->classRoom->programme->code??'' }}
                             -
-                            {{ $student->classRoom->programme->name }}
+                            {{ $student->classRoom->programme->name??'' }}
                         </dd>
-                    </div>
+                    </div> --}}
 
                 </dl>
 

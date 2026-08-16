@@ -15,12 +15,11 @@ class StudentRequest extends FormRequest
     public function rules(): array
     {
         $studentId = $this->route('student')?->id;
+        $student = $this->route('student');
+
 
         return [
-            'class_room_id' => [
-                'required',
-                'exists:class_rooms,id',
-            ],
+
 
             'student_no' => [
                 'required',
@@ -44,12 +43,17 @@ class StudentRequest extends FormRequest
                     ->ignore($studentId),
             ],
 
+            // 'email' => [
+            //     'required',
+            //     'email',
+            //     'max:255',
+            //     'unique:users,email',
+            // ],
             'email' => [
-                'required',
-                'email',
-                'max:255',
-                'unique:users,email',
-            ],
+            'required',
+            'email',
+            'max:255',
+            Rule::unique('users', 'email')->ignore($student->user?->id),],
 
             'phone' => [
                 'nullable',

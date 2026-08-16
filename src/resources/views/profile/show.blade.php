@@ -7,11 +7,11 @@
             <div>
 
                 <h2 class="text-2xl font-bold text-slate-800">
-                    Profil Pengguna
+                    User Profile
                 </h2>
 
                 <p class="text-sm text-slate-500 mt-1">
-                    Paparan maklumat profil pengguna.
+                    View user profile details.
                 </p>
 
             </div>
@@ -28,7 +28,7 @@
                 
 
                 <div>
-                    <p class="text-sm text-slate-500">Nama</p>
+                    <p class="text-sm text-slate-500">Name</p>
                     <h3 class="text-xl font-bold text-slate-800">{{ $user->name }}</h3>
                 </div>
             </div>
@@ -36,7 +36,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">
-                        Emel
+                        Email
                     </p>
                     <p class="mt-2 text-slate-800 font-medium break-all">
                         {{ $user->email }}
@@ -45,16 +45,16 @@
 
                 <div>
                     <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">
-                        Peranan
+                        Role
                     </p>
                     <p class="mt-2 text-slate-800 font-medium">
-                        {{ $user->roles->pluck('name')->implode(', ') ?: 'Tiada Peranan' }}
+                        {{ $user->roles->pluck('name')->implode(', ') ?: 'No Roles' }}
                     </p>
                 </div>
 
                 <div>
                     <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">
-                        Dicipta Pada
+                        Created At
                     </p>
                     <p class="mt-2 text-slate-800 font-medium">
                         {{ $user->created_at?->format('d/m/Y H:i') ?? '-' }}
@@ -67,7 +67,7 @@
                     href="{{ route('dashboard') }}"
                     class="inline-flex items-center justify-center px-5 py-3 rounded-xl border border-slate-200 text-slate-600 font-medium hover:bg-slate-50 transition"
                 >
-                    Kembali
+                    Back
                 </a>
             </div>
 
