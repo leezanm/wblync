@@ -2,10 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\AcademicSession;
-use App\Models\ClassRoom;
-use App\Models\Semester;
-use App\Models\Student;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
