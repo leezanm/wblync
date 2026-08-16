@@ -17,7 +17,7 @@ class MonitoringFormTemplateController extends Controller
 {
     public function index(Request $request): View
     {
-        //$this->authorizeAdmin($request);
+        // $this->authorizeAdmin($request);
 
         $templates = MonitoringFormTemplate::query()
             ->withCount('sections')
@@ -42,7 +42,7 @@ class MonitoringFormTemplateController extends Controller
         Request $request,
         MonitoringFormTemplate $monitoringFormTemplate
     ): View {
-       // $this->authorizeAdmin($request);
+        // $this->authorizeAdmin($request);
 
         // abort_unless(
         //     $monitoringFormTemplate->isDraft(),
@@ -64,7 +64,7 @@ class MonitoringFormTemplateController extends Controller
         Request $request,
         MonitoringFormTemplate $monitoringFormTemplate
     ): RedirectResponse {
-    //    $this->authorizeAdmin($request);
+        //    $this->authorizeAdmin($request);
 
         // abort_unless(
         //     $monitoringFormTemplate->isDraft(),
@@ -156,7 +156,7 @@ class MonitoringFormTemplateController extends Controller
     public function create(
         Request $request
     ): RedirectResponse {
-      //  $this->authorizeAdmin($request);
+        //  $this->authorizeAdmin($request);
 
         $active = MonitoringFormTemplate::query()
             ->where('status', 'Active')
@@ -246,7 +246,7 @@ class MonitoringFormTemplateController extends Controller
         Request $request,
         MonitoringFormTemplate $monitoringFormTemplate
     ): RedirectResponse {
-      //($request);
+        // ($request);
 
         // abort_unless(
         //     $monitoringFormTemplate->isDraft(),

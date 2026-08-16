@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\LecturerMonitoring;
-use App\Models\MonitoringFormSection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 

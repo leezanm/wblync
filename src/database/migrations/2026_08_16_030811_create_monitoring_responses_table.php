@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('monitoring_responses')) {
+            return;
+        }
+
         Schema::create('monitoring_responses', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
@@ -22,6 +26,10 @@ return new class extends Migration
      */
     public function down(): void
     {
+        if (! Schema::hasTable('monitoring_responses')) {
+            return;
+        }
+
         Schema::dropIfExists('monitoring_responses');
     }
 };

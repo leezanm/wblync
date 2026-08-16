@@ -175,8 +175,6 @@ class PermissionSeeder extends Seeder
             'create monitoring form versions',
             'edit monitoring form setup',
 
-
-
         ]);
 
         // Lecturer

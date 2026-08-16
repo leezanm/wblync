@@ -32,6 +32,7 @@ class LecturerStudentController extends Controller
             ->latest('assigned_at')
             ->paginate(12)
             ->withQueryString();
+
         return view(
             'lecturers.students.index',
             compact('students')

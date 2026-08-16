@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\DailyLogbook;
 use App\Models\Student;
+use App\Models\WeeklyLogbookSubmission;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class LecturerLogbookController extends Controller
 {
     public function index(
-    Request $request,
-    Student $student
+        Request $request,
+        Student $student
     ): View {
         $lecturer = $request->user()->lecturer;
 
@@ -48,7 +48,7 @@ class LecturerLogbookController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $submissions = \App\Models\WeeklyLogbookSubmission::query()
+        $submissions = WeeklyLogbookSubmission::query()
             ->whereHas('placement', function ($query) use ($student) {
                 $query->where('student_id', $student->id);
             })
@@ -77,9 +77,9 @@ class LecturerLogbookController extends Controller
     }
 
     public function show(
-    Request $request,
-    Student $student,
-    \App\Models\WeeklyLogbookSubmission $weeklyLogbookSubmission
+        Request $request,
+        Student $student,
+        WeeklyLogbookSubmission $weeklyLogbookSubmission
     ): View {
         $lecturer = $request->user()->lecturer;
 

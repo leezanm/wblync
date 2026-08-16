@@ -28,22 +28,20 @@ use App\Http\Controllers\SupervisorController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
-
-Route::redirect('/', '/login');
+Route::get('/', function () {
+    return view('welcome');
+});
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
-
-
 Route::middleware('auth')->group(function () {
 
     // Profile routes
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/change-password', [ChangePasswordController::class, 'edit'])->name('password.change.edit');
     Route::put('/change-password', [ChangePasswordController::class, 'update'])->name('password.change.update');
 
@@ -74,9 +72,9 @@ Route::middleware('auth')->group(function () {
     Route::resource('company-contacts', CompanyContactController::class);
     Route::resource('assessments', AssessmentController::class);
     Route::resource('industry-supervisors', IndustrySupervisorController::class);
-    Route::resource('lecturers',LecturerController::class);
-    Route::resource('supervisors',SupervisorController::class);
-    //assign supervisor
+    Route::resource('lecturers', LecturerController::class);
+    Route::resource('supervisors', SupervisorController::class);
+    // assign supervisor
     Route::get(
         'supervisors/{supervisor}/students/create',
         [SupervisorController::class, 'addStudent']
@@ -109,18 +107,13 @@ Route::middleware('auth')->group(function () {
         [DailyLogbookController::class, 'submitWeek']
     )->name('daily-logbooks.submit-week');
 
-
-    //mentor - student
+    // mentor - student
     Route::get(
         '/industry-supervisor/students',
         [IndustrySupervisorController::class, 'students']
     )->name('industry-supervisor.students');
 
-
     Route::resource('users', UserController::class);
-
-
-
 
 });
 
@@ -135,11 +128,10 @@ Route::middleware([
         [IndustrySupervisorLogbookController::class, 'index']
     )->name('logbook-approvals.index');
 
-     Route::get(
-    '/logbook-approvals/history',
-    [IndustrySupervisorLogbookController::class, 'history']
+    Route::get(
+        '/logbook-approvals/history',
+        [IndustrySupervisorLogbookController::class, 'history']
     )->name('logbook-approvals.history');
-
 
     Route::get(
         '/logbook-approvals/{weeklyLogbookSubmission}',
@@ -160,14 +152,13 @@ Route::middleware([
         ->middleware('permission:reject weekly logbooks')
         ->name('logbook-approvals.reject');
 
-
 });
 
-//Lecturer
+// Lecturer
 Route::middleware([
     'auth',
     'role:Lecturer',
-    ])
+])
     ->prefix('lecturer')
     ->name('lecturer.')
     ->group(function () {
@@ -187,9 +178,9 @@ Route::middleware([
             [LecturerLogbookController::class, 'show']
         )->name('students.logbooks.show');
 
-});
+    });
 
-//Pemantauan
+// Pemantauan
 Route::middleware('auth')
     ->prefix('admin')
     ->name('admin.')
@@ -276,6 +267,5 @@ Route::middleware('auth')
             [MonitoringController::class, 'show']
         )->name('monitoring.show');
     });
-
 
 require __DIR__.'/auth.php';

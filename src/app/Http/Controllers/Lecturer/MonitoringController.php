@@ -248,33 +248,25 @@ class MonitoringController extends Controller
 
                 'placement_id' => $placement->id,
 
-                'academic_session_id' =>
-                    $placement->academic_session_id,
+                'academic_session_id' => $placement->academic_session_id,
 
                 /*
                  * Change this if Placement does not contain
                  * semester_id in your current schema.
                  */
-                'semester_id' =>
-                    $placement->semester_id,
+                'semester_id' => $placement->semester_id,
 
-                'monitoring_form_template_id' =>
-                    $template->id,
+                'monitoring_form_template_id' => $template->id,
 
-                'monitoring_no' =>
-                    $monitoringNo,
+                'monitoring_no' => $monitoringNo,
 
-                'monitoring_date' =>
-                    $validated['monitoring_date'],
+                'monitoring_date' => $validated['monitoring_date'],
 
-                'reported_to' =>
-                    $validated['reported_to'] ?? false,
+                'reported_to' => $validated['reported_to'] ?? false,
 
-                'reported_at' =>
-                    $validated['reported_at'] ?? null,
+                'reported_at' => $validated['reported_at'] ?? null,
 
-                'status' =>
-                    'Completed',
+                'status' => 'Completed',
             ]);
 
             foreach (
@@ -313,10 +305,9 @@ class MonitoringController extends Controller
             );
     }
 
-
-public function show(
-    Request $request,
-    LecturerMonitoring $monitoring
+    public function show(
+        Request $request,
+        LecturerMonitoring $monitoring
     ): View {
         $lecturer = $request->user()->lecturer;
 
@@ -350,7 +341,7 @@ public function show(
             compact('monitoring')
         );
     }
-    
+
     private function ensureStudentBelongsToLecturer(
         $lecturer,
         Student $student
