@@ -11,13 +11,19 @@ use App\Models\CompanyContact;
 use App\Models\Course;
 use App\Models\DailyLogbook;
 use App\Models\Enrollment;
+use App\Models\IndustrySupervisor;
+use App\Models\Lecturer;
 use App\Models\Placement;
 use App\Models\Programme;
 use App\Models\Semester;
 use App\Models\Student;
+use App\Models\Supervisor;
+use App\Models\SupervisorStudent;
 use App\Models\User;
+use App\Models\WeeklyLogbookSubmission;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 class SystemSeeder extends Seeder
@@ -51,7 +57,27 @@ class SystemSeeder extends Seeder
         );
         $mentor->syncRoles(['Industry Mentor']);
 
+        $lecturerProfile = Lecturer::updateOrCreate(
+            ['user_id' => $lecturer->id],
+            [
+                'staff_no' => 'L0001',
+                'name' => 'WBL Lecturer',
+                'email' => 'lecturer@wblync.test',
+                'phone' => '011-20000001',
+                'status' => 'Active',
+            ]
+        );
+
         $academicSessions = [];
+
+        $hasWorkStatusColumn = Schema::hasColumn(
+            'daily_logbooks',
+            'work_status'
+        );
+        $hasWeeklySubmissionLinkColumn = Schema::hasColumn(
+            'daily_logbooks',
+            'weekly_logbook_submission_id'
+        );
 
         foreach ([
             [
@@ -483,6 +509,52 @@ class SystemSeeder extends Seeder
             $companyContacts[$data['company_code']] = $contact;
         }
 
+        $industrySupervisors = [];
+
+        foreach ([
+            [
+                'company_code' => 'CMP001',
+                'name' => 'Hafiz Roslan',
+                'position' => 'Frontend Team Lead',
+                'email' => 'hafiz.roslan@alphatech.test',
+                'phone' => '012-3100001',
+                'status' => 'Active',
+                'user_id' => $mentor->id,
+            ],
+            [
+                'company_code' => 'CMP002',
+                'name' => 'Siti Nabila',
+                'position' => 'Digital Marketing Manager',
+                'email' => 'siti.nabila@bumidigital.test',
+                'phone' => '012-3100002',
+                'status' => 'Active',
+                'user_id' => null,
+            ],
+            [
+                'company_code' => 'CMP003',
+                'name' => 'Faizal Hamid',
+                'position' => 'Industry Supervisor',
+                'email' => 'faizal@majumanufacturing.test',
+                'phone' => '014-9000333',
+                'status' => 'Active',
+                'user_id' => null,
+            ],
+        ] as $data) {
+            $industrySupervisors[$data['company_code']] = IndustrySupervisor::updateOrCreate(
+                [
+                    'company_id' => $companies[$data['company_code']]->id,
+                    'email' => $data['email'],
+                ],
+                [
+                    'name' => $data['name'],
+                    'position' => $data['position'],
+                    'phone' => $data['phone'],
+                    'status' => $data['status'],
+                    'user_id' => $data['user_id'],
+                ]
+            );
+        }
+
         $placements = [];
 
         foreach ([
@@ -540,6 +612,7 @@ class SystemSeeder extends Seeder
             $placement->fill([
                 'company_id' => $companies[$data['company_code']]->id,
                 'company_contact_id' => $companyContacts[$data['contact_company_code']]->id,
+                'industry_supervisor_id' => $industrySupervisors[$data['company_code']]->id,
                 'start_date' => $data['start_date'],
                 'end_date' => $data['end_date'],
                 'status' => $data['status'],
@@ -553,6 +626,43 @@ class SystemSeeder extends Seeder
             $placement->save();
 
             $placements[$data['student_no']] = $placement;
+        }
+
+        $targetLecturers = collect([
+            $lecturerProfile,
+            Lecturer::query()->find(3),
+        ])
+            ->filter()
+            ->unique('id');
+
+        foreach ($targetLecturers as $targetLecturer) {
+            $supervisor = Supervisor::updateOrCreate(
+                [
+                    'lecturer_id' => $targetLecturer->id,
+                    'academic_session_id' => $academicSessions['AS2026-2027']->id,
+                    'semester_id' => $semesters['SEM2026-1']->id,
+                ],
+                [
+                    'status' => 'Active',
+                ]
+            );
+
+            foreach ([
+                'ST001',
+                'ST002',
+                'ST005',
+            ] as $studentNo) {
+                SupervisorStudent::updateOrCreate(
+                    [
+                        'supervisor_id' => $supervisor->id,
+                        'student_id' => $students[$studentNo]->id,
+                    ],
+                    [
+                        'assigned_at' => '2026-09-01 08:00:00',
+                        'status' => 'Active',
+                    ]
+                );
+            }
         }
 
         foreach ([
@@ -598,54 +708,273 @@ class SystemSeeder extends Seeder
         foreach ([
             [
                 'student_no' => 'ST001',
-                'log_date' => '2026-11-01',
-                'activity' => 'Built a responsive landing page component.',
-                'learning_outcome' => 'Improved HTML structure and CSS layout skills.',
-                'working_hours' => 8,
-                'status' => 'Approved',
-                'remarks' => 'Reviewed by mentor.',
+                'week_start_date' => '2026-11-02',
+                'week_end_date' => '2026-11-08',
+                'status' => 'Submitted',
+                'submitted_at' => '2026-11-08 18:00:00',
+                'reviewed_at' => null,
+                'reviewed_by' => null,
+                'remarks' => 'Week 1 ready for lecturer review.',
+                'daily_logs' => [
+                    [
+                        'log_date' => '2026-11-02',
+                        'work_status' => 'Working',
+                        'activity' => 'Built a responsive landing page component for the company portal.',
+                        'learning_outcome' => 'Improved Tailwind layouting and responsive UI implementation.',
+                        'working_hours' => 8,
+                        'status' => 'Submitted',
+                        'remarks' => null,
+                    ],
+                    [
+                        'log_date' => '2026-11-03',
+                        'work_status' => 'Working',
+                        'activity' => 'Connected registration form to the internship demo API.',
+                        'learning_outcome' => 'Practiced integrating frontend forms with backend endpoints.',
+                        'working_hours' => 8,
+                        'status' => 'Submitted',
+                        'remarks' => null,
+                    ],
+                    [
+                        'log_date' => '2026-11-04',
+                        'work_status' => 'Working',
+                        'activity' => 'Fixed validation feedback and improved error messages in the student module.',
+                        'learning_outcome' => 'Learned better form validation UX and debugging workflow.',
+                        'working_hours' => 7.5,
+                        'status' => 'Submitted',
+                        'remarks' => null,
+                    ],
+                    [
+                        'log_date' => '2026-11-05',
+                        'work_status' => 'Working',
+                        'activity' => 'Prepared reusable Blade components for dashboard summary cards.',
+                        'learning_outcome' => 'Understood component reuse and consistent UI structure.',
+                        'working_hours' => 8,
+                        'status' => 'Submitted',
+                        'remarks' => null,
+                    ],
+                    [
+                        'log_date' => '2026-11-06',
+                        'work_status' => 'Working',
+                        'activity' => 'Documented tasks completed and submitted the weekly summary to mentor.',
+                        'learning_outcome' => 'Improved technical reporting and weekly reflection writing.',
+                        'working_hours' => 6.5,
+                        'status' => 'Submitted',
+                        'remarks' => null,
+                    ],
+                ],
             ],
             [
                 'student_no' => 'ST001',
-                'log_date' => '2026-11-02',
-                'activity' => 'Connected the form to the demo API.',
-                'learning_outcome' => 'Practiced fetching and submitting data.',
-                'working_hours' => 7.5,
-                'status' => 'Submitted',
-                'remarks' => null,
+                'week_start_date' => '2026-11-09',
+                'week_end_date' => '2026-11-15',
+                'status' => 'Approved',
+                'submitted_at' => '2026-11-15 17:45:00',
+                'reviewed_at' => '2026-11-16 09:00:00',
+                'reviewed_by' => $mentor->id,
+                'remarks' => 'Good progress and clear documentation.',
+                'daily_logs' => [
+                    [
+                        'log_date' => '2026-11-09',
+                        'work_status' => 'Working',
+                        'activity' => 'Implemented placement statistics widgets for the admin dashboard.',
+                        'learning_outcome' => 'Improved understanding of data aggregation and KPI presentation.',
+                        'working_hours' => 8,
+                        'status' => 'Approved',
+                        'remarks' => 'Well documented.',
+                    ],
+                    [
+                        'log_date' => '2026-11-10',
+                        'work_status' => 'Working',
+                        'activity' => 'Added search and date filter to the daily logbook listing page.',
+                        'learning_outcome' => 'Learned to combine query filters with user-friendly form controls.',
+                        'working_hours' => 8,
+                        'status' => 'Approved',
+                        'remarks' => null,
+                    ],
+                    [
+                        'log_date' => '2026-11-11',
+                        'work_status' => 'Working',
+                        'activity' => 'Refactored placement summary card to show mentor and academic session details.',
+                        'learning_outcome' => 'Understood how to surface important context in a compact layout.',
+                        'working_hours' => 7.5,
+                        'status' => 'Approved',
+                        'remarks' => null,
+                    ],
+                    [
+                        'log_date' => '2026-11-12',
+                        'work_status' => 'Working',
+                        'activity' => 'Resolved a bug in weekly submission linkage for daily logbooks.',
+                        'learning_outcome' => 'Improved schema troubleshooting and relation debugging skills.',
+                        'working_hours' => 8,
+                        'status' => 'Approved',
+                        'remarks' => null,
+                    ],
+                    [
+                        'log_date' => '2026-11-13',
+                        'work_status' => 'Working',
+                        'activity' => 'Presented sprint progress to mentor and captured improvement notes.',
+                        'learning_outcome' => 'Practiced concise technical communication and follow-up actions.',
+                        'working_hours' => 6,
+                        'status' => 'Approved',
+                        'remarks' => null,
+                    ],
+                ],
             ],
             [
                 'student_no' => 'ST002',
-                'log_date' => '2026-11-03',
-                'activity' => 'Created database migration for student profiles.',
-                'learning_outcome' => 'Understood schema design and foreign keys.',
-                'working_hours' => 6.5,
-                'status' => 'Approved',
-                'remarks' => 'Approved by lecturer.',
+                'week_start_date' => '2026-11-16',
+                'week_end_date' => '2026-11-22',
+                'status' => 'Rejected',
+                'submitted_at' => '2026-11-22 18:10:00',
+                'reviewed_at' => '2026-11-23 10:00:00',
+                'reviewed_by' => $mentor->id,
+                'remarks' => 'Please add clearer deliverables and more specific learning outcomes.',
+                'daily_logs' => [
+                    [
+                        'log_date' => '2026-11-16',
+                        'work_status' => 'Working',
+                        'activity' => 'Drafted campaign performance report for internship clients.',
+                        'learning_outcome' => 'Improved report structuring and KPI interpretation.',
+                        'working_hours' => 8,
+                        'status' => 'Rejected',
+                        'remarks' => 'Need more detail.',
+                    ],
+                    [
+                        'log_date' => '2026-11-17',
+                        'work_status' => 'Working',
+                        'activity' => 'Updated social media content planner with weekly campaign entries.',
+                        'learning_outcome' => 'Learned content scheduling and consistency planning.',
+                        'working_hours' => 7.5,
+                        'status' => 'Rejected',
+                        'remarks' => null,
+                    ],
+                    [
+                        'log_date' => '2026-11-18',
+                        'work_status' => 'Off Day',
+                        'activity' => 'Off Day',
+                        'learning_outcome' => 'Rest day recorded in logbook.',
+                        'working_hours' => 0,
+                        'status' => 'Rejected',
+                        'remarks' => null,
+                    ],
+                    [
+                        'log_date' => '2026-11-19',
+                        'work_status' => 'Working',
+                        'activity' => 'Collected campaign reach data and updated the reporting spreadsheet.',
+                        'learning_outcome' => 'Practiced tracking metrics and maintaining clean reporting data.',
+                        'working_hours' => 8,
+                        'status' => 'Rejected',
+                        'remarks' => null,
+                    ],
+                    [
+                        'log_date' => '2026-11-20',
+                        'work_status' => 'Working',
+                        'activity' => 'Prepared revised campaign ideas for mentor feedback.',
+                        'learning_outcome' => 'Strengthened idea justification and feedback incorporation.',
+                        'working_hours' => 6.5,
+                        'status' => 'Rejected',
+                        'remarks' => null,
+                    ],
+                ],
             ],
             [
                 'student_no' => 'ST005',
-                'log_date' => '2026-11-04',
-                'activity' => 'Prepared weekly internship summary report.',
-                'learning_outcome' => 'Improved reporting and reflection writing.',
-                'working_hours' => 8,
-                'status' => 'Rejected',
-                'remarks' => 'Needs more detail on deliverables.',
+                'week_start_date' => '2026-11-23',
+                'week_end_date' => '2026-11-29',
+                'status' => 'Approved',
+                'submitted_at' => '2026-11-29 17:20:00',
+                'reviewed_at' => '2026-11-30 08:45:00',
+                'reviewed_by' => $mentor->id,
+                'remarks' => 'Strong reflection and complete weekly evidence.',
+                'daily_logs' => [
+                    [
+                        'log_date' => '2026-11-23',
+                        'work_status' => 'Working',
+                        'activity' => 'Prepared weekly internship summary report for operations review.',
+                        'learning_outcome' => 'Improved concise report writing and summary presentation.',
+                        'working_hours' => 8,
+                        'status' => 'Approved',
+                        'remarks' => null,
+                    ],
+                    [
+                        'log_date' => '2026-11-24',
+                        'work_status' => 'Working',
+                        'activity' => 'Updated stock movement records and checked document completeness.',
+                        'learning_outcome' => 'Learned record accuracy and administrative control practices.',
+                        'working_hours' => 8,
+                        'status' => 'Approved',
+                        'remarks' => null,
+                    ],
+                    [
+                        'log_date' => '2026-11-25',
+                        'work_status' => 'Public Holiday',
+                        'activity' => 'Public Holiday',
+                        'learning_outcome' => 'Holiday recorded for weekly log completeness.',
+                        'working_hours' => 0,
+                        'status' => 'Approved',
+                        'remarks' => null,
+                    ],
+                    [
+                        'log_date' => '2026-11-26',
+                        'work_status' => 'Working',
+                        'activity' => 'Assisted with data entry cleanup for supplier tracking.',
+                        'learning_outcome' => 'Improved spreadsheet discipline and data verification habits.',
+                        'working_hours' => 7.5,
+                        'status' => 'Approved',
+                        'remarks' => null,
+                    ],
+                    [
+                        'log_date' => '2026-11-27',
+                        'work_status' => 'Working',
+                        'activity' => 'Closed the week with a mentor review and action list for next week.',
+                        'learning_outcome' => 'Practiced reflecting on work output and setting follow-up tasks.',
+                        'working_hours' => 6.5,
+                        'status' => 'Approved',
+                        'remarks' => null,
+                    ],
+                ],
             ],
-        ] as $data) {
-            DailyLogbook::updateOrCreate(
+        ] as $weeklyData) {
+            $submission = WeeklyLogbookSubmission::updateOrCreate(
                 [
-                    'placement_id' => $placements[$data['student_no']]->id,
-                    'log_date' => $data['log_date'],
+                    'placement_id' => $placements[$weeklyData['student_no']]->id,
+                    'week_start_date' => $weeklyData['week_start_date'],
                 ],
                 [
-                    'activity' => $data['activity'],
-                    'learning_outcome' => $data['learning_outcome'],
-                    'working_hours' => $data['working_hours'],
-                    'status' => $data['status'],
-                    'remarks' => $data['remarks'],
+                    'week_end_date' => $weeklyData['week_end_date'],
+                    'status' => $weeklyData['status'],
+                    'submitted_at' => $weeklyData['submitted_at'],
+                    'reviewed_at' => $weeklyData['reviewed_at'],
+                    'reviewed_by' => $weeklyData['reviewed_by'],
+                    'remarks' => $weeklyData['remarks'],
                 ]
             );
+
+            foreach ($weeklyData['daily_logs'] as $logData) {
+                $payload = [
+                    'activity' => $logData['activity'],
+                    'learning_outcome' => $logData['learning_outcome'],
+                    'working_hours' => $logData['working_hours'],
+                    'status' => $logData['status'],
+                    'remarks' => $logData['remarks'],
+                ];
+
+                if ($hasWorkStatusColumn) {
+                    $payload['work_status'] = $logData['work_status'];
+                }
+
+                if ($hasWeeklySubmissionLinkColumn) {
+                    $payload['weekly_logbook_submission_id'] = $submission->id;
+                }
+
+                DailyLogbook::updateOrCreate(
+                    [
+                        'placement_id' => $placements[$weeklyData['student_no']]->id,
+                        'log_date' => $logData['log_date'],
+                    ],
+                    $payload
+                );
+            }
         }
     }
 }

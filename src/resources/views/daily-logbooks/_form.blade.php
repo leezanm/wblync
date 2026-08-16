@@ -19,10 +19,10 @@
     </div>
 
 
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 
         {{-- Placement --}}
-        <div class="rounded-xl bg-slate-50 border border-slate-200 p-4">
+        <div class="md:col-span-2 rounded-xl bg-slate-50 border border-slate-200 p-2">
 
             <p class="text-xs uppercase tracking-wide text-slate-400 font-semibold">
                 Current Placement
@@ -268,7 +268,7 @@
 
 
         {{-- Activity --}}
-        <div class="md:col-span-2">
+        <div class="md:col-span-3">
 
             <label
                 for="activity"
@@ -298,7 +298,7 @@
 
 
         {{-- Learning Outcome --}}
-        <div class="md:col-span-2">
+        <div class="md:col-span-3">
 
             <label
                 for="learning_outcome"
@@ -330,7 +330,7 @@
 
 
         {{-- Remarks --}}
-        <div class="md:col-span-2">
+        <div class="md:col-span-3">
 
             <label
                 for="remarks"

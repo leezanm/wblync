@@ -14,6 +14,8 @@ use App\Http\Controllers\EnrollmentController;
 use App\Http\Controllers\IndustrySupervisorController;
 use App\Http\Controllers\IndustrySupervisorLogbookController;
 use App\Http\Controllers\LecturerController;
+use App\Http\Controllers\LecturerLogbookController;
+use App\Http\Controllers\LecturerStudentController;
 use App\Http\Controllers\PlacementController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProgrammeController;
@@ -158,5 +160,32 @@ Route::middleware([
 
 
 });
+
+//Lecturer
+Route::middleware([
+    'auth',
+    'role:Lecturer',
+    ])
+    ->prefix('lecturer')
+    ->name('lecturer.')
+    ->group(function () {
+
+        Route::get(
+            '/students',
+            [LecturerStudentController::class, 'index']
+        )->name('students.index');
+
+        Route::get(
+            '/students/{student}/logbooks',
+            [LecturerLogbookController::class, 'index']
+        )->name('students.logbooks.index');
+
+        Route::get(
+            '/students/{student}/logbooks/{weeklyLogbookSubmission}',
+            [LecturerLogbookController::class, 'show']
+        )->name('students.logbooks.show');
+
+});
+
 
 require __DIR__.'/auth.php';

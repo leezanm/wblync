@@ -122,7 +122,7 @@
         {{-- Internship --}}
         {{-- ========================================================= --}}
 
-        
+
 
 
 
@@ -192,80 +192,7 @@
             </a>
 
 
-            {{-- Assessment --}}
-            <a
-                href="{{ route('assessments.index') }}"
-                @click="sidebarOpen = false"
-                class="
-                    flex
-                    items-center
-                    gap-3
-                    px-4
-                    py-3
-                    rounded-xl
-                    transition
-                    {{ request()->routeIs('assessments.*')
-                        ? 'bg-blue-600 text-white'
-                        : 'text-slate-300 hover:bg-slate-800 hover:text-white'
-                    }}
-                "
-            >
-
-                <svg
-                    class="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                >
-
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="1.8"
-                        d="M6 3h9l3 3v15H6V3z"
-                    />
-
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="1.8"
-                        d="M9 11h6M9 15h6M9 7h3"
-                    />
-
-                </svg>
-
-                <span>
-                    Assessment
-                </span>
-
-            </a>
-
-
-            {{-- Reports --}}
-            <a
-                href="#"
-                class="
-                    flex
-                    items-center
-                    gap-3
-                    px-4
-                    py-3
-                    rounded-xl
-                    text-slate-300
-                    hover:bg-slate-800
-                    hover:text-white
-                "
-            >
-
-                <span class="w-5">
-                    •
-                </span>
-
-                <span>
-                    Reports
-                </span>
-
-            </a>
+        
 
         </div>
 

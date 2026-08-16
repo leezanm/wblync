@@ -320,11 +320,11 @@
                             <td class="px-6 py-4">
 
                                 <div class="font-bold text-slate-800">
-                                    {{ $enrollment->classCourse->course->code }}
+                                    {{ $enrollment->classCourse->course->code?? '' }}
                                 </div>
 
                                 <div class="text-sm text-slate-500 mt-1">
-                                    {{ $enrollment->classCourse->course->name }}
+                                    {{ $enrollment->classCourse->course->name?? '' }}
                                 </div>
 
                             </td>
@@ -488,7 +488,7 @@
                         </span>
 
                         <span class="font-medium text-slate-700 text-right">
-                            {{ $enrollment->classCourse->course->code }}
+                            {{ $enrollment->classCourse->course->code?? '' }}
                         </span>
 
                     </div>
