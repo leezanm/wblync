@@ -29,7 +29,7 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 });
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
@@ -65,6 +65,17 @@ Route::middleware('auth')->group(function () {
     Route::resource('class-courses', ClassCourseController::class);
     // enrollment
     Route::resource('enrollments', EnrollmentController::class);
+    Route::get(
+        '/enrollments/create',
+        [EnrollmentController::class, 'create']
+    )->name('enrollments.create');
+
+    Route::post(
+        '/enrollments',
+        [EnrollmentController::class, 'store']
+    )->name('enrollments.store');
+
+
     Route::get('students/{student}/academic-profile', [StudentAcademicProfileController::class, 'show'])->name('students.academic-profile');
     Route::resource('companies', CompanyController::class);
     Route::resource('placements', PlacementController::class);

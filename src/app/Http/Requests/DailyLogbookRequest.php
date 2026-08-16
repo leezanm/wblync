@@ -46,6 +46,17 @@ class DailyLogbookRequest extends FormRequest
                 'string',
             ],
 
+            'has_weekend_summary' => [
+                'nullable',
+                'boolean',
+            ],
+
+            'weekly_summary' => [
+                'nullable',
+                'string',
+                'required_if:has_weekend_summary,1',
+            ],
+
             'working_hours' => [
                 'nullable',
                 'numeric',
@@ -73,10 +84,17 @@ class DailyLogbookRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $workStatus = $this->input('work_status');
+        $hasWeekendSummary = $this->boolean('has_weekend_summary');
 
         if ($workStatus && $workStatus !== 'Working') {
             $this->merge([
                 'activity' => $workStatus,
+            ]);
+        }
+
+        if (! $hasWeekendSummary) {
+            $this->merge([
+                'weekly_summary' => null,
             ]);
         }
     }

@@ -10,28 +10,34 @@
                     Academic Profile
                 </p>
 
-                <h2 class="text-2xl font-bold text-slate-800 mt-1">
-                    {{ $student->name }}
-                </h2>
-
-                <p class="text-sm text-slate-500 mt-1">
-                    {{ $student->student_no }}
-                </p>
 
             </div>
 
+
+        </div>
+
+    </x-slot>
+
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
+
+        <div>
+
+            <p class="text-sm font-semibold text-blue-600">
+                Academic Profile
+            </p>
+
+
+        </div>
+            @role('Superadmin')
             <a
                 href="{{ route('students.index') }}"
                 class="inline-flex items-center justify-center px-5 py-3 rounded-xl border border-slate-200 bg-white text-slate-700 font-medium hover:bg-slate-50 transition"
             >
                 ← Back to Students
             </a>
+            @endrole
 
-        </div>
-
-    </x-slot>
-
-
+    </div>
     <div class="space-y-6">
 
 
@@ -453,6 +459,7 @@
 
 
         {{-- Quick Actions --}}
+        @role('Super Admin')
         <div class="flex flex-col sm:flex-row gap-3">
 
             <a
@@ -470,6 +477,7 @@
             </a>
 
         </div>
+        @endrole
 
     </div>
 

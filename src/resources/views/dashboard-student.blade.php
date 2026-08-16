@@ -147,12 +147,12 @@
                         <a href="{{ route('daily-logbooks.index', ['student_id' => $student->id]) }}" class="block rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50">
                             Lihat Logbook Harian
                         </a>
-                        <a href="{{ route('placements.index', ['student_id' => $student->id]) }}" class="block rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50">
+                        {{-- <a href="{{ route('placements.index', ['student_id' => $student->id]) }}" class="block rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50">
                             Lihat Placement
                         </a>
                         <a href="{{ route('assessments.index', ['student_id' => $student->id]) }}" class="block rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50">
                             Lihat Penilaian
-                        </a>
+                        </a> --}}
                         <a href="{{ route('students.academic-profile', $student) }}" class="block rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50">
                             Profil Akademik
                         </a>

@@ -318,12 +318,6 @@
                                 Hours
                             </th>
 
-                           
-
-                            <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
-                                Status
-                            </th>
-
                             <th class="px-6 py-4 text-right text-xs font-semibold uppercase tracking-wide text-slate-500">
                                 Action
                             </th>
@@ -485,70 +479,6 @@
 
                                 </td>
 
-                                {{-- Status --}}
-                                <td class="px-6 py-5">
-
-                                    @switch($logbook->status)
-
-                                        @case('Approved')
-
-                                            <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-100 text-green-700 text-xs font-semibold">
-
-                                                <span class="w-2 h-2 rounded-full bg-blue-500"></span>
-
-                                                Approved
-
-                                            </span>
-
-                                            @break
-
-
-                                        @case('Pending')
-
-                                            <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-yellow-100 text-yellow-600 text-xs font-semibold">
-
-                                                <span class="w-2 h-2 rounded-full bg-slate-400"></span>
-
-                                                Pending
-
-                                            </span>
-
-                                            @break
-
-
-                                        @case('Draf')
-
-                                            <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold">
-
-                                                Draf
-
-                                            </span>
-
-                                            @break
-
-
-                                        @case('Reject')
-
-                                            <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-100 text-red-700 text-xs font-semibold">
-
-                                                Reject
-
-                                            </span>
-
-                                            @break
-
-
-                                        @default
-
-                                            <span class="inline-flex px-3 py-1.5 rounded-full bg-slate-100 text-slate-600 text-xs font-semibold">
-
-                                                {{ $logbook->status ?? 'N/A' }}
-
-                                            </span>
-
-                                    @endswitch
-
-                                </td>
 
                                 {{-- Action --}}
                                 <td class="px-6 py-5 whitespace-nowrap">
@@ -564,7 +494,8 @@
 
 
                                         @if (
-                                            $logbook->status === 'Rejected' || $logbook->status === 'Draf'
+                                            !$weeklySubmission
+                                            || $weeklySubmission->status === 'Rejected'
                                         )
 
                                             <a
@@ -630,7 +561,164 @@
             </div>
 
 
+            {{-- Weekly Actions --}}
+            <div class="p-6 border-t border-slate-100 bg-slate-50">
 
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+
+                    <div>
+
+                        @if ($weeklySubmission?->status === 'Submitted')
+
+                            <p class="text-sm font-medium text-amber-700">
+                                This week's logbook has been submitted for supervisor approval.
+                            </p>
+
+                            @if ($weeklySubmission->submitted_at)
+
+                                <p class="text-xs text-slate-500 mt-1">
+                                    Submitted on
+                                    {{ $weeklySubmission->submitted_at->format('d M Y, h:i A') }}
+                                </p>
+
+                            @endif
+
+
+                        @elseif ($weeklySubmission?->status === 'Approved')
+
+                            <p class="text-sm font-medium text-green-700">
+                                This week's logbook has been approved by your Industry Supervisor.
+                            </p>
+
+
+                        @elseif ($weeklySubmission?->status === 'Rejected')
+
+                            <p class="text-sm font-medium text-red-700">
+                                Your weekly logbook was rejected. Please update the required entries and resubmit.
+                            </p>
+
+
+                        @else
+
+                            <p class="text-sm font-medium text-slate-700">
+                                Review your entries before submitting this week.
+                            </p>
+
+                            <p class="text-xs text-slate-500 mt-1">
+                                All seven days are included, including off days, leave and medical leave.
+
+                            </p>
+
+                        @endif
+
+                    </div>
+
+
+                    {{-- Submit / Resubmit --}}
+                    @if (
+                        !$weeklySubmission
+                        || $weeklySubmission->status === 'Rejected'
+                    )
+
+                        <form
+                            method="POST"
+                            action="{{ route('daily-logbooks.submit-week') }}"
+                            onsubmit="return confirm('Submit this week\\'s logbook for Industry Supervisor approval?');"
+                        >
+
+                            @csrf
+
+                            <input
+                                type="hidden"
+                                name="date"
+                                value="{{ $weekStart->toDateString() }}"
+                            >
+
+                            <button
+                                type="submit"
+                                class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition shadow-sm"
+                            >
+
+                                <svg
+                                    class="w-5 h-5"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M5 13l4 4L19 7"
+                                    />
+                                </svg>
+
+                                @if ($weeklySubmission?->status === 'Rejected')
+                                    Resubmit This Week
+                                @else
+                                    Submit This Week
+                                @endif
+
+                            </button>
+
+                        </form>
+
+                    @elseif ($weeklySubmission?->status === 'Submitted')
+
+                        <span class="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-amber-100 text-amber-700 font-semibold">
+
+                            <svg
+                                class="w-5 h-5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M12 8v4l3 2"
+                                />
+
+                                <circle
+                                    cx="12"
+                                    cy="12"
+                                    r="9"
+                                    stroke-width="2"
+                                />
+                            </svg>
+
+                            Pending Approval
+
+                        </span>
+
+                    @elseif ($weeklySubmission?->status === 'Approved')
+
+                        <span class="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-green-100 text-green-700 font-semibold">
+
+                            <svg
+                                class="w-5 h-5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M5 13l4 4L19 7"
+                                />
+                            </svg>
+
+                            Week Approved
+
+                        </span>
+
+                    @endif
+
+                </div>
+
+            </div>
 
         </div>
 

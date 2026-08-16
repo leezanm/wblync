@@ -193,4 +193,59 @@ class StudentController extends Controller
                 'Student deleted successfully.'
             );
     }
+
+    public function storeEnrollment(Request $request)
+    {
+        $validated = $request->validate([
+            'class_room_id' => [
+                'required',
+                'exists:class_rooms,id',
+            ],
+
+            'student_ids' => [
+                'required',
+                'array',
+                'min:1',
+            ],
+
+            'student_ids.*' => [
+                'integer',
+                'exists:students,id',
+            ],
+        ]);
+
+        $classRoom = ClassRoom::with('classCourses')
+            ->findOrFail($validated['class_room_id']);
+
+        DB::transaction(function () use ($validated, $classRoom) {
+
+            foreach ($validated['student_ids'] as $studentId) {
+
+                $student = Student::findOrFail($studentId);
+
+                foreach ($classRoom->classCourses as $classCourse) {
+
+                    Enrollment::firstOrCreate(
+                        [
+                            'student_id' => $student->id,
+                            'class_course_id' => $classCourse->id,
+                        ],
+                        [
+                            'status' => 'Active',
+                        ]
+                    );
+                }
+
+                // Update current class
+                $student->update([
+                    'class_room_id' => $classRoom->id,
+                ]);
+            }
+        });
+
+        return back()->with(
+            'success',
+            'Student berjaya di-enrol ke class.'
+        );
+    }
 }

@@ -382,7 +382,7 @@ class DailyLogbookController extends Controller
         }
 
         $logbook = DailyLogbook::create(
-            $request->validated()
+            $request->safe()->except('has_weekend_summary')
         );
 
         return redirect()
@@ -492,7 +492,7 @@ class DailyLogbookController extends Controller
         }
 
         $dailyLogbook->update(
-            $request->validated()
+            $request->safe()->except('has_weekend_summary')
         );
 
         return redirect()

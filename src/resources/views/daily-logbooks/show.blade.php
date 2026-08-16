@@ -338,6 +338,53 @@
         </div>
 
 
+        {{-- Weekend Summary --}}
+        <div class="mt-6">
+
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                    <p class="text-xs font-medium uppercase tracking-wide text-slate-400">
+                        Weekend Summary
+                    </p>
+                    <p class="mt-1 text-sm text-slate-500">
+                        Weekly or weekend reflection attached to this logbook entry.
+                    </p>
+                </div>
+
+                <label class="inline-flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5">
+                    <input
+                        type="checkbox"
+                        disabled
+                        @checked(filled($dailyLogbook->weekly_summary))
+                        class="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                    >
+                    <span class="text-sm font-medium text-slate-700">
+                        Weekend summary enabled
+                    </span>
+                </label>
+            </div>
+
+            <div class="mt-3 rounded-xl border border-red-100 bg-red-50 p-5">
+
+                @if ($dailyLogbook->weekly_summary)
+
+                    <p class="whitespace-pre-line text-sm leading-7 text-slate-700">
+                        {{ $dailyLogbook->weekly_summary }}
+                    </p>
+
+                @else
+
+                    <p class="text-sm text-slate-400">
+                        No weekend summary recorded.
+                    </p>
+
+                @endif
+
+            </div>
+
+        </div>
+
+
         {{-- Remarks --}}
         @if ($dailyLogbook->remarks)
 
@@ -545,12 +592,12 @@
         <div class="flex flex-col sm:flex-row gap-3">
 
 
-            <a
+            {{-- <a
                 href="{{ route('placements.show', $dailyLogbook->placement) }}"
                 class="inline-flex items-center justify-center px-5 py-3 rounded-xl border border-slate-200 text-slate-600 font-medium hover:bg-slate-50 transition"
             >
                 View Placement
-            </a>
+            </a> --}}
 
             {{-- STATUS == DRAF --}}
             @if ($dailyLogbook->status === 'Draft')
@@ -589,50 +636,59 @@
                     </button>
 
                 </form>
+                 <a
+                    href="{{ route('daily-logbooks.edit', $dailyLogbook) }}"
+                    class="inline-flex items-center justify-center px-5 py-3 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition shadow-sm"
+                >
+                    Edit Logbook
+                </a>
 
             @endif
+
             @if ($dailyLogbook->status === 'Submitted')
-
-                <form
-                    method="POST"
-                    action="{{ route('daily-logbooks.approve', $dailyLogbook) }}"
-                    onsubmit="return confirm('Approve this logbook?');"
-                >
-
-                    @csrf
-
-                    <button
-                        type="submit"
-                        class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-green-600 text-white font-semibold hover:bg-green-700 transition shadow-sm"
+                @role('Industry Mentor')
+                    <form
+                        method="POST"
+                        action="{{ route('daily-logbooks.approve', $dailyLogbook) }}"
+                        onsubmit="return confirm('Approve this logbook?');"
                     >
 
-                        ✓ Approve
+                        @csrf
 
-                    </button>
+                        <button
+                            type="submit"
+                            class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-green-600 text-white font-semibold hover:bg-green-700 transition shadow-sm"
+                        >
 
-                </form>
+                            ✓ Approve
+
+                        </button>
+
+                    </form>
 
 
-                <form
-                    method="POST"
-                    action="{{ route('daily-logbooks.reject', $dailyLogbook) }}"
-                    onsubmit="return confirm('Reject this logbook?');"
-                >
-
-                    @csrf
-
-                    <button
-                        type="submit"
-                        class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-red-600 text-white font-semibold hover:bg-red-700 transition shadow-sm"
+                    <form
+                        method="POST"
+                        action="{{ route('daily-logbooks.reject', $dailyLogbook) }}"
+                        onsubmit="return confirm('Reject this logbook?');"
                     >
 
-                        ✕ Reject
+                        @csrf
 
-                    </button>
+                        <button
+                            type="submit"
+                            class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-red-600 text-white font-semibold hover:bg-red-700 transition shadow-sm"
+                        >
 
-                </form>
+                            ✕ Reject
+
+                        </button>
+
+                    </form>
+                @endrole
 
             @endif
+
             @if ($dailyLogbook->status === 'Rejected')
 
                 <a
@@ -643,12 +699,6 @@
                 </a>
 
             @endif
-            <a
-                href="{{ route('daily-logbooks.edit', $dailyLogbook) }}"
-                class="inline-flex items-center justify-center px-5 py-3 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition shadow-sm"
-            >
-                Edit Logbook
-            </a>
 
         </div>
 

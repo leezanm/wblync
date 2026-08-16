@@ -17,6 +17,7 @@ class DailyLogbook extends Model
         'work_status',
         'activity',
         'learning_outcome',
+        'weekly_summary',
         'working_hours',
         'status',
         'remarks',

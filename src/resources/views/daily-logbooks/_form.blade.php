@@ -329,6 +329,76 @@
         </div>
 
 
+        {{-- Weekend Summary --}}
+        <div class="md:col-span-3 rounded-2xl border border-slate-200 bg-slate-50/80 p-5">
+
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+
+                <div>
+                    <h4 class="text-sm font-semibold text-slate-800">
+                        Weekly Summary
+                    </h4>
+                    <p class="mt-1 text-sm text-slate-500">
+                        Tick the checkbox below if you want to include a weekend / weekly summary for this logbook entry.
+                    </p>
+                </div>
+
+                <div class="shrink-0">
+                    <input
+                        type="hidden"
+                        name="has_weekend_summary"
+                        value="0"
+                    >
+
+                    <label class="inline-flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+                        <input
+                            type="checkbox"
+                            id="has_weekend_summary"
+                            name="has_weekend_summary"
+                            value="1"
+                            @checked(old('has_weekend_summary', filled($dailyLogbook->weekly_summary ?? null)))
+                            class="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                        >
+                        <span class="text-sm font-medium text-slate-700">
+                            Enable weekend summary
+                        </span>
+                    </label>
+                </div>
+
+            </div>
+
+            <div class="mt-4">
+                <label
+                    for="weekly_summary"
+                    class="mb-2 block text-sm font-medium text-slate-700"
+                >
+                    Weekend Summary
+                </label>
+
+                <textarea
+                    id="weekly_summary"
+                    name="weekly_summary"
+                    rows="4"
+                    placeholder="Summarise key activities, progress, challenges or highlights for the week / weekend..."
+                    class="w-full rounded-xl border-slate-300 bg-white px-4 py-3 focus:border-blue-500 focus:ring-blue-500"
+                >{{ old('weekly_summary', $dailyLogbook->weekly_summary ?? '') }}</textarea>
+
+                <p class="mt-2 text-xs text-slate-400">
+                    This field is only enabled when the weekend summary checkbox is ticked.
+                </p>
+
+                @error('weekly_summary')
+
+                    <p class="mt-2 text-sm text-red-600">
+                        {{ $message }}
+                    </p>
+
+                @enderror
+            </div>
+
+        </div>
+
+
         {{-- Remarks --}}
         <div class="md:col-span-3">
 
@@ -368,6 +438,8 @@
     (function () {
         const workStatusSelect = document.getElementById('work_status');
         const activityTextarea = document.getElementById('activity');
+        const weekendSummaryCheckbox = document.getElementById('has_weekend_summary');
+        const weekendSummaryTextarea = document.getElementById('weekly_summary');
         const nonWorkingStatuses = [
             'Off Day',
             'Public Holiday',
@@ -398,5 +470,23 @@
 
         workStatusSelect.addEventListener('change', applyWorkStatusActivity);
         applyWorkStatusActivity();
+
+        if (weekendSummaryCheckbox && weekendSummaryTextarea) {
+            const applyWeekendSummaryState = () => {
+                const enabled = weekendSummaryCheckbox.checked;
+
+                weekendSummaryTextarea.disabled = !enabled;
+                weekendSummaryTextarea.readOnly = !enabled;
+                weekendSummaryTextarea.classList.toggle('bg-slate-100', !enabled);
+                weekendSummaryTextarea.classList.toggle('text-slate-400', !enabled);
+
+                if (!enabled) {
+                    weekendSummaryTextarea.value = '';
+                }
+            };
+
+            weekendSummaryCheckbox.addEventListener('change', applyWeekendSummaryState);
+            applyWeekendSummaryState();
+        }
     })();
 </script>
