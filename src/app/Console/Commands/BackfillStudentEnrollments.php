@@ -24,6 +24,7 @@ class BackfillStudentEnrollments extends Command
 
         if ($students->isEmpty()) {
             $this->warn('No students have a class_room_id.');
+
             return self::SUCCESS;
         }
 

@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Enrollment;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -16,7 +15,7 @@ class Student extends Model
     protected $fillable = [
         'uuid',
         'user_id',
-      
+
         'student_no',
         'name',
         'ic_no',
@@ -72,6 +71,4 @@ class Student extends Model
     {
         return $this->hasMany(Enrollment::class);
     }
-
-
 }

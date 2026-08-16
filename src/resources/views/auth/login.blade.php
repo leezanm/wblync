@@ -340,6 +340,53 @@
             color: #475467;
         }
 
+        .wb-login-qr {
+            margin-top: 16px;
+            border-radius: 14px;
+            border: 1px solid #dbe7ff;
+            background: linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%);
+            padding: 16px;
+            text-align: center;
+        }
+
+        .wb-login-qr h3 {
+            margin: 0;
+            font-size: 0.84rem;
+            font-weight: 700;
+            color: #16213b;
+        }
+
+        .wb-login-qr p {
+            margin: 6px 0 0;
+            font-size: 0.74rem;
+            line-height: 1.5;
+            color: #475467;
+        }
+
+        .wb-login-qr-image {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 12px;
+            padding: 10px;
+            border-radius: 14px;
+            background: #ffffff;
+            box-shadow: 0 12px 24px rgba(29, 103, 245, 0.1);
+        }
+
+        .wb-login-qr-image img {
+            display: block;
+            width: 132px;
+            height: 132px;
+            border-radius: 8px;
+        }
+
+        .wb-login-qr-hint {
+            margin-top: 10px;
+            font-size: 0.68rem;
+            color: #667085;
+        }
+
         @media (max-width: 991.98px) {
             .wb-login-main {
                 grid-template-columns: minmax(250px, 0.95fr) minmax(320px, 1fr);
@@ -522,6 +569,22 @@
                             </div>
 
                             <button type="submit" class="wb-login-button">Login</button>
+
+                            <div class="wb-login-qr">
+                                <h3>Login on your phone</h3>
+                                <p>Students can scan this QR code to open the login page directly on mobile.</p>
+
+                                <div class="wb-login-qr-image">
+                                    <img
+                                        src="{{ asset('images/student-login-qr.png') }}"
+                                        alt="QR code for student mobile login"
+                                    >
+                                </div>
+
+                                <div class="wb-login-qr-hint">
+                                    Scan with your phone camera to open WBLync quickly.
+                                </div>
+                            </div>
 
                             {{-- <div class="wb-login-divider">or</div>
 

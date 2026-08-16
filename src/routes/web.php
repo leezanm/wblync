@@ -67,12 +67,12 @@ Route::middleware('auth')->group(function () {
     // enrollment
     Route::resource('enrollments', EnrollmentController::class);
     Route::resource(
-            'student-enrollments',
-            StudentEnrollmentController::class
-        )->only([
-            'create',
-            'store',
-        ]);
+        'student-enrollments',
+        StudentEnrollmentController::class
+    )->only([
+        'create',
+        'store',
+    ]);
 
     Route::get('students/{student}/academic-profile', [StudentAcademicProfileController::class, 'show'])->name('students.academic-profile');
     Route::resource('companies', CompanyController::class);
