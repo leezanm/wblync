@@ -181,8 +181,8 @@
             </a>
 
            {{-- Monitoring --}}
-            {{-- <a
-                href="{{ route('lecturer.monitoring.index') }}"
+            <a
+                href="{{  route('lecturer.monitoring.index') }}"
                 class="
                     flex items-center gap-3
                     px-4 py-3
@@ -236,7 +236,7 @@
                     Monitoring
                 </span>
 
-            </a> --}}
+            </a>
 
         </div>
 

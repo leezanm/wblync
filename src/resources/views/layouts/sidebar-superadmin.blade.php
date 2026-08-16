@@ -1022,6 +1022,48 @@
             </div>
          @endcan
 
+         {{-- Borang Pemantauan --}}
+         <a
+            href="{{ route('admin.monitoring-form-templates.index') }}"
+            class="
+                flex items-center gap-3
+                px-4 py-3
+                rounded-xl
+                transition
+                {{ request()->routeIs('admin.monitoring-form-templates.*')
+                    ? 'bg-blue-600 text-white'
+                    : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                }}
+            "
+        >
+            <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+            >
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1.8"
+                    d="M9 5h6M9 9h6M9 13h6M9 17h4"
+                />
+
+                <rect
+                    x="4"
+                    y="2"
+                    width="16"
+                    height="20"
+                    rx="2"
+                    stroke-width="1.8"
+                />
+            </svg>
+
+            <span class="font-medium">
+                Monitoring Form Setup
+            </span>
+        </a>
+
     </nav>
 
 

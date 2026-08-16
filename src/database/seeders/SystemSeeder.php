@@ -13,6 +13,8 @@ use App\Models\DailyLogbook;
 use App\Models\Enrollment;
 use App\Models\IndustrySupervisor;
 use App\Models\Lecturer;
+use App\Models\LecturerMonitoring;
+use App\Models\MonitoringFormTemplate;
 use App\Models\Placement;
 use App\Models\Programme;
 use App\Models\Semester;
@@ -635,6 +637,8 @@ class SystemSeeder extends Seeder
             ->filter()
             ->unique('id');
 
+        $supervisorsByLecturerId = [];
+
         foreach ($targetLecturers as $targetLecturer) {
             $supervisor = Supervisor::updateOrCreate(
                 [
@@ -646,6 +650,8 @@ class SystemSeeder extends Seeder
                     'status' => 'Active',
                 ]
             );
+
+            $supervisorsByLecturerId[$targetLecturer->id] = $supervisor;
 
             foreach ([
                 'ST001',
@@ -662,6 +668,105 @@ class SystemSeeder extends Seeder
                         'status' => 'Active',
                     ]
                 );
+            }
+        }
+
+        if (
+            Schema::hasTable('lecturer_monitorings')
+            && Schema::hasTable('monitoring_form_templates')
+            && Schema::hasTable('monitoring_responses')
+        ) {
+            $activeTemplate = MonitoringFormTemplate::query()
+                ->where('status', 'Active')
+                ->with([
+                    'sections.items.options',
+                ])
+                ->first();
+
+            if ($activeTemplate) {
+                $monitoringSeedData = [
+                    [
+                        'student_no' => 'ST001',
+                        'monitoring_no' => 1,
+                        'monitoring_date' => '2026-10-10',
+                        'reported_to' => true,
+                        'reported_at' => '08:45:00',
+                        'status' => 'Completed',
+                        'answer_note' => 'Pelajar menunjukkan prestasi baik semasa lawatan pertama dan memahami tugasan yang diberikan.',
+                    ],
+                    [
+                        'student_no' => 'ST001',
+                        'monitoring_no' => 2,
+                        'monitoring_date' => '2026-11-14',
+                        'reported_to' => true,
+                        'reported_at' => '09:10:00',
+                        'status' => 'Completed',
+                        'answer_note' => 'Pelajar semakin yakin, buku log konsisten dan maklum balas industri adalah positif.',
+                    ],
+                ];
+
+                foreach ($targetLecturers as $targetLecturer) {
+                    $supervisor = $supervisorsByLecturerId[$targetLecturer->id] ?? null;
+
+                    if (! $supervisor) {
+                        continue;
+                    }
+
+                    foreach ($monitoringSeedData as $monitoringData) {
+                        $student = $students[$monitoringData['student_no']] ?? null;
+                        $placement = $placements[$monitoringData['student_no']] ?? null;
+
+                        if (! $student || ! $placement || $placement->status !== 'Active') {
+                            continue;
+                        }
+
+                        $monitoring = LecturerMonitoring::updateOrCreate(
+                            [
+                                'supervisor_id' => $supervisor->id,
+                                'student_id' => $student->id,
+                                'academic_session_id' => $academicSessions['AS2026-2027']->id,
+                                'semester_id' => $semesters['SEM2026-1']->id,
+                                'monitoring_no' => $monitoringData['monitoring_no'],
+                            ],
+                            [
+                                'uuid' => (string) Str::uuid(),
+                                'placement_id' => $placement->id,
+                                'monitoring_form_template_id' => $activeTemplate->id,
+                                'monitoring_date' => $monitoringData['monitoring_date'],
+                                'reported_to' => $monitoringData['reported_to'],
+                                'reported_at' => $monitoringData['reported_at'],
+                                'status' => $monitoringData['status'],
+                            ]
+                        );
+
+                        foreach ($activeTemplate->sections->flatMap->items as $item) {
+                            $payload = [
+                                'answer' => null,
+                                'option_id' => null,
+                            ];
+
+                            if ($item->item_type === 'textarea') {
+                                $payload['answer'] = $monitoringData['answer_note'];
+                            } else {
+                                $option = $item->options->get(
+                                    min(
+                                        $monitoringData['monitoring_no'],
+                                        max($item->options->count() - 1, 0)
+                                    )
+                                ) ?? $item->options->last();
+
+                                $payload['option_id'] = $option?->id;
+                            }
+
+                            $monitoring->responses()->updateOrCreate(
+                                [
+                                    'item_id' => $item->id,
+                                ],
+                                $payload
+                            );
+                        }
+                    }
+                }
             }
         }
 

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AcademicSessionController;
+use App\Http\Controllers\Admin\MonitoringFormTemplateController;
 use App\Http\Controllers\AssessmentController;
 use App\Http\Controllers\ChangePasswordController;
 use App\Http\Controllers\ClassCourseController;
@@ -13,6 +14,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EnrollmentController;
 use App\Http\Controllers\IndustrySupervisorController;
 use App\Http\Controllers\IndustrySupervisorLogbookController;
+use App\Http\Controllers\Lecturer\MonitoringController;
 use App\Http\Controllers\LecturerController;
 use App\Http\Controllers\LecturerLogbookController;
 use App\Http\Controllers\LecturerStudentController;
@@ -186,6 +188,94 @@ Route::middleware([
         )->name('students.logbooks.show');
 
 });
+
+//Pemantauan
+Route::middleware('auth')
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+
+        Route::get(
+            '/monitoring-form-templates',
+            [
+                MonitoringFormTemplateController::class,
+                'index',
+            ]
+        )->name(
+            'monitoring-form-templates.index'
+        );
+
+        Route::post(
+            '/monitoring-form-templates/create-version',
+            [
+                MonitoringFormTemplateController::class,
+                'create',
+            ]
+        )->name(
+            'monitoring-form-templates.create'
+        );
+
+        Route::get(
+            '/monitoring-form-templates/{monitoringFormTemplate}/edit',
+            [
+                MonitoringFormTemplateController::class,
+                'edit',
+            ]
+        )->name(
+            'monitoring-form-templates.edit'
+        );
+
+        Route::put(
+            '/monitoring-form-templates/{monitoringFormTemplate}',
+            [
+                MonitoringFormTemplateController::class,
+                'update',
+            ]
+        )->name(
+            'monitoring-form-templates.update'
+        );
+
+        Route::post(
+            '/monitoring-form-templates/{monitoringFormTemplate}/activate',
+            [
+                MonitoringFormTemplateController::class,
+                'activate',
+            ]
+        )->name(
+            'monitoring-form-templates.activate'
+        );
+    });
+
+Route::middleware('auth')
+    ->prefix('lecturer')
+    ->name('lecturer.')
+    ->group(function () {
+
+        Route::get(
+            '/monitoring',
+            [MonitoringController::class, 'index']
+        )->name('monitoring.index');
+
+        Route::get(
+            '/monitoring/student/{student}',
+            [MonitoringController::class, 'student']
+        )->name('monitoring.student');
+
+        Route::get(
+            '/monitoring/student/{student}/{monitoringNo}/create',
+            [MonitoringController::class, 'create']
+        )->name('monitoring.create');
+
+        Route::post(
+            '/monitoring/student/{student}/{monitoringNo}',
+            [MonitoringController::class, 'store']
+        )->name('monitoring.store');
+
+        Route::get(
+            '/monitoring/{monitoring}',
+            [MonitoringController::class, 'show']
+        )->name('monitoring.show');
+    });
 
 
 require __DIR__.'/auth.php';

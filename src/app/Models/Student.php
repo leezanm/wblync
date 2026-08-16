@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\LecturerMonitoring;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -64,4 +65,11 @@ class Student extends Model
     {
         return $this->hasMany(SupervisorStudent::class);
     }
+
+    public function lecturerMonitorings(): HasMany
+{
+    return $this->hasMany(
+        LecturerMonitoring::class
+    );
+}
 }

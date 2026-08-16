@@ -69,6 +69,11 @@ class PermissionSeeder extends Seeder
             'create users',
             'update users',
             'delete users',
+
+            'view monitoring form setup',
+            'create monitoring form versions',
+            'edit monitoring form setup',
+            'activate monitoring form versions',
         ];
 
         foreach ($permissions as $permission) {
@@ -165,6 +170,12 @@ class PermissionSeeder extends Seeder
             'view users',
             'create users',
             'update users',
+
+            'view monitoring form setup',
+            'create monitoring form versions',
+            'edit monitoring form setup',
+
+
 
         ]);
 
