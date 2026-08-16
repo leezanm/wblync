@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -14,8 +15,8 @@ class StudentRequest extends FormRequest
 
     public function rules(): array
     {
-        $studentId = $this->route('student')?->id;
-        $student = $this->route('student');
+        $studentId = $this->route('id');
+        $userId = User::where('student_id', $studentId)->value('id');
 
         return [
 
@@ -51,7 +52,8 @@ class StudentRequest extends FormRequest
                 'required',
                 'email',
                 'max:255',
-                Rule::unique('users', 'email')->ignore($student->user?->id), ],
+                Rule::unique('users', 'email')->ignore($userId),],
+
 
             'phone' => [
                 'nullable',
