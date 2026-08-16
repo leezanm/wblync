@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Student;
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -16,7 +17,7 @@ class StudentRequest extends FormRequest
     public function rules(): array
     {
         $studentId = $this->route('id');
-        $userId = User::where('student_id', $studentId)->value('id');
+        $userId = Student::where('id', $studentId)->value('user_id');
 
         return [
 
