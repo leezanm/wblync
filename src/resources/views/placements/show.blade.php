@@ -713,7 +713,7 @@
         $availableActions = $statusActions[$placement->status] ?? [];
     @endphp
 
-
+    @role('Super Admin')
     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 mt-6">
 
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
@@ -820,5 +820,5 @@
         </a>
 
     </div>
-
+    @endrole
 </x-app-layout>

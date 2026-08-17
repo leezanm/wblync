@@ -7,8 +7,11 @@ use App\Models\Assessment;
 use App\Models\Company;
 use App\Models\DailyLogbook;
 use App\Models\Enrollment;
+use App\Models\IndustrySupervisor;
+use App\Models\LecturerMonitoring;
 use App\Models\Placement;
 use App\Models\Student;
+use App\Models\SupervisorStudent;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
@@ -95,6 +98,192 @@ class DashboardController extends Controller
                     ->count(),
                 'activePlacement' => $activePlacement,
                 'recentLogbooks' => $recentLogbooks,
+            ]);
+        }
+
+        if ($user && $user->hasAnyRole(['Industry Mentor', 'Industry Supervisor'])) {
+            $industrySupervisor = $user->industrySupervisor;
+            $currentAcademicSession = AcademicSession::query()
+                ->where('current', true)
+                ->orderByDesc('start_date')
+                ->first();
+
+            if (! $industrySupervisor) {
+                return view('dashboard-mentor', [
+                    'industrySupervisor' => null,
+                    'currentAcademicSession' => $currentAcademicSession,
+                    'company' => null,
+                    'supervisedStudentsCount' => 0,
+                    'activePlacementsCount' => 0,
+                    'pendingApprovalsCount' => 0,
+                    'reviewedSubmissionsCount' => 0,
+                    'recentSubmissions' => collect(),
+                    'activePlacements' => collect(),
+                ]);
+            }
+
+            $supervisorPlacements = Placement::query()
+                ->where('industry_supervisor_id', $industrySupervisor->id);
+
+            $activePlacements = (clone $supervisorPlacements)
+                ->where('status', 'Active')
+                ->with([
+                    'student',
+                    'company',
+                ])
+                ->latest('start_date')
+                ->limit(8)
+                ->get();
+
+            $placementIds = (clone $supervisorPlacements)
+                ->pluck('id');
+
+            $recentSubmissions = DailyLogbook::query()
+                ->whereIn('placement_id', $placementIds)
+                ->whereIn('status', ['Submitted', 'Approved', 'Rejected'])
+                ->with([
+                    'placement.student',
+                    'placement.company',
+                ])
+                ->latest('log_date')
+                ->limit(6)
+                ->get();
+
+            return view('dashboard-mentor', [
+                'industrySupervisor' => $industrySupervisor,
+                'currentAcademicSession' => $currentAcademicSession,
+                'company' => IndustrySupervisor::query()
+                    ->whereKey($industrySupervisor->id)
+                    ->with('company')
+                    ->first()?->company,
+                'supervisedStudentsCount' => (clone $supervisorPlacements)
+                    ->select('student_id')
+                    ->distinct()
+                    ->count(),
+                'activePlacementsCount' => (clone $supervisorPlacements)
+                    ->where('status', 'Active')
+                    ->count(),
+                'pendingApprovalsCount' => DailyLogbook::query()
+                    ->whereIn('placement_id', $placementIds)
+                    ->where('status', 'Submitted')
+                    ->count(),
+                'reviewedSubmissionsCount' => DailyLogbook::query()
+                    ->whereIn('placement_id', $placementIds)
+                    ->whereIn('status', ['Approved', 'Rejected'])
+                    ->count(),
+                'recentSubmissions' => $recentSubmissions,
+                'activePlacements' => $activePlacements,
+            ]);
+        }
+
+        if ($user && $user->hasRole('Lecturer')) {
+            $lecturer = $user->lecturer;
+            $currentAcademicSession = AcademicSession::query()
+                ->where('current', true)
+                ->orderByDesc('start_date')
+                ->first();
+
+            if (! $lecturer) {
+                return view('dashboard-lecturer', [
+                    'lecturer' => null,
+                    'currentAcademicSession' => $currentAcademicSession,
+                    'assignedStudentsCount' => 0,
+                    'activePlacementsCount' => 0,
+                    'pendingLogbookReviewsCount' => 0,
+                    'completedMonitoringsCount' => 0,
+                    'monitoringVisitSummary' => collect([1, 2, 3])->map(function ($visitNo) {
+                        return [
+                            'visit_no' => $visitNo,
+                            'total' => 0,
+                            'bar_percent' => 0,
+                        ];
+                    }),
+                    'recentDailyLogbooks' => collect(),
+                    'assignedStudents' => collect(),
+                ]);
+            }
+
+            $assignedStudentsQuery = SupervisorStudent::query()
+                ->whereHas('supervisor', function ($query) use ($lecturer) {
+                    $query->where('lecturer_id', $lecturer->id);
+                })
+                ->where('status', 'Active');
+
+            $assignedStudentIds = (clone $assignedStudentsQuery)
+                ->select('student_id')
+                ->distinct()
+                ->pluck('student_id');
+
+            $activePlacementIds = Placement::query()
+                ->whereIn('student_id', $assignedStudentIds)
+                ->where('status', 'Active')
+                ->pluck('id');
+
+            $recentDailyLogbooks = DailyLogbook::query()
+                ->whereIn('placement_id', $activePlacementIds)
+                ->whereIn('status', ['Submitted', 'Approved', 'Rejected'])
+                ->with([
+                    'placement.student',
+                    'placement.company',
+                ])
+                ->latest('log_date')
+                ->limit(6)
+                ->get();
+
+            $assignedStudents = Student::query()
+                ->whereIn('id', $assignedStudentIds)
+                ->with([
+                    'placements' => function ($query) {
+                        $query
+                            ->where('status', 'Active')
+                            ->with('company')
+                            ->latest('start_date');
+                    },
+                ])
+                ->orderBy('name')
+                ->limit(8)
+                ->get();
+
+            $assignedStudentsCount = $assignedStudentIds->count();
+
+            $visitTotals = LecturerMonitoring::query()
+                ->where('supervisor_id', $lecturer->id)
+                ->whereIn('monitoring_no', [1, 2, 3])
+                ->selectRaw('monitoring_no, COUNT(*) as total')
+                ->groupBy('monitoring_no')
+                ->pluck('total', 'monitoring_no');
+
+            $maxVisitTotal = (int) $visitTotals->max();
+
+            $monitoringVisitSummary = collect([1, 2, 3])->map(function ($visitNo) use ($visitTotals, $maxVisitTotal) {
+                $total = (int) ($visitTotals[$visitNo] ?? 0);
+                $barPercent = $maxVisitTotal > 0
+                    ? (int) round(($total / $maxVisitTotal) * 100)
+                    : 0;
+
+                return [
+                    'visit_no' => $visitNo,
+                    'total' => $total,
+                    'bar_percent' => $barPercent,
+                ];
+            });
+
+            return view('dashboard-lecturer', [
+                'lecturer' => $lecturer,
+                'currentAcademicSession' => $currentAcademicSession,
+                'assignedStudentsCount' => $assignedStudentsCount,
+                'activePlacementsCount' => $activePlacementIds->count(),
+                'pendingLogbookReviewsCount' => DailyLogbook::query()
+                    ->whereIn('placement_id', $activePlacementIds)
+                    ->where('status', 'Submitted')
+                    ->count(),
+                'completedMonitoringsCount' => LecturerMonitoring::query()
+                    ->where('supervisor_id', $lecturer->id)
+                    ->where('status', 'Completed')
+                    ->count(),
+                'monitoringVisitSummary' => $monitoringVisitSummary,
+                'recentDailyLogbooks' => $recentDailyLogbooks,
+                'assignedStudents' => $assignedStudents,
             ]);
         }
 

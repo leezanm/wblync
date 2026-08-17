@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DailyLogbook;
 use App\Models\Student;
-use App\Models\WeeklyLogbookSubmission;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -42,13 +42,7 @@ class LecturerLogbookController extends Controller
             'You are not authorised to view this student.'
         );
 
-        /*
-        |--------------------------------------------------------------------------
-        | Get Weekly Submitted Logbooks
-        |--------------------------------------------------------------------------
-        */
-
-        $submissions = WeeklyLogbookSubmission::query()
+        $logbooks = DailyLogbook::query()
             ->whereHas('placement', function ($query) use ($student) {
                 $query->where('student_id', $student->id);
             })
@@ -59,11 +53,8 @@ class LecturerLogbookController extends Controller
             ])
             ->with([
                 'placement.company',
-                'dailyLogbooks' => function ($query) {
-                    $query->orderBy('log_date');
-                },
             ])
-            ->latest('week_start_date')
+            ->latest('log_date')
             ->paginate(10)
             ->withQueryString();
 
@@ -71,7 +62,7 @@ class LecturerLogbookController extends Controller
             'lecturers.students.logbooks.index',
             compact(
                 'student',
-                'submissions'
+                'logbooks'
             )
         );
     }
@@ -79,7 +70,7 @@ class LecturerLogbookController extends Controller
     public function show(
         Request $request,
         Student $student,
-        WeeklyLogbookSubmission $weeklyLogbookSubmission
+        DailyLogbook $dailyLogbook
     ): View {
         $lecturer = $request->user()->lecturer;
 
@@ -112,13 +103,13 @@ class LecturerLogbookController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | Make sure weekly submission belongs to this student
+        | Make sure daily logbook belongs to this student
         |--------------------------------------------------------------------------
         */
 
         abort_unless(
-            $weeklyLogbookSubmission->placement
-                && $weeklyLogbookSubmission->placement->student_id === $student->id,
+            $dailyLogbook->placement
+                && $dailyLogbook->placement->student_id === $student->id,
             404
         );
 
@@ -129,7 +120,7 @@ class LecturerLogbookController extends Controller
         */
 
         abort_unless(
-            in_array($weeklyLogbookSubmission->status, [
+            in_array($dailyLogbook->status, [
                 'Submitted',
                 'Approved',
                 'Rejected',
@@ -137,25 +128,18 @@ class LecturerLogbookController extends Controller
             404
         );
 
-        /*
-        |--------------------------------------------------------------------------
-        | Load weekly records
-        |--------------------------------------------------------------------------
-        */
-
-        $weeklyLogbookSubmission->load([
+        $dailyLogbook->load([
             'placement.student',
             'placement.company',
-            'dailyLogbooks' => function ($query) {
-                $query->orderBy('log_date');
-            },
+            'placement.companyContact',
+            'placement.academicSession',
         ]);
 
         return view(
             'lecturers.students.logbooks.show',
             compact(
                 'student',
-                'weeklyLogbookSubmission'
+                'dailyLogbook'
             )
         );
     }

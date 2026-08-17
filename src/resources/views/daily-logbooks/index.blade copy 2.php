@@ -11,7 +11,7 @@
                 </h2>
 
                 {{-- <p class="text-sm text-slate-500 mt-1">
-                    Record your daily internship activities.
+                    Record your daily internship activities and submit your weekly logbook for supervisor approval.
                 </p> --}}
 
             </div>
@@ -169,7 +169,7 @@
 
     @if ($placement)
 
-        {{-- Daily Header --}}
+        {{-- Week Header --}}
         <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
 
             <div class="p-6 border-b border-slate-100">
@@ -179,27 +179,112 @@
                     <div>
 
                         <p class="text-xs uppercase tracking-wide text-slate-400 font-semibold">
-                            Daily Logbook
+                            Weekly Logbook
                         </p>
 
                         <h3 class="text-xl font-bold text-slate-800 mt-1">
-                            All Daily Entries
+
+                            {{ $weekStart->format('d M Y') }}
+
+                            <span class="text-slate-400 font-normal">
+                                -
+                            </span>
+
+                            {{ $weekEnd->format('d M Y') }}
+
                         </h3>
 
                         <p class="text-sm text-slate-500 mt-1">
-                            View your daily records for the current placement period.
+                            All seven days are included in the weekly submission.
                         </p>
+
                     </div>
 
 
+                    {{-- Weekly Submission Status --}}
                     <div>
-                        <span class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-50 text-blue-700 text-sm font-semibold">
-                            {{ $dailyLogbooks->count() }} Records
-                        </span>
+
+                        @if ($weeklySubmission?->status === 'Submitted')
+
+                            <span class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-100 text-amber-700 text-sm font-semibold">
+
+                                <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+
+                                Pending Approval
+
+                            </span>
+
+
+                        @elseif ($weeklySubmission?->status === 'Approved')
+
+                            <span class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-green-100 text-green-700 text-sm font-semibold">
+
+                                <svg
+                                    class="w-4 h-4"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M5 13l4 4L19 7"
+                                    />
+                                </svg>
+
+                                Approved
+
+                            </span>
+
+
+                        @elseif ($weeklySubmission?->status === 'Rejected')
+
+                            <span class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-red-100 text-red-700 text-sm font-semibold">
+
+                                <span class="w-2 h-2 rounded-full bg-red-500"></span>
+
+                                Rejected
+
+                            </span>
+
+
+                        @else
+
+                            <span class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 text-slate-600 text-sm font-semibold">
+
+                                <span class="w-2 h-2 rounded-full bg-slate-400"></span>
+
+                                Draft
+
+                            </span>
+
+                        @endif
 
                     </div>
 
                 </div>
+
+
+                {{-- Rejection Remarks --}}
+                @if (
+                    $weeklySubmission?->status === 'Rejected'
+                    && $weeklySubmission?->remarks
+                )
+
+                    <div class="mt-5 rounded-xl border border-red-200 bg-red-50 p-4">
+
+                        <p class="text-xs font-semibold uppercase tracking-wide text-red-500">
+                            Supervisor Remarks
+                        </p>
+
+                        <p class="text-sm text-red-800 mt-1">
+                            {{ $weeklySubmission->remarks }}
+                        </p>
+
+                    </div>
+
+                @endif
 
             </div>
 
@@ -529,7 +614,7 @@
                                     </h3>
 
                                     <p class="text-sm text-slate-500 mt-1">
-                                        No daily logbook entries have been recorded yet.
+                                        No logbook entries have been recorded for this week.
                                     </p>
 
                                 </td>
@@ -553,32 +638,39 @@
         {{-- Add Logbook --}}
         @can('create daily logbooks')
 
-            <div class="mt-6 flex justify-end">
+            @if (
+                !$weeklySubmission
+                || $weeklySubmission->status === 'Rejected'
+            )
 
-                <a
-                    href="{{ route('daily-logbooks.create') }}"
-                    class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition shadow-sm"
-                >
+                <div class="mt-6 flex justify-end">
 
-                    <svg
-                        class="w-5 h-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
+                    <a
+                        href="{{ route('daily-logbooks.create') }}"
+                        class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition shadow-sm"
                     >
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M12 5v14M5 12h14"
-                        />
-                    </svg>
 
-                    Add Logbook
+                        <svg
+                            class="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M12 5v14M5 12h14"
+                            />
+                        </svg>
 
-                </a>
+                        Add Logbook
 
-            </div>
+                    </a>
+
+                </div>
+
+            @endif
 
         @endcan
 

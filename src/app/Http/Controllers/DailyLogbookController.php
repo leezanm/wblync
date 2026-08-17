@@ -68,70 +68,21 @@ class DailyLogbookController extends Controller
                     'daily-logbooks.index',
                     [
                         'placement' => null,
-                        'weekStart' => now()->startOfWeek(),
-                        'weekEnd' => now()->endOfWeek(),
                         'dailyLogbooks' => collect(),
-                        'weeklySubmission' => null,
-                        'logbooks' => collect(),
                     ]
                 );
             }
 
-            /*
-            |--------------------------------------------------------------------------
-            | Current Week
-            |--------------------------------------------------------------------------
-            */
-
-            $date = $request->filled('date')
-                ? $request->date('date')
-                : now();
-
-            $weekStart = $date
-                ->copy()
-                ->startOfWeek();
-
-            $weekEnd = $date
-                ->copy()
-                ->endOfWeek();
-
-            /*
-            |--------------------------------------------------------------------------
-            | Daily Logbooks
-            |--------------------------------------------------------------------------
-            */
-
             $dailyLogbooks = $placement
                 ->dailyLogbooks()
-                ->whereBetween('log_date', [
-                    $weekStart->toDateString(),
-                    $weekEnd->toDateString(),
-                ])
-                ->orderBy('log_date')
+                ->latest('log_date')
                 ->get();
-
-            /*
-            |--------------------------------------------------------------------------
-            | Weekly Submission
-            |--------------------------------------------------------------------------
-            */
-
-            $weeklySubmission = $placement
-                ->weeklyLogbookSubmissions()
-                ->whereDate(
-                    'week_start_date',
-                    $weekStart->toDateString()
-                )
-                ->first();
 
             return view(
                 'daily-logbooks.index',
                 compact(
                     'placement',
-                    'weekStart',
-                    'weekEnd',
-                    'dailyLogbooks',
-                    'weeklySubmission'
+                    'dailyLogbooks'
                 )
             );
         }

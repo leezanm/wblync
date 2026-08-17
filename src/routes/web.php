@@ -128,7 +128,7 @@ Route::middleware('auth')->group(function () {
 Route::middleware([
     'auth',
     'role:Industry Mentor|Industry Supervisor',
-    'permission:view weekly logbook approvals',
+    'permission:view daily logbooks',
 ])->prefix('industry-supervisor')->name('industry-supervisor.')->group(function () {
 
     Route::get(
@@ -142,22 +142,22 @@ Route::middleware([
     )->name('logbook-approvals.history');
 
     Route::get(
-        '/logbook-approvals/{weeklyLogbookSubmission}',
+        '/logbook-approvals/{dailyLogbook}',
         [IndustrySupervisorLogbookController::class, 'show']
     )->name('logbook-approvals.show');
 
     Route::post(
-        '/logbook-approvals/{weeklyLogbookSubmission}/approve',
+        '/logbook-approvals/{dailyLogbook}/approve',
         [IndustrySupervisorLogbookController::class, 'approve']
     )
-        ->middleware('permission:approve weekly logbooks')
+        ->middleware('permission:approve daily logbooks')
         ->name('logbook-approvals.approve');
 
     Route::post(
-        '/logbook-approvals/{weeklyLogbookSubmission}/reject',
+        '/logbook-approvals/{dailyLogbook}/reject',
         [IndustrySupervisorLogbookController::class, 'reject']
     )
-        ->middleware('permission:reject weekly logbooks')
+        ->middleware('permission:reject daily logbooks')
         ->name('logbook-approvals.reject');
 });
 
@@ -181,7 +181,7 @@ Route::middleware([
         )->name('students.logbooks.index');
 
         Route::get(
-            '/students/{student}/logbooks/{weeklyLogbookSubmission}',
+            '/students/{student}/logbooks/{dailyLogbook}',
             [LecturerLogbookController::class, 'show']
         )->name('students.logbooks.show');
     });

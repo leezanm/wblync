@@ -2,17 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\WeeklyLogbookSubmission;
+use App\Models\DailyLogbook;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class IndustrySupervisorLogbookController extends Controller
 {
-    /**
-     * Display weekly logbook submissions
-     * belonging to the logged-in Industry Supervisor.
-     */
     public function index(Request $request): View
     {
         $industrySupervisor = $request
@@ -25,7 +21,7 @@ class IndustrySupervisorLogbookController extends Controller
             'Industry Supervisor profile not found.'
         );
 
-        $submissions = WeeklyLogbookSubmission::query()
+        $logbooks = DailyLogbook::query()
             ->whereHas('placement', function ($query) use ($industrySupervisor) {
                 $query->where(
                     'industry_supervisor_id',
@@ -37,22 +33,19 @@ class IndustrySupervisorLogbookController extends Controller
                 'placement.student',
                 'placement.company',
             ])
-            ->latest('submitted_at')
+            ->latest('log_date')
             ->paginate(10)
             ->withQueryString();
 
         return view(
             'industry-supervisors.logbook-approvals.index',
-            compact('submissions')
+            compact('logbooks')
         );
     }
 
-    /**
-     * Display a weekly logbook submission.
-     */
     public function show(
         Request $request,
-        WeeklyLogbookSubmission $weeklyLogbookSubmission
+        DailyLogbook $dailyLogbook
     ): View {
         $industrySupervisor = $request
             ->user()
@@ -64,52 +57,35 @@ class IndustrySupervisorLogbookController extends Controller
             'Industry Supervisor profile not found.'
         );
 
-        $this->ensureOwnSubmission(
-            $weeklyLogbookSubmission,
+        $this->ensureOwnLogbook(
+            $dailyLogbook,
             $industrySupervisor->id
         );
 
-        $weeklyLogbookSubmission->load([
+        abort_unless(
+            in_array($dailyLogbook->status, [
+                'Submitted',
+                'Approved',
+                'Rejected',
+            ], true),
+            404
+        );
+
+        $dailyLogbook->load([
             'placement.student',
             'placement.company',
-            'dailyLogbooks' => function ($query) {
-                $query->orderBy('log_date');
-            },
+            'placement.academicSession',
         ]);
-
-        // Backward compatibility: for older submissions created before
-        // weekly_logbook_submission_id linking was fixed, fallback by week range.
-        if ($weeklyLogbookSubmission->dailyLogbooks->isEmpty()) {
-            $fallbackLogbooks = $weeklyLogbookSubmission
-                ->placement
-                ->dailyLogbooks()
-                ->whereBetween('log_date', [
-                    $weeklyLogbookSubmission->week_start_date->toDateString(),
-                    $weeklyLogbookSubmission->week_end_date->toDateString(),
-                ])
-                ->orderBy('log_date')
-                ->get();
-
-            if ($fallbackLogbooks->isNotEmpty()) {
-                $weeklyLogbookSubmission->setRelation(
-                    'dailyLogbooks',
-                    $fallbackLogbooks
-                );
-            }
-        }
 
         return view(
             'industry-supervisors.logbook-approvals.show',
-            compact('weeklyLogbookSubmission')
+            compact('dailyLogbook')
         );
     }
 
-    /**
-     * Approve weekly logbook.
-     */
     public function approve(
         Request $request,
-        WeeklyLogbookSubmission $weeklyLogbookSubmission
+        DailyLogbook $dailyLogbook
     ): RedirectResponse {
         $industrySupervisor = $request
             ->user()
@@ -121,21 +97,19 @@ class IndustrySupervisorLogbookController extends Controller
             'Industry Supervisor profile not found.'
         );
 
-        $this->ensureOwnSubmission(
-            $weeklyLogbookSubmission,
+        $this->ensureOwnLogbook(
+            $dailyLogbook,
             $industrySupervisor->id
         );
 
         abort_if(
-            $weeklyLogbookSubmission->status !== 'Submitted',
+            $dailyLogbook->status !== 'Submitted',
             422,
-            'This weekly logbook is not available for approval.'
+            'This daily logbook is not available for approval.'
         );
 
-        $weeklyLogbookSubmission->update([
+        $dailyLogbook->update([
             'status' => 'Approved',
-            'reviewed_by' => $request->user()->id,
-            'reviewed_at' => now(),
             'remarks' => $request->input('remarks'),
         ]);
 
@@ -143,16 +117,13 @@ class IndustrySupervisorLogbookController extends Controller
             ->route('industry-supervisor.logbook-approvals.index')
             ->with(
                 'success',
-                'Weekly logbook approved successfully.'
+                'Daily logbook approved successfully.'
             );
     }
 
-    /**
-     * Reject weekly logbook.
-     */
     public function reject(
         Request $request,
-        WeeklyLogbookSubmission $weeklyLogbookSubmission
+        DailyLogbook $dailyLogbook
     ): RedirectResponse {
         $data = $request->validate([
             'remarks' => [
@@ -172,21 +143,19 @@ class IndustrySupervisorLogbookController extends Controller
             'Industry Supervisor profile not found.'
         );
 
-        $this->ensureOwnSubmission(
-            $weeklyLogbookSubmission,
+        $this->ensureOwnLogbook(
+            $dailyLogbook,
             $industrySupervisor->id
         );
 
         abort_if(
-            $weeklyLogbookSubmission->status !== 'Submitted',
+            $dailyLogbook->status !== 'Submitted',
             422,
-            'This weekly logbook is not available for rejection.'
+            'This daily logbook is not available for rejection.'
         );
 
-        $weeklyLogbookSubmission->update([
+        $dailyLogbook->update([
             'status' => 'Rejected',
-            'reviewed_by' => $request->user()->id,
-            'reviewed_at' => now(),
             'remarks' => $data['remarks'],
         ]);
 
@@ -194,155 +163,7 @@ class IndustrySupervisorLogbookController extends Controller
             ->route('industry-supervisor.logbook-approvals.index')
             ->with(
                 'success',
-                'Weekly logbook rejected successfully.'
-            );
-    }
-
-    /**
-     * Ensure the submission belongs to the logged-in supervisor.
-     */
-    private function ensureOwnSubmission(
-        WeeklyLogbookSubmission $submission,
-        int $industrySupervisorId
-    ): void {
-        $belongsToSupervisor = $submission
-            ->placement()
-            ->where(
-                'industry_supervisor_id',
-                $industrySupervisorId
-            )
-            ->exists();
-
-        abort_unless(
-            $belongsToSupervisor,
-            403,
-            'You are not authorised to access this weekly logbook.'
-        );
-    }
-
-    public function submitWeek(
-        Request $request
-    ): RedirectResponse {
-        $student = $request->user()->student;
-
-        abort_unless($student, 403);
-
-        $placement = $student
-            ->placements()
-            ->where('status', 'Active')
-            ->latest('start_date')
-            ->firstOrFail();
-
-        $date = $request->filled('date')
-            ? $request->date('date')
-            : now();
-
-        $weekStart = $date->copy()->startOfWeek();
-        $weekEnd = $date->copy()->endOfWeek();
-
-        $dailyLogbooks = $placement
-            ->dailyLogbooks()
-            ->whereBetween('log_date', [
-                $weekStart->toDateString(),
-                $weekEnd->toDateString(),
-            ])
-            ->orderBy('log_date')
-            ->get();
-
-        if ($dailyLogbooks->isEmpty()) {
-            return back()->with(
-                'error',
-                'There are no daily logbooks to submit for this week.'
-            );
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | Find Existing Weekly Submission
-        |--------------------------------------------------------------------------
-        */
-
-        $submission = WeeklyLogbookSubmission::query()
-            ->where('placement_id', $placement->id)
-            ->whereDate(
-                'week_start_date',
-                $weekStart->toDateString()
-            )
-            ->first();
-
-        /*
-        |--------------------------------------------------------------------------
-        | Already Submitted / Approved
-        |--------------------------------------------------------------------------
-        */
-
-        if (
-            $submission
-            && in_array($submission->status, [
-                'Submitted',
-                'Approved',
-            ])
-        ) {
-            return back()->with(
-                'error',
-                'This week has already been submitted.'
-            );
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | Create New Submission
-        |--------------------------------------------------------------------------
-        */
-
-        if (! $submission) {
-
-            $submission = WeeklyLogbookSubmission::create([
-                'placement_id' => $placement->id,
-                'week_start_date' => $weekStart->toDateString(),
-                'week_end_date' => $weekEnd->toDateString(),
-                'status' => 'Submitted',
-                'submitted_at' => now(),
-                'reviewed_at' => null,
-                'reviewed_by' => null,
-                'remarks' => null,
-            ]);
-
-        } else {
-
-            /*
-            |--------------------------------------------------------------------------
-            | Resubmit Rejected Submission
-            |--------------------------------------------------------------------------
-            */
-
-            $submission->update([
-                'status' => 'Submitted',
-                'submitted_at' => now(),
-                'reviewed_at' => null,
-                'reviewed_by' => null,
-                'remarks' => null,
-            ]);
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | Link Daily Logbooks
-        |--------------------------------------------------------------------------
-        */
-
-        $dailyLogbooks->each(function ($logbook) use ($submission) {
-
-            $logbook->update([
-                'weekly_logbook_submission_id' => $submission->id,
-            ]);
-        });
-
-        return redirect()
-            ->route('daily-logbooks.index')
-            ->with(
-                'success',
-                'Weekly logbook submitted successfully.'
+                'Daily logbook rejected successfully.'
             );
     }
 
@@ -358,7 +179,7 @@ class IndustrySupervisorLogbookController extends Controller
             'Industry Supervisor profile not found.'
         );
 
-        $submissions = WeeklyLogbookSubmission::query()
+        $logbooks = DailyLogbook::query()
             ->whereHas('placement', function ($query) use ($industrySupervisor) {
                 $query->where(
                     'industry_supervisor_id',
@@ -372,15 +193,33 @@ class IndustrySupervisorLogbookController extends Controller
             ->with([
                 'placement.student',
                 'placement.company',
-                'reviewer',
             ])
-            ->latest('reviewed_at')
+            ->latest('updated_at')
             ->paginate(10)
             ->withQueryString();
 
         return view(
             'industry-supervisors.logbook-approvals.history',
-            compact('submissions')
+            compact('logbooks')
+        );
+    }
+
+    private function ensureOwnLogbook(
+        DailyLogbook $dailyLogbook,
+        int $industrySupervisorId
+    ): void {
+        $belongsToSupervisor = $dailyLogbook
+            ->placement()
+            ->where(
+                'industry_supervisor_id',
+                $industrySupervisorId
+            )
+            ->exists();
+
+        abort_unless(
+            $belongsToSupervisor,
+            403,
+            'You are not authorised to access this daily logbook.'
         );
     }
 }
