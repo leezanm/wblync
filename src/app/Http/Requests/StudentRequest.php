@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use App\Models\Student;
-use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -53,8 +52,7 @@ class StudentRequest extends FormRequest
                 'required',
                 'email',
                 'max:255',
-                Rule::unique('users', 'email')->ignore($userId),],
-
+                Rule::unique('users', 'email')->ignore($userId), ],
 
             'phone' => [
                 'nullable',

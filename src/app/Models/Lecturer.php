@@ -40,4 +40,13 @@ class Lecturer extends Model
             Supervisor::class
         );
     }
+
+    public function monitorings(): HasMany
+    {
+        // guna field supervisor_id sebab lecturer boleh jadi supervisor atau examiner
+        return $this->hasMany(
+            LecturerMonitoring::class,
+            'supervisor_id'
+        );
+    }
 }

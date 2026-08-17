@@ -32,10 +32,21 @@ class LecturerMonitoring extends Model
         ];
     }
 
+    // tukar bukan supervisor tapi lecturer sebab lecturer boleh jadi supervisor atau examiner
     public function supervisor(): BelongsTo
     {
+        // guna field supervisor_id sebab lecturer boleh jadi supervisor atau examiner
         return $this->belongsTo(
-            Supervisor::class
+            Lecturer::class,
+            'supervisor_id'
+        );
+    }
+
+    public function lecturer(): BelongsTo
+    {
+        return $this->belongsTo(
+            Lecturer::class,
+            'supervisor_id'
         );
     }
 

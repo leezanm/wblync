@@ -175,7 +175,7 @@
                 </svg>
 
                 <span class="font-medium">
-                    My Students
+                    Assigned Students
                 </span>
 
             </a>

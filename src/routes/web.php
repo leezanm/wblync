@@ -123,7 +123,6 @@ Route::middleware('auth')->group(function () {
     )->name('industry-supervisor.students');
 
     Route::resource('users', UserController::class);
-
 });
 
 Route::middleware([
@@ -160,7 +159,6 @@ Route::middleware([
     )
         ->middleware('permission:reject weekly logbooks')
         ->name('logbook-approvals.reject');
-
 });
 
 // Lecturer
@@ -186,7 +184,6 @@ Route::middleware([
             '/students/{student}/logbooks/{weeklyLogbookSubmission}',
             [LecturerLogbookController::class, 'show']
         )->name('students.logbooks.show');
-
     });
 
 // Pemantauan
@@ -257,17 +254,27 @@ Route::middleware('auth')
         )->name('monitoring.index');
 
         Route::get(
+            '/monitoring/visit/{visit}',
+            [MonitoringController::class, 'indexVisit']
+        )->name('monitoring.visit');
+
+        Route::get(
             '/monitoring/student/{student}',
             [MonitoringController::class, 'student']
         )->name('monitoring.student');
 
+        // Route::get(
+        //     '/monitoring/student/{student}/{monitoringNo}/create',
+        //     [MonitoringController::class, 'create']
+        // )->name('monitoring.create');
+
         Route::get(
-            '/monitoring/student/{student}/{monitoringNo}/create',
+            '/monitoring/student/{monitoringNo}/create',
             [MonitoringController::class, 'create']
         )->name('monitoring.create');
 
         Route::post(
-            '/monitoring/student/{student}/{monitoringNo}',
+            '/monitoring/student/{monitoringNo}',
             [MonitoringController::class, 'store']
         )->name('monitoring.store');
 

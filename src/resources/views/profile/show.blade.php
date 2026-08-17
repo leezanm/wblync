@@ -60,6 +60,15 @@
                         {{ $user->created_at?->format('d/m/Y H:i') ?? '-' }}
                     </p>
                 </div>
+
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">
+                        Last Login
+                    </p>
+                    <p class="mt-2 text-slate-800 font-medium">
+                        {{ $user->last_login_at?->format('d/m/Y H:i') ?? 'Never' }}
+                    </p>
+                </div>
             </div>
 
             <div class="flex justify-end mt-8 pt-6 border-t border-slate-100">

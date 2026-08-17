@@ -46,11 +46,4 @@ class Supervisor extends Model
     {
         return $this->hasMany(SupervisorStudent::class);
     }
-
-    public function monitorings(): HasMany
-    {
-        return $this->hasMany(
-            LecturerMonitoring::class
-        );
-    }
 }

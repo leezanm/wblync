@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\LecturerMonitoring;
 use App\Models\MonitoringFormTemplate;
 use App\Models\Student;
-use App\Models\StudentEnrollment;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -129,18 +128,10 @@ class MonitoringController extends Controller
 
     public function create(
         Request $request,
+        Student $student,
         int $monitoringNo
     ): View {
         $lecturer = $request->user()->lecturer;
-        // select all student yg active and their active placement
-        $students = Student::query()
-            ->whereHas('placements', function ($query) {
-                $query
-                    ->where('status', 'Active')
-                    ->with('company');
-            })
-            ->orderBy('name')
-            ->get();
 
         abort_unless(
             $lecturer,
@@ -148,9 +139,31 @@ class MonitoringController extends Controller
             'Lecturer profile not found.'
         );
 
+        $this->ensureStudentBelongsToLecturer(
+            $lecturer,
+            $student
+        );
+
         abort_unless(
             in_array($monitoringNo, [1, 2, 3]),
             404
+        );
+
+        $existing = LecturerMonitoring::query()
+            ->where('student_id', $student->id)
+            ->where('monitoring_no', $monitoringNo)
+            ->whereHas('supervisor', function ($query) use ($lecturer) {
+                $query->where(
+                    'lecturer_id',
+                    $lecturer->id
+                );
+            })
+            ->first();
+
+        abort_if(
+            $existing,
+            409,
+            'This monitoring has already been created.'
         );
 
         $template = MonitoringFormTemplate::query()
@@ -163,8 +176,7 @@ class MonitoringController extends Controller
         return view(
             'lecturers.monitoring.create',
             compact(
-                'students',
-                'lecturer',
+                'student',
                 'monitoringNo',
                 'template'
             )
@@ -173,6 +185,7 @@ class MonitoringController extends Controller
 
     public function store(
         Request $request,
+        Student $student,
         int $monitoringNo
     ): RedirectResponse {
         $lecturer = $request->user()->lecturer;
@@ -183,18 +196,17 @@ class MonitoringController extends Controller
             'Lecturer profile not found.'
         );
 
+        $this->ensureStudentBelongsToLecturer(
+            $lecturer,
+            $student
+        );
+
         abort_unless(
             in_array($monitoringNo, [1, 2, 3]),
             404
         );
 
         $validated = $request->validate([
-            'student_id' => [
-                'required',
-                'integer',
-                'exists:students,id',
-            ],
-
             'monitoring_date' => [
                 'required',
                 'date',
@@ -226,16 +238,6 @@ class MonitoringController extends Controller
             ],
         ]);
 
-        $student = Student::query()
-           // ->where('status', 'Active')
-            ->whereKey($validated['student_id'])
-            ->firstOrFail();
-
-        // $this->ensureStudentBelongsToLecturer(
-        //     $lecturer,
-        //     $student
-        // );
-
         $template = MonitoringFormTemplate::query()
             ->where('status', 'Active')
             ->with([
@@ -243,9 +245,14 @@ class MonitoringController extends Controller
             ])
             ->firstOrFail();
 
-        // supervisor is the lecturer who is supervising the student
-        $supervisor = $lecturer::query()
-            ->where('id', $lecturer->id)
+        $supervisor = $lecturer
+            ->supervisors()
+            ->whereHas('students', function ($query) use ($student) {
+                $query->where(
+                    'student_id',
+                    $student->id
+                );
+            })
             ->where('status', 'Active')
             ->firstOrFail();
 
@@ -259,26 +266,12 @@ class MonitoringController extends Controller
             422,
             'Active placement not found for this student.'
         );
-        // x blh ambik dari student kena ambik dari student enrollment table
-
-        $semesterId = StudentEnrollment::query()
-            ->where('student_id', $student->id)
-            ->where('academic_session_id', $placement->academic_session_id)
-            ->where('status', 'Active')
-            ->value('semester_id');
-
-        abort_unless(
-            $semesterId,
-            422,
-            'Semester not found for this student.'
-        );
 
         DB::transaction(function () use (
             $validated,
             $student,
             $supervisor,
             $placement,
-            $semesterId,
             $template,
             $monitoringNo
         ) {
@@ -293,7 +286,11 @@ class MonitoringController extends Controller
 
                 'academic_session_id' => $placement->academic_session_id,
 
-                'semester_id' => $semesterId,
+                /*
+                 * Change this if Placement does not contain
+                 * semester_id in your current schema.
+                 */
+                'semester_id' => $placement->semester_id,
 
                 'monitoring_form_template_id' => $template->id,
 
@@ -335,8 +332,8 @@ class MonitoringController extends Controller
 
         return redirect()
             ->route(
-                'lecturer.monitoring.visit', $monitoringNo
-
+                'lecturers.monitoring.student',
+                $student
             )
             ->with(
                 'success',
@@ -358,12 +355,23 @@ class MonitoringController extends Controller
 
         $monitoring->load([
             'student',
-            'lecturer',
             'placement.company',
-
+            'supervisor.lecturer',
             'monitoringFormTemplate.sections.items.options',
             'responses',
         ]);
+
+        // $belongsToLecturer = $monitoring
+        //     ->supervisor()
+        //     ->where('lecturer_id', $lecturer->id)
+        //     ->where('status', 'Active')
+        //     ->exists();
+
+        // abort_unless(
+        //     $belongsToLecturer,
+        //     403,
+        //     'You are not authorised to view this monitoring.'
+        // );
 
         return view(
             'lecturers.monitoring.show',

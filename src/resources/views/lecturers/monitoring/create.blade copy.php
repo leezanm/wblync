@@ -8,7 +8,11 @@
 
             {{-- <h2 class="text-2xl font-bold text-slate-800 mt-1">
                 Lawatan {{ $monitoringNo }}
-            </h2> --}}
+            </h2>
+
+            <p class="text-sm text-slate-500 mt-1">
+                {{ $student->name }}
+            </p> --}}
         </div>
     </x-slot>
 
@@ -23,7 +27,7 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ route('lecturer.monitoring.store', ['monitoringNo' => $monitoringNo]) }}">
+    <form method="POST" action="{{ route('lecturer.monitoring.store', ['student' => $student, 'monitoringNo' => $monitoringNo]) }}">
         @csrf
 
         {{-- MONITORING INFORMATION --}}
@@ -45,65 +49,18 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
 
                 <div>
-                    <label for="student_search" class="block text-sm font-semibold text-slate-700 mb-2">
-                        Student Name <span class="text-red-500">*</span>
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">
+                        Student Name
                     </label>
-                    <input
-                        type="text"
-                        id="student_search"
-                        list="student_list"
-                        value="{{ $students->firstWhere('id', old('student_id'))?->name ?? '' }}"
-                        placeholder="Search student name..."
-                        required
-                        class="w-full rounded-xl border-slate-300 bg-white px-4 py-3 focus:border-blue-500 focus:ring-blue-500"
-                    >
-                    <input type="hidden" id="student_id" name="student_id" value="{{ old('student_id') }}">
-                    <datalist id="student_list">
-                        @foreach ($students as $student)
-                            @php
-                                $activePlacement = $student->placements->first();
-                                $placementName = $activePlacement?->company?->name ?? '-';
-                                $placementLocation = trim(($activePlacement?->company?->city ?? '') . (empty($activePlacement?->company?->city) ? '' : ', ') . ($activePlacement?->company?->state ?? ''));
-                                $placementText = $placementName . ($placementLocation !== '' ? ' - ' . $placementLocation : '');
-                            @endphp
-
-                            <option
-                                value="{{ $student->name }}"
-                                data-id="{{ $student->id }}"
-                                data-student-no="{{ $student->student_no ?? '-' }}"
-                                data-placement="{{ $placementText }}"
-                            ></option>
-                        @endforeach
-                    </datalist>
-
-                    @error('student_id')
-                        <p class="mt-2 text-sm text-red-600">
-                            {{ $message }}
-                        </p>
-                    @enderror
+                    <input type="text" value="{{ $student->name }}" readonly
+                        class="w-full rounded-xl bg-slate-100 border-slate-200 text-slate-600">
                 </div>
 
                 <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-2">
                         Student No.
                     </label>
-                    <input
-                        type="text"
-                        id="student_no"
-                        value="-"
-                        readonly
-                        class="w-full rounded-xl bg-slate-100 border-slate-200 text-slate-600">
-                </div>
-
-                <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-2">
-                        Placement
-                    </label>
-                    <input
-                        type="text"
-                        id="placement"
-                        value="-"
-                        readonly
+                    <input type="text" value="{{ $student->student_no ?? '-' }}" readonly
                         class="w-full rounded-xl bg-slate-100 border-slate-200 text-slate-600">
                 </div>
 
@@ -352,7 +309,7 @@
         <div class="sticky bottom-4 z-20 flex items-center justify-end gap-3 mb-10">
 
             <a
-                href="{{ route('lecturer.monitoring.index') }}"
+                href="{{ route('lecturer.monitoring.student', $student) }}"
                 class="px-5 py-3 rounded-xl bg-white border border-slate-200 text-slate-700 font-semibold shadow-sm hover:bg-slate-50"
             >
                 Cancel
@@ -369,40 +326,5 @@
         </div>
 
     </form>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const studentSearchInput = document.getElementById('student_search');
-            const studentIdInput = document.getElementById('student_id');
-            const studentNoInput = document.getElementById('student_no');
-            const placementInput = document.getElementById('placement');
-
-            if (!studentSearchInput || !studentIdInput || !studentNoInput || !placementInput) {
-                return;
-            }
-
-            const updateStudentDetails = function () {
-                const name = studentSearchInput.value.trim();
-                const option = [...document.querySelectorAll('#student_list option')].find(function (item) {
-                    return item.value === name;
-                });
-
-                if (!option) {
-                    studentIdInput.value = '';
-                    studentNoInput.value = '-';
-                    placementInput.value = '-';
-                    return;
-                }
-
-                studentIdInput.value = option.dataset.id || '';
-                studentNoInput.value = option.dataset.studentNo || '-';
-                placementInput.value = option.dataset.placement || '-';
-            };
-
-            studentSearchInput.addEventListener('input', updateStudentDetails);
-            studentSearchInput.addEventListener('change', updateStudentDetails);
-            updateStudentDetails();
-        });
-    </script>
 
 </x-app-layout>
