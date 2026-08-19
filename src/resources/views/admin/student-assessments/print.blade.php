@@ -245,12 +245,11 @@
 
     {{-- Print Controls --}}
     <div class="no-print">
-
         <a
-            href="{{ url()->previous() }}"
+            href="javascript:window.close()"
             class="button button-back"
         >
-            ← Back
+            Close
         </a>
 
         <button
@@ -661,9 +660,11 @@
             <tr>
 
                 <td style="width: 50%;">
-                    Nama : {{ $studentAssessment->assessor_name ?? '____________________'    }}
-                    Company : {{ $studentAssessment->assessor_company ?? '____________________' }}
-                    Date : {{ $studentAssessment->assessed_at ? \Carbon\Carbon::parse($studentAssessment->assessed_at)->format('d M Y') : '____________________' }}
+                    Nama Mentor : {{ $studentAssessment->assessor?->name ?? '____________________' }}
+                    <br>
+                    Company : {{ $studentAssessment->assessor?->company?->name ?? '____________________' }}
+                    <br>
+                    Date Assessment : {{ $studentAssessment->assessed_at ? \Carbon\Carbon::parse($studentAssessment->assessed_at)->format('d M Y') : '____________________' }}
                 </td>
 
 

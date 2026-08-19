@@ -6,6 +6,7 @@ use App\Models\AssessmentCriterion;
 use App\Models\AssessmentRatingLevel;
 use App\Models\AssessmentVersion;
 use App\Models\IndustrySupervisor;
+use App\Models\Student;
 use App\Models\StudentAssessment;
 use App\Models\StudentEnrollment;
 use Illuminate\Http\Request;
@@ -389,15 +390,13 @@ class StudentAssessmentController extends Controller
     {
 
         // Load all necessary relationships for printing
-        // company, industry_mentor, placement, assessmentVersion, assessmentTemplate, sections, criteria, ratingLevels, scores
+        // student, template/course, sections/criteria/ratings, and scores
         $studentAssessment->load([
             'student',
             'student.user',
             'student.classRoom',
-            'student.placements.company',
-            'student.placements.industryMentor',
-            'student.placements.placement',
-            'assessmentVersion.assessmentTemplate',
+            'assessor.company',
+            'assessmentVersion.assessmentTemplate.course',
             'assessmentVersion.sections.criteria.ratingLevels',
             'scores',
         ]);
@@ -406,6 +405,112 @@ class StudentAssessmentController extends Controller
         return view(
             'admin.student-assessments.print',
             compact('studentAssessment')
+        );
+    }
+
+    public function lecturerStudentAssessments(
+        Request $request,
+        Student $student
+    ) {
+        $this->abortIfLecturerNotSupervisingStudent(
+            $request,
+            $student->id
+        );
+
+        $studentAssessments = StudentAssessment::query()
+            ->with([
+                'assessmentVersion.assessmentTemplate.course',
+                'assessor',
+            ])
+            ->where('student_id', $student->id)
+            ->latest()
+            ->paginate(15)
+            ->withQueryString();
+
+        return view(
+            'lecturers.students.assessments.index',
+            compact(
+                'student',
+                'studentAssessments'
+            )
+        );
+    }
+
+    public function lecturerShow(
+        Request $request,
+        StudentAssessment $studentAssessment
+    ) {
+        $this->abortIfLecturerNotSupervisingStudent(
+            $request,
+            $studentAssessment->student_id
+        );
+
+        $studentAssessment->load([
+            'student',
+            'assessmentVersion.assessmentTemplate.course',
+            'assessmentVersion.sections.criteria.ratingLevels',
+            'scores',
+        ]);
+
+        return view(
+            'admin.student-assessments.show',
+            [
+                'studentAssessment' => $studentAssessment,
+                'printRouteName' => 'lecturer.student-assessments.print',
+            ]
+        );
+    }
+
+    public function lecturerPrint(
+        Request $request,
+        StudentAssessment $studentAssessment
+    ) {
+        $this->abortIfLecturerNotSupervisingStudent(
+            $request,
+            $studentAssessment->student_id
+        );
+
+        $studentAssessment->load([
+            'student',
+            'student.user',
+            'student.classRoom',
+            'assessor.company',
+            'assessmentVersion.assessmentTemplate.course',
+            'assessmentVersion.sections.criteria.ratingLevels',
+            'scores',
+        ]);
+
+        return view(
+            'admin.student-assessments.print',
+            compact('studentAssessment')
+        );
+    }
+
+    private function abortIfLecturerNotSupervisingStudent(
+        Request $request,
+        int $studentId
+    ): void {
+        $lecturer = $request->user()->lecturer;
+
+        abort_unless(
+            $lecturer,
+            403,
+            'Lecturer profile not found.'
+        );
+
+        $isAssigned = $lecturer
+            ->supervisors()
+            ->whereHas('students', function ($query) use ($studentId) {
+                $query
+                    ->where('student_id', $studentId)
+                    ->where('status', 'Active');
+            })
+            ->exists();
+
+        abort_unless(
+            $isAssigned,
+            403,
+            'You are not authorised to view this student.'
         );
     }
 }

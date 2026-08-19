@@ -10,14 +10,26 @@
         <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
 
             {{-- Back --}}
-            <div class="mb-6">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 ">
+
                 <a href="{{ url()->previous() }}"
-                    class="inline-flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-blue-600">
+                    class="inline-flex items-center gap-6 text-sm font-medium text-slate-600 hover:text-blue-600">
                     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                     </svg>
 
                     Back to Students
+                </a>
+
+                <a href="{{ route($printRouteName ?? 'admin.student-assessments.print', $studentAssessment) }}"
+                    target="_blank"
+                    class="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-medium text-white hover:bg-blue-700">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                            d="M6 9V3h12v6M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M6 14h12v7H6z" />
+                    </svg>
+                    Print Assessment Form
                 </a>
             </div>
 
@@ -423,12 +435,12 @@
             <div class="mt-8 flex justify-start">
 
                 <a href="{{ url()->previous() }}"
-                    class="inline-flex items-center gap-2 rounded-xl border border-slate-700 bg-white px-5 py-3 text-sm font-medium text-slate-700 hover:bg-slate-50">
+                    class="inline-flex items-center gap-2 rounded-xl border border-slate-700 bg-white px-5 py-3 ml-2 text-sm font-medium text-slate-700 hover:bg-slate-50">
                     ← Back to Students
                 </a>
-                <a href="{{ route('admin.student-assessments.print', $studentAssessment) }}"
+                <a href="{{ route($printRouteName ?? 'admin.student-assessments.print', $studentAssessment) }}"
                     target="_blank"
-                    class="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-medium text-white hover:bg-blue-700">
+                    class="inline-flex items-center gap-2 py-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-medium text-white hover:bg-blue-700">
                     <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
                             d="M6 9V3h12v6M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2" />

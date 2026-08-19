@@ -190,6 +190,21 @@ Route::middleware([
             '/students/{student}/logbooks/{dailyLogbook}',
             [LecturerLogbookController::class, 'show']
         )->name('students.logbooks.show');
+
+        Route::get(
+            '/students/{student}/assessments',
+            [StudentAssessmentController::class, 'lecturerStudentAssessments']
+        )->name('students.assessments.index');
+
+        Route::get(
+            '/student-assessments/{studentAssessment}',
+            [StudentAssessmentController::class, 'lecturerShow']
+        )->name('student-assessments.show');
+
+        Route::get(
+            '/student-assessments/{studentAssessment}/print',
+            [StudentAssessmentController::class, 'lecturerPrint']
+        )->name('student-assessments.print');
     });
 
 // Pemantauan
@@ -519,5 +534,16 @@ Route::get(
     'industry-supervisor/assessments',
     [StudentAssessmentController::class, 'mentorIndex']
 )->name('industry-supervisor.assessments.index');
+
+//lecturer assessment routes
+Route::get(
+    'lecturer/assessments/{studentAssessment}',
+    [StudentAssessmentController::class, 'lecturerShow']
+)->name('lecturer.assessments.show');
+
+Route::get(
+    'lecturer/assessments/{studentAssessment}/print',
+    [StudentAssessmentController::class, 'lecturerPrint']
+)->name('lecturer.assessments.print');
 
 require __DIR__.'/auth.php';
