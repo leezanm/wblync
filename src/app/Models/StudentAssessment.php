@@ -62,7 +62,8 @@ class StudentAssessment extends Model
     {
         return $this->belongsTo(
             IndustrySupervisor::class,
-            'assessor_id'
+            'assessor_id',
+            'user_id'
         );
     }
 
