@@ -28,7 +28,8 @@
 
             <div class="flex gap-2">
 
-                <a href="{{ route('industry-supervisor.assessments.index') }}" class="rounded-md border border-gray-400 px-4 py-2 text-sm">
+                <a href="{{ route('industry-supervisor.assessments.index') }}"
+                    class="rounded-md border border-gray-400 px-4 py-2 text-sm">
                     Back
                 </a>
 
@@ -180,8 +181,7 @@
 
         {{-- Rubric --}}
 
-        <form method="POST"
-            action="{{ route('student-assessments.scores.save', $studentAssessment) }}">
+        <form method="POST" action="{{ route('student-assessments.scores.save', $studentAssessment) }}">
             @csrf
 
             <div class="space-y-6">
@@ -320,47 +320,52 @@
                 @endforeach
 
             </div>
-   {{-- Remarks --}}
+            {{-- Remarks --}}
 
-        @if ($studentAssessment->remarks)
-            <div class="mt-6 rounded-lg border bg-white p-6">
+            @if ($studentAssessment->remarks)
+                <div class="mt-6 rounded-lg border bg-white p-6">
 
-                <h2 class="mb-3 text-lg font-semibold">
-                    Remarks
-                </h2>
+                    <h2 class="mb-3 text-lg font-semibold">
+                        Remarks
+                    </h2>
 
-                <p class="whitespace-pre-line text-sm text-gray-600">
-                    {{ $studentAssessment->remarks }}
-                </p>
+                    <p class="whitespace-pre-line text-sm text-gray-600">
+                        {{ $studentAssessment->remarks }}
+                    </p>
 
-            </div>
-        @endif
-            {{-- Save Button --}}
-            @if ($studentAssessment->status === 'Draft')
-                <div class="mt-6 flex justify-end gap-3">
-                    <button
-                        type="submit"
-                        class="rounded-md bg-blue-600 px-5 py-2.5 text-sm font-medium text-white"
-                    >
-                        Save Assessment
-                    </button>
                 </div>
             @endif
-        </form>
+            {{-- Action Buttons --}}
 
-        @if ($studentAssessment->status === 'Draft')
-            <div class="mt-6 flex justify-end">
-                <form action="{{ route('student-assessments.complete', $studentAssessment) }}" method="POST">
-                    @csrf
-                    <button type="submit" class="rounded-md bg-green-600 px-5 py-2.5 text-sm font-medium text-white">
+            <div class="mt-6 flex justify-end gap-3">
+
+                {{-- Save --}}
+                @if ($studentAssessment->status === 'Draft')
+                    <button type="submit"
+                        class="rounded-md bg-blue-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-700">
+                        Save Assessment
+                    </button>
+                @endif
+
+                {{-- Complete --}}
+                @if ($studentAssessment->status === 'Draft')
+                    <button type="submit" form="complete-assessment-form"
+                        class="rounded-md bg-green-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-green-700">
                         Complete Assessment
                     </button>
-                </form>
+                @endif
+
             </div>
-        @endif
+
+        </form>
 
 
+        {{-- Complete Assessment Form --}}
 
+        <form id="complete-assessment-form" action="{{ route('student-assessments.complete', $studentAssessment) }}"
+            method="POST">
+            @csrf
+        </form>
 
     </div>
 

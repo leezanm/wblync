@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AssessmentCriterion;
 use App\Models\AssessmentRatingLevel;
 use App\Models\AssessmentVersion;
+use App\Models\Enrollment;
 use App\Models\IndustrySupervisor;
 use App\Models\Student;
 use App\Models\StudentAssessment;
@@ -12,6 +13,7 @@ use App\Models\StudentEnrollment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 
 class StudentAssessmentController extends Controller
 {
@@ -97,17 +99,63 @@ class StudentAssessmentController extends Controller
             })
             ->get();
 
+        $courseRows = Enrollment::query()
+            ->join(
+                'class_courses',
+                'class_courses.id',
+                '=',
+                'enrollments.class_course_id'
+            )
+            ->whereIn(
+                'enrollments.student_id',
+                $enrollments->pluck('student_id')->unique()->values()
+            )
+            ->whereIn(
+                'class_courses.class_room_id',
+                $enrollments->pluck('class_room_id')->unique()->values()
+            )
+            ->select([
+                'enrollments.student_id',
+                'class_courses.class_room_id',
+                'class_courses.course_id',
+            ])
+            ->get();
+
+        $courseIdsByStudentClass = $courseRows
+            ->groupBy(fn ($row) => $row->student_id.'-'.$row->class_room_id)
+            ->map(fn ($rows) => $rows->pluck('course_id')->unique()->values());
+
+        $enrollmentCourseIds = $enrollments->mapWithKeys(function ($enrollment) use ($courseIdsByStudentClass) {
+            $key = $enrollment->student_id.'-'.$enrollment->class_room_id;
+
+            return [
+                $enrollment->id => $courseIdsByStudentClass
+                    ->get($key, collect())
+                    ->values()
+                    ->all(),
+            ];
+        });
+
+        $relevantCourseIds = $enrollmentCourseIds
+            ->flatten()
+            ->unique()
+            ->values();
+
         $assessmentVersions = AssessmentVersion::with(
             'assessmentTemplate.course'
         )
             ->where('status', 1)
+            ->whereHas('assessmentTemplate', function ($query) use ($relevantCourseIds) {
+                $query->whereIn('course_id', $relevantCourseIds);
+            })
             ->get();
 
         return view(
             'student-assessments.create',
             compact(
                 'enrollments',
-                'assessmentVersions'
+                'assessmentVersions',
+                'enrollmentCourseIds'
             )
         );
     }
@@ -144,6 +192,29 @@ class StudentAssessmentController extends Controller
         $version = AssessmentVersion::findOrFail(
             $validated['assessment_version_id']
         );
+
+        $allowedCourseIds = Enrollment::query()
+            ->join(
+                'class_courses',
+                'class_courses.id',
+                '=',
+                'enrollments.class_course_id'
+            )
+            ->where('enrollments.student_id', $enrollment->student_id)
+            ->where('class_courses.class_room_id', $enrollment->class_room_id)
+            ->pluck('class_courses.course_id')
+            ->unique()
+            ->values();
+
+        $selectedAssessmentCourseId = (int) $version
+            ->assessmentTemplate()
+            ->value('course_id');
+
+        if (! $allowedCourseIds->contains($selectedAssessmentCourseId)) {
+            throw ValidationException::withMessages([
+                'assessment_version_id' => 'Selected assessment is not valid for the selected student course.',
+            ]);
+        }
 
         $assessment = StudentAssessment::create([
             'uuid' => (string) Str::uuid(),

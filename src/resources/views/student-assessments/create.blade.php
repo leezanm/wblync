@@ -53,14 +53,18 @@
                         Student Enrollment
                     </label>
 
-                    <select name="student_enrollment_id" required class="mt-1 block w-full rounded-md border-gray-300">
+                    <select id="student-enrollment-select" name="student_enrollment_id" required class="mt-1 block w-full rounded-md border-gray-300">
 
                         <option value="">
                             Select Student
                         </option>
 
                         @foreach ($enrollments as $enrollment)
-                            <option value="{{ $enrollment->id }}" @selected(old('student_enrollment_id') == $enrollment->id)>
+                            <option
+                                value="{{ $enrollment->id }}"
+                                data-course-ids="{{ implode(',', $enrollmentCourseIds[$enrollment->id] ?? []) }}"
+                                @selected(old('student_enrollment_id') == $enrollment->id)
+                            >
                                 {{ $enrollment->student->student_no }}
                                 —
                                 {{ $enrollment->student->name }}
@@ -80,14 +84,18 @@
                         Assessment
                     </label>
 
-                    <select name="assessment_version_id" required class="mt-1 block w-full rounded-md border-gray-300">
+                    <select id="assessment-version-select" name="assessment_version_id" required class="mt-1 block w-full rounded-md border-gray-300">
 
                         <option value="">
                             Select Assessment
                         </option>
 
                         @foreach ($assessmentVersions as $version)
-                            <option value="{{ $version->id }}" @selected(old('assessment_version_id') == $version->id)>
+                            <option
+                                value="{{ $version->id }}"
+                                data-course-id="{{ $version->assessmentTemplate->course_id }}"
+                                @selected(old('assessment_version_id') == $version->id)
+                            >
                                 {{ $version->assessmentTemplate->code }}
                                 —
                                 {{ $version->assessmentTemplate->name }}
@@ -97,6 +105,10 @@
                         @endforeach
 
                     </select>
+
+                    <p id="assessment-empty-message" class="mt-2 hidden text-sm text-amber-700">
+                        No assessment found for the selected student course.
+                    </p>
 
                 </div>
 
@@ -236,5 +248,65 @@
         </form>
 
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const enrollmentSelect = document.getElementById('student-enrollment-select');
+            const assessmentSelect = document.getElementById('assessment-version-select');
+            const emptyMessage = document.getElementById('assessment-empty-message');
+
+            if (!enrollmentSelect || !assessmentSelect || !emptyMessage) {
+                return;
+            }
+
+            const applyAssessmentFilter = () => {
+                const selectedEnrollmentOption = enrollmentSelect.options[enrollmentSelect.selectedIndex];
+                const courseIdsRaw = selectedEnrollmentOption?.dataset.courseIds ?? '';
+                const allowedCourseIds = new Set(
+                    courseIdsRaw
+                        .split(',')
+                        .map((value) => value.trim())
+                        .filter((value) => value.length > 0)
+                );
+
+                let visibleCount = 0;
+
+                Array.from(assessmentSelect.options).forEach((option, index) => {
+                    if (index === 0) {
+                        option.hidden = false;
+                        option.disabled = false;
+                        return;
+                    }
+
+                    const optionCourseId = option.dataset.courseId ?? '';
+                    const isVisible = allowedCourseIds.has(optionCourseId);
+
+                    option.hidden = !isVisible;
+                    option.disabled = !isVisible;
+
+                    if (isVisible) {
+                        visibleCount++;
+                    }
+                });
+
+                const selectedAssessmentOption = assessmentSelect.options[assessmentSelect.selectedIndex];
+                if (
+                    selectedAssessmentOption
+                    && selectedAssessmentOption.value !== ''
+                    && selectedAssessmentOption.disabled
+                ) {
+                    assessmentSelect.value = '';
+                }
+
+                emptyMessage.classList.toggle(
+                    'hidden',
+                    enrollmentSelect.value === '' || visibleCount > 0
+                );
+            };
+
+            enrollmentSelect.addEventListener('change', applyAssessmentFilter);
+            applyAssessmentFilter();
+        });
+    </script>
 
 </x-app-layout>
