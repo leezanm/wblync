@@ -14,7 +14,6 @@ use Illuminate\Support\Str;
 
 class StudentAssessmentController extends Controller
 {
-
     public function index()
     {
         $assessments = StudentAssessment::with([
@@ -77,17 +76,14 @@ class StudentAssessmentController extends Controller
         );
     }
 
-
     public function create()
     {
-
 
         $industrySupervisorId = IndustrySupervisor::query()
             ->where('user_id', auth()->id())
             ->value('id');
 
-
-        //student enrollment yang aktif sahaja under company mentor sahaja
+        // student enrollment yang aktif sahaja under company mentor sahaja
         $enrollments = StudentEnrollment::with([
             'student',
             'academicSession',
@@ -260,18 +256,14 @@ class StudentAssessmentController extends Controller
 
                 $studentAssessment->scores()->updateOrCreate(
                     [
-                        'assessment_criterion_id' =>
-                        $criterion->id,
+                        'assessment_criterion_id' => $criterion->id,
                     ],
                     [
-                        'rating_level_id' =>
-                        $rating->id,
+                        'rating_level_id' => $rating->id,
 
-                        'score' =>
-                        $score,
+                        'score' => $score,
 
-                        'remark' =>
-                        $scoreData['remark'] ?? null,
+                        'remark' => $scoreData['remark'] ?? null,
                     ]
                 );
 
@@ -303,7 +295,6 @@ class StudentAssessmentController extends Controller
             );
     }
 
-
     public function complete(StudentAssessment $studentAssessment)
     {
         // Pastikan assessment masih Draft
@@ -323,7 +314,7 @@ class StudentAssessmentController extends Controller
         $criteriaIds = $studentAssessment
             ->assessmentVersion
             ->sections
-            ->flatMap(fn($section) => $section->criteria)
+            ->flatMap(fn ($section) => $section->criteria)
             ->pluck('id');
 
         $scoredCriteriaIds = $studentAssessment
@@ -393,11 +384,12 @@ class StudentAssessmentController extends Controller
             compact('studentAssessment')
         );
     }
+
     public function adminPrint(StudentAssessment $studentAssessment)
     {
 
         // Load all necessary relationships for printing
-        //company, industry_mentor, placement, assessmentVersion, assessmentTemplate, sections, criteria, ratingLevels, scores
+        // company, industry_mentor, placement, assessmentVersion, assessmentTemplate, sections, criteria, ratingLevels, scores
         $studentAssessment->load([
             'student',
             'student.user',
@@ -409,6 +401,7 @@ class StudentAssessmentController extends Controller
             'assessmentVersion.sections.criteria.ratingLevels',
             'scores',
         ]);
+
         // dd($studentAssessment);
         return view(
             'admin.student-assessments.print',

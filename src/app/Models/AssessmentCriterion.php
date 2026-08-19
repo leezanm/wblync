@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\AssessmentCriterion;
-use App\Models\AssessmentSection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -38,7 +36,7 @@ class AssessmentCriterion extends Model
             ->orderBy('sort_order');
     }
 
-     public function assessmentVersion(): BelongsTo
+    public function assessmentVersion(): BelongsTo
     {
         return $this->belongsTo(
             AssessmentVersion::class,
@@ -54,13 +52,11 @@ class AssessmentCriterion extends Model
         )->orderBy('sort_order');
     }
 
-      public function assessmentSection(): BelongsTo
+    public function assessmentSection(): BelongsTo
     {
         return $this->belongsTo(
             AssessmentSection::class,
             'assessment_section_id'
         );
     }
-
-   
 }

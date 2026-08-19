@@ -2,10 +2,8 @@
 
 namespace App\Models;
 
-use App\Models\AssessmentVersion;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class AssessmentRatingLevel extends Model
 {
@@ -28,6 +26,4 @@ class AssessmentRatingLevel extends Model
             AssessmentCriterion::class
         );
     }
-
-
 }

@@ -63,7 +63,7 @@ class AssessmentRatingLevelController extends Controller
                 'required',
                 'numeric',
                 'min:0',
-                'max:' . $criterion->max_score,
+                'max:'.$criterion->max_score,
             ],
 
             'label' => [
@@ -92,17 +92,13 @@ class AssessmentRatingLevelController extends Controller
             ->route(
                 'assessment-rating-levels.index',
                 [
-                    'assessmentTemplate' =>
-                        $version->assessment_template_id,
+                    'assessmentTemplate' => $version->assessment_template_id,
 
-                    'assessmentVersion' =>
-                        $version->id,
+                    'assessmentVersion' => $version->id,
 
-                    'assessmentSection' =>
-                        $criterion->assessment_section_id,
+                    'assessmentSection' => $criterion->assessment_section_id,
 
-                    'assessmentCriterion' =>
-                        $criterion->id,
+                    'assessmentCriterion' => $criterion->id,
                 ]
             )
             ->with(
@@ -163,7 +159,7 @@ class AssessmentRatingLevelController extends Controller
                 'required',
                 'numeric',
                 'min:0',
-                'max:' . $criterion->max_score,
+                'max:'.$criterion->max_score,
             ],
 
             'label' => [
@@ -190,17 +186,13 @@ class AssessmentRatingLevelController extends Controller
             ->route(
                 'assessment-criteria.show',
                 [
-                    'assessmentTemplate' =>
-                        $version->assessment_template_id,
+                    'assessmentTemplate' => $version->assessment_template_id,
 
-                    'assessmentVersion' =>
-                        $version->id,
+                    'assessmentVersion' => $version->id,
 
-                    'assessmentSection' =>
-                        $criterion->assessment_section_id,
+                    'assessmentSection' => $criterion->assessment_section_id,
 
-                    'assessmentCriterion' =>
-                        $criterion->id,
+                    'assessmentCriterion' => $criterion->id,
                 ]
             )
             ->with(
@@ -239,17 +231,13 @@ class AssessmentRatingLevelController extends Controller
             ->route(
                 'assessment-criteria.show',
                 [
-                    'assessmentTemplate' =>
-                        $version->assessment_template_id,
+                    'assessmentTemplate' => $version->assessment_template_id,
 
-                    'assessmentVersion' =>
-                        $version->id,
+                    'assessmentVersion' => $version->id,
 
-                    'assessmentSection' =>
-                        $criterion->assessment_section_id,
+                    'assessmentSection' => $criterion->assessment_section_id,
 
-                    'assessmentCriterion' =>
-                        $criterion->id,
+                    'assessmentCriterion' => $criterion->id,
                 ]
             )
             ->with(

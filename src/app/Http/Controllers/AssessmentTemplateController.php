@@ -9,7 +9,6 @@ use Illuminate\Support\Str;
 
 class AssessmentTemplateController extends Controller
 {
-
     public function index()
     {
         $assessmentTemplates = AssessmentTemplate::with([
@@ -25,7 +24,6 @@ class AssessmentTemplateController extends Controller
         );
     }
 
-
     public function create()
     {
         $courses = Course::where('status', true)
@@ -37,6 +35,7 @@ class AssessmentTemplateController extends Controller
             compact('courses')
         );
     }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -57,6 +56,7 @@ class AssessmentTemplateController extends Controller
             ->route('assessment-templates.index')
             ->with('success', 'Assessment template berjaya ditambah.');
     }
+
     public function show(AssessmentTemplate $assessmentTemplate)
     {
         $assessmentTemplate->load([
@@ -69,6 +69,7 @@ class AssessmentTemplateController extends Controller
             compact('assessmentTemplate')
         );
     }
+
     public function edit(AssessmentTemplate $assessmentTemplate)
     {
         $courses = Course::where('status', true)
@@ -80,6 +81,7 @@ class AssessmentTemplateController extends Controller
             compact('assessmentTemplate', 'courses')
         );
     }
+
     public function update(
         Request $request,
         AssessmentTemplate $assessmentTemplate
@@ -90,7 +92,7 @@ class AssessmentTemplateController extends Controller
                 'required',
                 'string',
                 'max:100',
-                'unique:assessment_templates,code,' . $assessmentTemplate->id,
+                'unique:assessment_templates,code,'.$assessmentTemplate->id,
             ],
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
@@ -106,6 +108,7 @@ class AssessmentTemplateController extends Controller
             ->route('assessment-templates.show', $assessmentTemplate)
             ->with('success', 'Assessment template berjaya dikemaskini.');
     }
+
     public function destroy(AssessmentTemplate $assessmentTemplate)
     {
         $assessmentTemplate->delete();

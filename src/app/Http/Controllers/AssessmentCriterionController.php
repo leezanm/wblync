@@ -105,14 +105,11 @@ class AssessmentCriterionController extends Controller
             ->route(
                 'assessment-criteria.index',
                 [
-                    'assessmentTemplate' =>
-                        $version->assessment_template_id,
+                    'assessmentTemplate' => $version->assessment_template_id,
 
-                    'assessmentVersion' =>
-                        $version->id,
+                    'assessmentVersion' => $version->id,
 
-                    'assessmentSection' =>
-                        $assessmentSection->id,
+                    'assessmentSection' => $assessmentSection->id,
                 ]
             )
             ->with(
@@ -229,17 +226,13 @@ class AssessmentCriterionController extends Controller
             ->route(
                 'assessment-criteria.show',
                 [
-                    'assessmentTemplate' =>
-                        $version->assessment_template_id,
+                    'assessmentTemplate' => $version->assessment_template_id,
 
-                    'assessmentVersion' =>
-                        $version->id,
+                    'assessmentVersion' => $version->id,
 
-                    'assessmentSection' =>
-                        $assessmentSection->id,
+                    'assessmentSection' => $assessmentSection->id,
 
-                    'assessmentCriterion' =>
-                        $criterion->id,
+                    'assessmentCriterion' => $criterion->id,
                 ]
             )
             ->with(
@@ -276,14 +269,11 @@ class AssessmentCriterionController extends Controller
             ->route(
                 'assessment-criteria.index',
                 [
-                    'assessmentTemplate' =>
-                        $version->assessment_template_id,
+                    'assessmentTemplate' => $version->assessment_template_id,
 
-                    'assessmentVersion' =>
-                        $version->id,
+                    'assessmentVersion' => $version->id,
 
-                    'assessmentSection' =>
-                        $assessmentSection->id,
+                    'assessmentSection' => $assessmentSection->id,
                 ]
             )
             ->with(

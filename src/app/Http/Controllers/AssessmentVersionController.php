@@ -39,7 +39,7 @@ class AssessmentVersionController extends Controller
                 'required',
                 'integer',
                 'min:1',
-                'unique:assessment_versions,version,NULL,id,assessment_template_id,' . $assessmentTemplate->id,
+                'unique:assessment_versions,version,NULL,id,assessment_template_id,'.$assessmentTemplate->id,
             ],
             'name' => [
                 'required',
@@ -134,9 +134,9 @@ class AssessmentVersionController extends Controller
                 'required',
                 'integer',
                 'min:1',
-                'unique:assessment_versions,version,' .
-                    $assessmentVersion->id .
-                    ',id,assessment_template_id,' .
+                'unique:assessment_versions,version,'.
+                    $assessmentVersion->id.
+                    ',id,assessment_template_id,'.
                     $assessmentTemplate->id,
             ],
             'name' => [

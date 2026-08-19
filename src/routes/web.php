@@ -35,7 +35,6 @@ use App\Http\Controllers\SupervisorController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-
 Route::get('/', function () {
     return view('auth.login');
 });
@@ -294,21 +293,21 @@ Route::middleware('auth')
 // Assessment Template
 Route::middleware('auth')->group(function () {
 
-        Route::resource('assessment-templates', AssessmentTemplateController::class);
-        Route::post(
-    'assessment-sections/{section}/criteria',
-    [AssessmentCriterionController::class, 'store']
-)->name('assessment-sections.criteria.store');
+    Route::resource('assessment-templates', AssessmentTemplateController::class);
+    Route::post(
+        'assessment-sections/{section}/criteria',
+        [AssessmentCriterionController::class, 'store']
+    )->name('assessment-sections.criteria.store');
 
-// Route::put(
-//     'assessment-criteria/{criterion}',
-//     [AssessmentCriterionController::class, 'update']
-// )->name('assessment-criteria.update');
+    // Route::put(
+    //     'assessment-criteria/{criterion}',
+    //     [AssessmentCriterionController::class, 'update']
+    // )->name('assessment-criteria.update');
 
-// Route::delete(
-//     'assessment-criteria/{criterion}',
-//     [AssessmentCriterionController::class, 'destroy']
-// )->name('assessment-criteria.destroy');
+    // Route::delete(
+    //     'assessment-criteria/{criterion}',
+    //     [AssessmentCriterionController::class, 'destroy']
+    // )->name('assessment-criteria.destroy');
 });
 
 Route::prefix('assessment-templates/{assessmentTemplate}')
@@ -389,7 +388,6 @@ Route::prefix('assessment-templates/{assessmentTemplate}')
         });
     });
 
-
 Route::prefix(
     'assessment-templates/{assessmentTemplate}/versions/{assessmentVersion}/sections/{assessmentSection}'
 )->group(function () {
@@ -464,14 +462,12 @@ Route::prefix(
         [AssessmentRatingLevelController::class, 'destroy']
     )->name('assessment-rating-levels.destroy');
 
-
 });
 
 Route::get(
     'student-assessments',
     [StudentAssessmentController::class, 'index']
 )->name('student-assessments.index');
-
 
 Route::get(
     'admin/student-assessments/{assessmentVersion}/students',
@@ -499,7 +495,7 @@ Route::post(
     [StudentAssessmentController::class, 'complete']
 )->name('student-assessments.complete');
 
-//admin assessment routes
+// admin assessment routes
 Route::get(
     'admin/student-assessments',
     [StudentAssessmentController::class, 'adminIndex']
@@ -518,12 +514,10 @@ Route::get(
     [StudentAssessmentController::class, 'adminPrint']
 )->name('admin.student-assessments.print');
 
-//Industry Mentor Assessment Routes
+// Industry Mentor Assessment Routes
 Route::get(
     'industry-supervisor/assessments',
     [StudentAssessmentController::class, 'mentorIndex']
 )->name('industry-supervisor.assessments.index');
-
-
 
 require __DIR__.'/auth.php';
