@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Models\StudentAssessment;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class StudentEnrollment extends Model
 {
@@ -41,5 +43,10 @@ class StudentEnrollment extends Model
     public function classRoom(): BelongsTo
     {
         return $this->belongsTo(ClassRoom::class);
+    }
+
+    public function assessments(): HasMany
+    {
+        return $this->hasMany(StudentAssessment::class);
     }
 }

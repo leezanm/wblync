@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\StudentAssessment;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -70,5 +71,14 @@ class Student extends Model
     public function enrollments(): HasMany
     {
         return $this->hasMany(Enrollment::class);
+    }
+
+    public function studentEnrollments(): HasMany
+    {
+        return $this->hasMany(StudentEnrollment::class);
+    }
+    public function assessments(): HasMany
+    {
+        return $this->hasMany(StudentAssessment::class);
     }
 }

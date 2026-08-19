@@ -3,6 +3,11 @@
 use App\Http\Controllers\AcademicSessionController;
 use App\Http\Controllers\Admin\MonitoringFormTemplateController;
 use App\Http\Controllers\AssessmentController;
+use App\Http\Controllers\AssessmentCriterionController;
+use App\Http\Controllers\AssessmentRatingLevelController;
+use App\Http\Controllers\AssessmentSectionController;
+use App\Http\Controllers\AssessmentTemplateController;
+use App\Http\Controllers\AssessmentVersionController;
 use App\Http\Controllers\ChangePasswordController;
 use App\Http\Controllers\ClassCourseController;
 use App\Http\Controllers\ClassRoomController;
@@ -23,11 +28,13 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProgrammeController;
 use App\Http\Controllers\SemesterController;
 use App\Http\Controllers\StudentAcademicProfileController;
+use App\Http\Controllers\StudentAssessmentController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\StudentEnrollmentController;
 use App\Http\Controllers\SupervisorController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+
 
 Route::get('/', function () {
     return view('auth.login');
@@ -283,5 +290,240 @@ Route::middleware('auth')
             [MonitoringController::class, 'show']
         )->name('monitoring.show');
     });
+
+// Assessment Template
+Route::middleware('auth')->group(function () {
+
+        Route::resource('assessment-templates', AssessmentTemplateController::class);
+        Route::post(
+    'assessment-sections/{section}/criteria',
+    [AssessmentCriterionController::class, 'store']
+)->name('assessment-sections.criteria.store');
+
+// Route::put(
+//     'assessment-criteria/{criterion}',
+//     [AssessmentCriterionController::class, 'update']
+// )->name('assessment-criteria.update');
+
+// Route::delete(
+//     'assessment-criteria/{criterion}',
+//     [AssessmentCriterionController::class, 'destroy']
+// )->name('assessment-criteria.destroy');
+});
+
+Route::prefix('assessment-templates/{assessmentTemplate}')
+    ->group(function () {
+
+        Route::get(
+            'versions',
+            [AssessmentVersionController::class, 'index']
+        )->name('assessment-versions.index');
+
+        Route::get(
+            'versions/create',
+            [AssessmentVersionController::class, 'create']
+        )->name('assessment-versions.create');
+
+        Route::post(
+            'versions',
+            [AssessmentVersionController::class, 'store']
+        )->name('assessment-versions.store');
+
+        Route::get(
+            'versions/{assessmentVersion}',
+            [AssessmentVersionController::class, 'show']
+        )->name('assessment-versions.show');
+
+        Route::get(
+            'versions/{assessmentVersion}/edit',
+            [AssessmentVersionController::class, 'edit']
+        )->name('assessment-versions.edit');
+
+        Route::put(
+            'versions/{assessmentVersion}',
+            [AssessmentVersionController::class, 'update']
+        )->name('assessment-versions.update');
+
+        Route::post(
+            'versions/{assessmentVersion}/publish',
+            [AssessmentVersionController::class, 'publish']
+        )->name('assessment-versions.publish');
+
+        Route::post(
+            'versions/{assessmentVersion}/unpublish',
+            [AssessmentVersionController::class, 'unpublish']
+        )->name('assessment-versions.unpublish');
+
+        Route::prefix('versions/{assessmentVersion}')->group(function () {
+
+            Route::get(
+                'sections',
+                [AssessmentSectionController::class, 'index']
+            )->name('assessment-sections.index');
+
+            Route::get(
+                'sections/create',
+                [AssessmentSectionController::class, 'create']
+            )->name('assessment-sections.create');
+
+            Route::post(
+                'sections',
+                [AssessmentSectionController::class, 'store']
+            )->name('assessment-sections.store');
+
+            Route::get(
+                'sections/{assessmentSection}',
+                [AssessmentSectionController::class, 'show']
+            )->name('assessment-sections.show');
+
+            Route::get(
+                'sections/{assessmentSection}/edit',
+                [AssessmentSectionController::class, 'edit']
+            )->name('assessment-sections.edit');
+
+            Route::put(
+                'sections/{assessmentSection}',
+                [AssessmentSectionController::class, 'update']
+            )->name('assessment-sections.update');
+
+        });
+    });
+
+
+Route::prefix(
+    'assessment-templates/{assessmentTemplate}/versions/{assessmentVersion}/sections/{assessmentSection}'
+)->group(function () {
+
+    Route::get(
+        'criteria',
+        [AssessmentCriterionController::class, 'index']
+    )->name('assessment-criteria.index');
+
+    Route::get(
+        'criteria/create',
+        [AssessmentCriterionController::class, 'create']
+    )->name('assessment-criteria.create');
+
+    Route::post(
+        'criteria',
+        [AssessmentCriterionController::class, 'store']
+    )->name('assessment-criteria.store');
+
+    Route::get(
+        'criteria/{assessmentCriterion}',
+        [AssessmentCriterionController::class, 'show']
+    )->name('assessment-criteria.show');
+
+    Route::get(
+        'criteria/{assessmentCriterion}/edit',
+        [AssessmentCriterionController::class, 'edit']
+    )->name('assessment-criteria.edit');
+
+    Route::put(
+        'criteria/{assessmentCriterion}',
+        [AssessmentCriterionController::class, 'update']
+    )->name('assessment-criteria.update');
+
+    Route::delete(
+        'criteria/{assessmentCriterion}',
+        [AssessmentCriterionController::class, 'destroy']
+    )->name('assessment-criteria.destroy');
+});
+
+Route::prefix(
+    'assessment-templates/{assessmentTemplate}/versions/{assessmentVersion}/sections/{assessmentSection}/criteria/{assessmentCriterion}'
+)->group(function () {
+
+    Route::get(
+        'ratings',
+        [AssessmentRatingLevelController::class, 'index']
+    )->name('assessment-rating-levels.index');
+
+    Route::get(
+        'ratings/create',
+        [AssessmentRatingLevelController::class, 'create']
+    )->name('assessment-rating-levels.create');
+
+    Route::post(
+        'ratings',
+        [AssessmentRatingLevelController::class, 'store']
+    )->name('assessment-rating-levels.store');
+
+    Route::get(
+        'ratings/{assessmentRatingLevel}/edit',
+        [AssessmentRatingLevelController::class, 'edit']
+    )->name('assessment-rating-levels.edit');
+
+    Route::put(
+        'ratings/{assessmentRatingLevel}',
+        [AssessmentRatingLevelController::class, 'update']
+    )->name('assessment-rating-levels.update');
+
+    Route::delete(
+        'ratings/{assessmentRatingLevel}',
+        [AssessmentRatingLevelController::class, 'destroy']
+    )->name('assessment-rating-levels.destroy');
+
+
+});
+
+Route::get(
+    'student-assessments',
+    [StudentAssessmentController::class, 'index']
+)->name('student-assessments.index');
+
+
+Route::get(
+    'admin/student-assessments/{assessmentVersion}/students',
+    [StudentAssessmentController::class, 'adminStudents']
+)->name('admin.student-assessments.students');
+
+Route::get(
+    'student-assessments/create',
+    [StudentAssessmentController::class, 'create']
+)->name('student-assessments.create');
+Route::post(
+    'student-assessments',
+    [StudentAssessmentController::class, 'store']
+)->name('student-assessments.store');
+Route::get(
+    'student-assessments/{studentAssessment}',
+    [StudentAssessmentController::class, 'show']
+)->name('student-assessments.show');
+Route::post(
+    'student-assessments/{studentAssessment}/scores',
+    [StudentAssessmentController::class, 'saveScores']
+)->name('student-assessments.scores.save');
+Route::post(
+    'student-assessments/{studentAssessment}/complete',
+    [StudentAssessmentController::class, 'complete']
+)->name('student-assessments.complete');
+
+//admin assessment routes
+Route::get(
+    'admin/student-assessments',
+    [StudentAssessmentController::class, 'adminIndex']
+)->name('admin.student-assessments.index');
+
+Route::get(
+    'admin/student-assessments/{assessmentVersion}/students',
+    [StudentAssessmentController::class, 'adminStudents']
+)->name('admin.student-assessments.students');
+Route::get(
+    'admin/student-assessments/{studentAssessment}',
+    [StudentAssessmentController::class, 'adminShow']
+)->name('admin.student-assessments.show');
+Route::get(
+    'admin/student-assessments/{studentAssessment}/print',
+    [StudentAssessmentController::class, 'adminPrint']
+)->name('admin.student-assessments.print');
+
+//Industry Mentor Assessment Routes
+Route::get(
+    'industry-supervisor/assessments',
+    [StudentAssessmentController::class, 'mentorIndex']
+)->name('industry-supervisor.assessments.index');
+
+
 
 require __DIR__.'/auth.php';

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\AssessmentTemplate;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -34,5 +35,10 @@ class Course extends Model
     public function classCourses(): HasMany
     {
         return $this->hasMany(ClassCourse::class);
+    }
+
+    public function assessmentTemplates(): HasMany
+    {
+        return $this->hasMany(AssessmentTemplate::class);
     }
 }

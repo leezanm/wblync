@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\StudentAssessment;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -45,5 +46,12 @@ class IndustrySupervisor extends Model
     public function placements(): HasMany
     {
         return $this->hasMany(Placement::class);
+    }
+    public function studentAssessments(): HasMany
+    {
+        return $this->hasMany(
+            StudentAssessment::class,
+            'assessor_id'
+        );
     }
 }

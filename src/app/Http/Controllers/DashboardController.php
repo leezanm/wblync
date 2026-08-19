@@ -8,7 +8,9 @@ use App\Models\Company;
 use App\Models\DailyLogbook;
 use App\Models\Enrollment;
 use App\Models\IndustrySupervisor;
+use App\Models\Lecturer;
 use App\Models\LecturerMonitoring;
+use App\Models\MonitoringFormTemplate;
 use App\Models\Placement;
 use App\Models\Student;
 use App\Models\SupervisorStudent;
@@ -289,7 +291,17 @@ class DashboardController extends Controller
 
         $academicSessionsCount = AcademicSession::count();
         $studentsCount = Student::count();
+        $activeStudentsCount = Student::query()
+            ->where('status', true)
+            ->count();
         $companiesCount = Company::count();
+        $lecturersCount = Lecturer::count();
+        $industryMentorsCount = IndustrySupervisor::query()
+            ->where('status', true)
+            ->count();
+        $activePlacementsCount = Placement::query()
+            ->where('status', 'Active')
+            ->count();
         $pendingLogbooksCount = DailyLogbook::query()
             ->where('status', 'Submitted')
             ->count();
@@ -299,12 +311,85 @@ class DashboardController extends Controller
             ->orderByDesc('start_date')
             ->first();
 
+        $placementStatusCounts = Placement::query()
+            ->selectRaw('status, COUNT(*) as total')
+            ->groupBy('status')
+            ->pluck('total', 'status');
+
+        $placementStatusSummary = collect([
+            'Draft',
+            'Applied',
+            'Approved',
+            'Active',
+            'Completed',
+            'Rejected',
+            'Cancelled',
+        ])->map(function ($status) use ($placementStatusCounts) {
+            return [
+                'status' => $status,
+                'total' => (int) ($placementStatusCounts[$status] ?? 0),
+            ];
+        });
+
+        $monitoringVisitCounts = LecturerMonitoring::query()
+            ->whereIn('monitoring_no', [1, 2, 3])
+            ->selectRaw('monitoring_no, COUNT(*) as total')
+            ->groupBy('monitoring_no')
+            ->pluck('total', 'monitoring_no');
+
+        $maxMonitoringVisitTotal = (int) $monitoringVisitCounts->max();
+
+        $monitoringVisitSummary = collect([1, 2, 3])->map(function ($visitNo) use ($monitoringVisitCounts, $maxMonitoringVisitTotal) {
+            $total = (int) ($monitoringVisitCounts[$visitNo] ?? 0);
+
+            return [
+                'visit_no' => $visitNo,
+                'total' => $total,
+                'bar_percent' => $maxMonitoringVisitTotal > 0
+                    ? (int) round(($total / $maxMonitoringVisitTotal) * 100)
+                    : 0,
+            ];
+        });
+
+        $activeMonitoringTemplate = MonitoringFormTemplate::query()
+            ->where('status', 'Active')
+            ->latest('id')
+            ->first();
+
+        $recentSubmittedLogbooks = DailyLogbook::query()
+            ->where('status', 'Submitted')
+            ->with([
+                'placement.student',
+                'placement.company',
+            ])
+            ->latest('log_date')
+            ->limit(6)
+            ->get();
+
+        $recentMonitorings = LecturerMonitoring::query()
+            ->with([
+                'student',
+                'placement.company',
+            ])
+            ->latest('monitoring_date')
+            ->limit(6)
+            ->get();
+
         return view('dashboard', [
             'academicSessionsCount' => $academicSessionsCount,
             'studentsCount' => $studentsCount,
+            'activeStudentsCount' => $activeStudentsCount,
             'companiesCount' => $companiesCount,
+            'lecturersCount' => $lecturersCount,
+            'industryMentorsCount' => $industryMentorsCount,
+            'activePlacementsCount' => $activePlacementsCount,
             'pendingLogbooksCount' => $pendingLogbooksCount,
             'currentAcademicSession' => $currentAcademicSession,
+            'placementStatusSummary' => $placementStatusSummary,
+            'monitoringVisitSummary' => $monitoringVisitSummary,
+            'activeMonitoringTemplate' => $activeMonitoringTemplate,
+            'recentSubmittedLogbooks' => $recentSubmittedLogbooks,
+            'recentMonitorings' => $recentMonitorings,
         ]);
     }
 }
