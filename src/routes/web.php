@@ -535,7 +535,7 @@ Route::get(
     [StudentAssessmentController::class, 'mentorIndex']
 )->name('industry-supervisor.assessments.index');
 
-//lecturer assessment routes
+// lecturer assessment routes
 Route::get(
     'lecturer/assessments/{studentAssessment}',
     [StudentAssessmentController::class, 'lecturerShow']
