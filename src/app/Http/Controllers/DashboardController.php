@@ -13,7 +13,9 @@ use App\Models\LecturerMonitoring;
 use App\Models\MonitoringFormTemplate;
 use App\Models\Placement;
 use App\Models\Student;
+use App\Models\StudentAssessment;
 use App\Models\SupervisorStudent;
+use App\Models\User;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
@@ -305,11 +307,82 @@ class DashboardController extends Controller
         $pendingLogbooksCount = DailyLogbook::query()
             ->where('status', 'Submitted')
             ->count();
+        $logbookStatusCounts = DailyLogbook::query()
+            ->selectRaw('status, COUNT(*) as total')
+            ->groupBy('status')
+            ->pluck('total', 'status');
+        $logbookStatusSummary = collect([
+            'Draft',
+            'Submitted',
+            'Approved',
+            'Rejected',
+        ])->map(function ($status) use ($logbookStatusCounts) {
+            return [
+                'status' => $status,
+                'total' => (int) ($logbookStatusCounts[$status] ?? 0),
+            ];
+        });
+        $submittedMentorAssessmentsCount = StudentAssessment::query()
+            ->where('assessor_type', 'INDUSTRY_MENTOR')
+            ->where('status', 'Completed')
+            ->count();
+        $mentorAssessmentStatusCounts = StudentAssessment::query()
+            ->where('assessor_type', 'INDUSTRY_MENTOR')
+            ->selectRaw('status, COUNT(*) as total')
+            ->groupBy('status')
+            ->pluck('total', 'status');
+        $mentorAssessmentStatusSummary = collect([
+            'Draft',
+            'Completed',
+        ])->map(function ($status) use ($mentorAssessmentStatusCounts) {
+            return [
+                'status' => $status,
+                'total' => (int) ($mentorAssessmentStatusCounts[$status] ?? 0),
+            ];
+        });
 
         $currentAcademicSession = AcademicSession::query()
             ->where('current', true)
             ->orderByDesc('start_date')
             ->first();
+
+        $loginStartDate = now()->subDays(6)->startOfDay();
+        $loginCountsByDate = User::query()
+            ->whereNotNull('last_login_at')
+            ->where('last_login_at', '>=', $loginStartDate)
+            ->selectRaw('DATE(last_login_at) as login_date, COUNT(*) as total')
+            ->groupBy('login_date')
+            ->pluck('total', 'login_date');
+
+        $loginFrequencySummary = collect(range(6, 0))->map(function ($daysAgo) use ($loginCountsByDate) {
+            $date = now()->subDays($daysAgo);
+            $key = $date->toDateString();
+
+            return [
+                'label' => $date->format('D'),
+                'date' => $key,
+                'total' => (int) ($loginCountsByDate[$key] ?? 0),
+            ];
+        });
+
+        $maxLoginCount = (int) max(1, $loginFrequencySummary->max('total'));
+        $loginFrequencySummary = $loginFrequencySummary
+            ->map(function ($item) use ($maxLoginCount) {
+                $item['bar_percent'] = (int) round(($item['total'] / $maxLoginCount) * 100);
+
+                return $item;
+            });
+
+        $usersLoggedInTodayCount = User::query()
+            ->whereDate('last_login_at', now()->toDateString())
+            ->count();
+        $usersLoggedIn7DaysCount = User::query()
+            ->whereNotNull('last_login_at')
+            ->where('last_login_at', '>=', $loginStartDate)
+            ->count();
+        $usersNeverLoggedInCount = User::query()
+            ->whereNull('last_login_at')
+            ->count();
 
         $placementStatusCounts = Placement::query()
             ->selectRaw('status, COUNT(*) as total')
@@ -356,16 +429,6 @@ class DashboardController extends Controller
             ->latest('id')
             ->first();
 
-        $recentSubmittedLogbooks = DailyLogbook::query()
-            ->where('status', 'Submitted')
-            ->with([
-                'placement.student',
-                'placement.company',
-            ])
-            ->latest('log_date')
-            ->limit(6)
-            ->get();
-
         $recentMonitorings = LecturerMonitoring::query()
             ->with([
                 'student',
@@ -384,11 +447,17 @@ class DashboardController extends Controller
             'industryMentorsCount' => $industryMentorsCount,
             'activePlacementsCount' => $activePlacementsCount,
             'pendingLogbooksCount' => $pendingLogbooksCount,
+            'logbookStatusSummary' => $logbookStatusSummary,
+            'submittedMentorAssessmentsCount' => $submittedMentorAssessmentsCount,
+            'mentorAssessmentStatusSummary' => $mentorAssessmentStatusSummary,
             'currentAcademicSession' => $currentAcademicSession,
+            'loginFrequencySummary' => $loginFrequencySummary,
+            'usersLoggedInTodayCount' => $usersLoggedInTodayCount,
+            'usersLoggedIn7DaysCount' => $usersLoggedIn7DaysCount,
+            'usersNeverLoggedInCount' => $usersNeverLoggedInCount,
             'placementStatusSummary' => $placementStatusSummary,
             'monitoringVisitSummary' => $monitoringVisitSummary,
             'activeMonitoringTemplate' => $activeMonitoringTemplate,
-            'recentSubmittedLogbooks' => $recentSubmittedLogbooks,
             'recentMonitorings' => $recentMonitorings,
         ]);
     }
