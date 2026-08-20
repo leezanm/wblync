@@ -216,9 +216,9 @@
                     $stop2 = $stop1 + $logbookSubmittedPct;
                     $stop3 = $stop2 + $logbookApprovedPct;
                 @endphp
-                <div class="p-4 grid grid-cols-1 lg:grid-cols-3 gap-6 items-center">
+                <div class="p-6 grid grid-cols-1 lg:grid-cols-3 gap-6 items-center">
                     <div class="flex justify-center">
-                        <div class="relative h-60 w-60 rounded-full"
+                        <div class="relative h-40 w-40 rounded-full"
                             style="{{ $logbookTotal > 0
                                 ? 'background: conic-gradient(#94a3b8 0% '.$stop1.'%, #f59e0b '.$stop1.'% '.$stop2.'%, #10b981 '.$stop2.'% '.$stop3.'%, #ef4444 '.$stop3.'% 100%);'
                                 : 'background: #e2e8f0;' }}">
